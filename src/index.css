@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #050505;
+  --bg-2: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #161616;
+  --text: #edf5fa;
+  --text-2: #a0adba;
+  --text-3: #687686;
+
+  /* Single high-contrast accent — neon green */
+  --accent: #00ff94;
+  --accent-dim: #00b368;
+  --accent-bright: #6bffc0;
+  --border: rgba(215, 226, 234, 0.12);
+  --border-strong: rgba(215, 226, 234, 0.26);
+
+  --font-display: "Kanit", "Arial Black", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  /* Signature easing used across the whole site */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  /* Lenis drives smoothing — disable native smooth scroll to avoid conflict */
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hide the native cursor only on devices that have a custom one (pointer:fine) */
+@media (pointer: fine) {
+  .has-custom-cursor,
+  .has-custom-cursor a,
+  .has-custom-cursor button {
+    cursor: none;
+  }
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ── Typography helpers ────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-gradient {
+  background: linear-gradient(110deg, var(--accent) 0%, var(--accent-bright) 45%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Outlined / hollow display type — a kinetic-editorial signature */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text);
+}
+.text-outline-accent {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+}
+
+.neon-text {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(0, 255, 148, 0.55), 0 0 28px rgba(0, 255, 148, 0.25);
+}
+
+/* ── Living "energy" name effect ───────────────────────────────────── */
+/* A flowing gradient streams through the letters like current/flame,
+   while a soft glow flickers. Used on the hero name. */
+.name-energy {
+  background: linear-gradient(
+    100deg,
+    #00b368 0%,
+    #00ff94 20%,
+    #6bffc0 35%,
+    #eafff5 50%,
+    #6bffc0 65%,
+    #00ff94 80%,
+    #00b368 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: energy-flow 5s linear infinite, energy-flicker 3.5s ease-in-out infinite;
+  will-change: background-position, filter;
+}
+
+@keyframes energy-flow {
+  to {
+    background-position: -250% 0;
+  }
+}
+@keyframes energy-flicker {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 18px rgba(0, 255, 148, 0.45)) drop-shadow(0 0 40px rgba(0, 255, 148, 0.2));
+  }
+  45% {
+    filter: drop-shadow(0 0 26px rgba(0, 255, 148, 0.65)) drop-shadow(0 0 60px rgba(0, 255, 148, 0.32));
+  }
+  55% {
+    filter: drop-shadow(0 0 14px rgba(0, 255, 148, 0.4)) drop-shadow(0 0 34px rgba(0, 255, 148, 0.18));
+  }
+}
+
+/* Outlined name with an animated glowing stroke */
+.name-outline-energy {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  animation: energy-flicker 3.5s ease-in-out infinite;
+  will-change: filter;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Surfaces ──────────────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 148, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 148, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-radial-glow {
+  background: radial-gradient(circle, rgba(0, 255, 148, 0.16), transparent 65%);
+}
+
+/* Film grain overlay — sits above everything for texture */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Reveal primitives ─────────────────────────────────────────────── */
+.line-mask {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.focus-visible-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ── Marquee ───────────────────────────────────────────────────────── */
+@theme {
+  --animate-marquee-x: marquee-x 28s linear infinite;
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ProfileCard sets touch-action:none for tilt; we disable mobile tilt, so
+   re-enable normal touch scrolling over the card on small screens. */
+@media (max-width: 1024px) {
+  .pc-card-wrapper {
+    touch-action: auto;
+  }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grain::after {
+    display: none;
+  }
+}

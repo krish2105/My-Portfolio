@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const m=require\\('react-icons/fa6'\\); ['FaGithub','FaLinkedinIn','FaInstagram','FaXTwitter','FaKaggle','FaEnvelope'].forEach\\(k=>console.log\\(k, typeof m[k]\\)\\)\")",
+      "Bash(node -e \"const m=require\\('@react-three/drei'\\); ['MeshDistortMaterial','Icosahedron','TorusKnot','Points','PointMaterial','Sparkles','Torus','Float'].forEach\\(k=>console.log\\(k, typeof m[k]\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5199/)",
+      "Read(//tmp/**)",
+      "Bash(pkill -f \"vite --port 5199\")",
+      "Bash(echo \"=== TSC EXIT $? ===\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/avatar.png)",
+      "mcp__ide__getDiagnostics",
+      "Bash(grep -rn \"allowJs\\\\|\\\\\"jsx\\\\\"\" tsconfig*.json)",
+      "Bash(node -e \"const si=require\\('react-icons/si'\\); ['SiPython','SiTensorflow','SiPytorch','SiScikitlearn','SiPandas','SiNumpy','SiHuggingface','SiOpenai','SiFastapi','SiStreamlit','SiDocker','SiJupyter','SiPlotly','SiPostgresql','SiKeras','SiOpencv','SiGooglecloud','SiLangchain'].forEach\\(n=>console.log\\(n, typeof si[n]==='function'?'OK':'MISSING'\\)\\)\")",
+      "Bash(cd *)",
+      "Bash(node -e \"const si=require\\('react-icons/si'\\);['SiVercel','SiAnthropic','SiPinecone','SiN8N','SiCursoride','SiApachespark','SiApacheairflow'].forEach\\(n=>console.log\\(n, typeof si[n]==='function'?'OK':'MISSING'\\)\\)\")",
+      "Bash(git -C /Users/krishnamathurm4pro/Desktop/Krishna_Portfolio status)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s http://localhost:5174/src/components/hero/Prism.tsx)",
+      "Bash(pkill -f \"vite\")",
+      "Skill(run)",
+      "Bash(chromium-cli *)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --no-sandbox --disable-gpu --screenshot=/tmp/portfolio-hero.png --window-size=1440,900 --virtual-time-budget=4000 http://localhost:5173)",
+      "Bash(echo \"exit: $?\")",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --no-sandbox --disable-gpu --enable-webgl --ignore-gpu-blocklist --use-gl=swiftshader --screenshot=/tmp/portfolio-hero2.png --window-size=1440,900 --virtual-time-budget=5000 http://localhost:5173)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --no-sandbox --disable-gpu --remote-debugging-port=9222 http://localhost:5173)",
+      "Bash(node -e ' *)",
+      "Bash(pkill -f \"remote-debugging-port=9222\")",
+      "Bash(echo \"=== EXIT: $? ===\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174/)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --hide-scrollbars --window-size=1440,3600 --virtual-time-budget=5000 --screenshot=/tmp/full.png http://localhost:5174/)",
+      "Bash(echo \"exit=$?\")",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --disable-gpu --hide-scrollbars --window-size=1440,3200 --virtual-time-budget=9000 --run-all-compositor-stages-before-draw --screenshot=/tmp/full.png http://localhost:5174/)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --disable-gpu --virtual-time-budget=8000 --dump-dom http://localhost:5174/)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --disable-gpu --hide-scrollbars --force-prefers-reduced-motion --window-size=1440,1024 --virtual-time-budget=6000 --screenshot=/tmp/hero.png http://localhost:5174/)",
+      "Bash(echo \"hero exit=$?\")"
+    ]
+  }
+}

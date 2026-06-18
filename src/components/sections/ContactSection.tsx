@@ -1,0 +1,220 @@
+import { useState } from "react";
+import { socialLinks } from "../../data/portfolio";
+import SafeExternalLink from "../common/SafeExternalLink";
+import SocialLinks from "../common/SocialLinks";
+import ResumeButton from "../common/ResumeButton";
+import { RevealText, RevealWords, Rise } from "../common/Reveal";
+
+const EMAIL = "krishnamathur008@gmail.com";
+
+type FieldKey = "name" | "email" | "subject" | "message";
+
+const FIELDS: {
+  key: FieldKey;
+  label: string;
+  placeholder: string;
+  required: boolean;
+  type?: string;
+  textarea?: boolean;
+}[] = [
+  { key: "name", label: "Name", placeholder: "Your name", required: true },
+  { key: "email", label: "Email", placeholder: "you@example.com", required: true, type: "email" },
+  { key: "subject", label: "Subject", placeholder: "What's this about?", required: false },
+  { key: "message", label: "Message", placeholder: "Tell me about your project or idea…", required: true, textarea: true },
+];
+
+/** A normal contact form wrapped in macOS-window chrome. Submits via mailto. */
+const ContactTerminal = () => {
+  const [formData, setFormData] = useState<Record<FieldKey, string>>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
+  const [sent, setSent] = useState(false);
+
+  const setField = (key: FieldKey, value: string) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  const validate = () => {
+    const next: Partial<Record<FieldKey, string>> = {};
+    FIELDS.forEach((f) => {
+      const v = formData[f.key].trim();
+      if (f.required && !v) next[f.key] = `${f.label} is required.`;
+    });
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      next.email = "That doesn't look like a valid email.";
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate() || !socialLinks.email) return;
+    const mailto = `${socialLinks.email}?subject=${encodeURIComponent(
+      formData.subject || "Contact from Portfolio"
+    )}&body=${encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+    )}`;
+    setSent(true);
+    window.location.href = mailto;
+  };
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0b0f14] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] ring-1 ring-black/40">
+      {/* macOS title bar */}
+      <div className="flex items-center gap-2 border-b border-white/10 bg-[#1b2027] px-4 py-3">
+        <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+        <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+        <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
+        <span className="flex-1 select-none text-center text-xs text-[#8b95a1]">
+          New Message — krishna@portfolio
+        </span>
+      </div>
+
+      {/* Form body */}
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 px-5 py-6 md:px-7 md:py-7">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {FIELDS.filter((f) => !f.textarea).map((f) => (
+            <Field key={f.key} field={f} value={formData[f.key]} error={errors[f.key]} onChange={setField} />
+          ))}
+        </div>
+        {FIELDS.filter((f) => f.textarea).map((f) => (
+          <Field key={f.key} field={f} value={formData[f.key]} error={errors[f.key]} onChange={setField} />
+        ))}
+
+        <div className="mt-1 flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            data-cursor="Send"
+            className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-3.5 font-bold tracking-wide text-[#050505] transition-transform hover:scale-[1.03]"
+          >
+            SEND MESSAGE
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </button>
+          {sent && (
+            <span className="text-sm text-[#27c93f]">Opening your mail client ✓</span>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const Field = ({
+  field,
+  value,
+  error,
+  onChange,
+}: {
+  field: (typeof FIELDS)[number];
+  value: string;
+  error?: string;
+  onChange: (key: FieldKey, value: string) => void;
+}) => {
+  const base =
+    "w-full rounded-lg border bg-[#0a0e13] px-4 py-3 text-[#EDF5FA] outline-none transition-colors placeholder:text-[#5b6573] focus:border-[#00FF94] focus:ring-1 focus:ring-[#00FF94]/40";
+  const borderClass = error ? "border-[#ff5f56]" : "border-white/10";
+
+  return (
+    <label className={`flex flex-col gap-2 ${field.textarea ? "" : ""}`}>
+      <span className="kicker">
+        {field.label}
+        {field.required && <span className="text-[#00FF94]"> *</span>}
+      </span>
+      {field.textarea ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(field.key, e.target.value)}
+          placeholder={field.placeholder}
+          rows={5}
+          className={`${base} ${borderClass} resize-none`}
+        />
+      ) : (
+        <input
+          type={field.type ?? "text"}
+          value={value}
+          onChange={(e) => onChange(field.key, e.target.value)}
+          placeholder={field.placeholder}
+          autoComplete="off"
+          className={`${base} ${borderClass}`}
+        />
+      )}
+      {error && <span className="text-xs text-[#ff5f56]">{error}</span>}
+    </label>
+  );
+};
+
+const ContactSection = () => {
+  return (
+    <section id="contact" className="relative overflow-hidden border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
+      <div className="absolute -top-1/3 left-1/2 -z-10 h-[60vh] w-[60vh] -translate-x-1/2 bg-radial-glow opacity-60" />
+
+      <div className="mb-10 flex items-center gap-4">
+        <span className="kicker">(08)</span>
+        <RevealText className="kicker">Contact</RevealText>
+      </div>
+
+      <h2 className="font-display text-[clamp(2.5rem,9vw,9rem)] font-black leading-[0.9] tracking-tighter text-[#EDF5FA]">
+        <RevealText as="span">LET'S BUILD</RevealText>
+        <br />
+        <span className="text-outline-accent">
+          <RevealText as="span" delay={0.08}>
+            SOMETHING
+          </RevealText>
+        </span>{" "}
+        <span className="text-gradient">
+          <RevealText as="span" delay={0.16}>
+            INTELLIGENT
+          </RevealText>
+        </span>
+      </h2>
+
+      <Rise delay={0.1} className="mt-10 max-w-2xl">
+        <RevealWords
+          text="Open to opportunities and collaborations in AI development, machine learning, data analytics, GenAI and intelligent software."
+          className="text-base text-[#A0ADBA] md:text-lg"
+        />
+      </Rise>
+
+      {/* Giant email link */}
+      <Rise delay={0.15} className="mt-12">
+        <SafeExternalLink
+          href={socialLinks.email}
+          className="group inline-flex flex-wrap items-baseline gap-x-4 font-display text-2xl font-bold tracking-tight text-[#EDF5FA] transition-colors hover:text-[#00FF94] md:text-5xl"
+        >
+          <span data-cursor="Email">{EMAIL}</span>
+          <span className="transition-transform group-hover:translate-x-2">→</span>
+        </SafeExternalLink>
+      </Rise>
+
+      <div className="mt-20 grid gap-16 md:grid-cols-[1fr_1.2fr]">
+        {/* Left: meta + socials */}
+        <Rise>
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="kicker mb-3">Based in</p>
+              <p className="font-display text-2xl font-bold text-[#EDF5FA]">Dubai, UAE</p>
+            </div>
+            <div>
+              <p className="kicker mb-3">Find me online</p>
+              <SocialLinks />
+            </div>
+            <ResumeButton variant="outline" label="Download Resume" className="self-start" />
+          </div>
+        </Rise>
+
+        {/* Right: macOS terminal contact */}
+        <Rise delay={0.1}>
+          <ContactTerminal />
+        </Rise>
+      </div>
+    </section>
+  );
+};
+
+export default ContactSection;
