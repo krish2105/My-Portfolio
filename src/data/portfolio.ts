@@ -40,7 +40,7 @@ export const profile: Profile = {
  *  The site turns it into a forced-download link automatically, so clicking
  *  "Download Resume" downloads the file immediately instead of opening a viewer.
  */
-export const RESUME_DRIVE_FILE_ID = "REPLACE_WITH_YOUR_DRIVE_FILE_ID";
+export const RESUME_DRIVE_FILE_ID = "1upvjDh5j7JxcwLfmwb-MPkB3urDhzfuw";
 
 const resumeDownloadUrl =
   RESUME_DRIVE_FILE_ID && RESUME_DRIVE_FILE_ID !== "REPLACE_WITH_YOUR_DRIVE_FILE_ID"
@@ -55,10 +55,10 @@ const resumeDownloadUrl =
  */
 export const socialLinks: SocialLinks = {
   email: "mailto:krishnamathur008@gmail.com",
-  github: "https://github.com/your-username",        // ← replace
-  linkedin: "https://linkedin.com/in/your-username", // ← replace
+  github: "https://github.com/krish2105",        // ← replace
+  linkedin: "https://www.linkedin.com/in/krishnamathurmay/", // ← replace
   instagram: "https://instagram.com/your-username",  // ← replace
-  kaggle: "https://kaggle.com/your-username",         // ← replace
+  kaggle: "https://www.kaggle.com/krishna21052003",         // ← replace
   twitter: "https://x.com/your-username",             // ← replace
   resume: resumeDownloadUrl,
   website: "",
