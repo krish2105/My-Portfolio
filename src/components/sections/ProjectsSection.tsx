@@ -117,6 +117,8 @@ const VerticalStack = ({ items, onOpen }: { items: Project[]; onOpen: (p: Projec
   </div>
 );
 
+const DEFAULT_TITLE = "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder";
+
 const ProjectsSection = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selected, setSelected] = useState<Project | null>(null);
@@ -127,18 +129,44 @@ const ProjectsSection = () => {
     [filter]
   );
 
+  // Deep-linkable case studies: /work/:slug opens the matching modal (shareable,
+  // survives reload via the SPA rewrite) without a router. Sync via History API.
+  const openProject = (p: Project) => {
+    setSelected(p);
+    document.title = `${p.shortTitle} — Krishna Mathur`;
+    if (window.location.pathname !== `/work/${p.id}`)
+      window.history.pushState({ slug: p.id }, "", `/work/${p.id}`);
+  };
+  const closeProject = () => {
+    setSelected(null);
+    document.title = DEFAULT_TITLE;
+    if (window.location.pathname.startsWith("/work/")) window.history.pushState({}, "", "/");
+  };
+
+  useEffect(() => {
+    const sync = () => {
+      const m = window.location.pathname.match(/^\/work\/([^/]+)/);
+      const p = m ? projects.find((x) => x.id === m[1]) : undefined;
+      setSelected(p ?? null);
+      document.title = p ? `${p.shortTitle} — Krishna Mathur` : DEFAULT_TITLE;
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+
   return (
     <section id="projects" className="relative border-t border-[var(--border)] py-20">
       {isDesktop ? (
-        <HorizontalGallery items={filtered} onOpen={setSelected} filter={filter} setFilter={setFilter} />
+        <HorizontalGallery items={filtered} onOpen={openProject} filter={filter} setFilter={setFilter} />
       ) : (
         <>
           <Header />
           <FilterBar filter={filter} setFilter={setFilter} />
-          <VerticalStack items={filtered} onOpen={setSelected} />
+          <VerticalStack items={filtered} onOpen={openProject} />
         </>
       )}
-      <ProjectModal project={selected} onClose={() => setSelected(null)} />
+      <ProjectModal project={selected} onClose={closeProject} />
     </section>
   );
 };
