@@ -51,6 +51,8 @@ const HeroSection = () => {
         </div>
         {/* Soft accent glow anchored behind the headline */}
         <div className="absolute left-[10%] top-1/2 h-[60vmin] w-[60vmin] -translate-y-1/2 rounded-full bg-radial-glow blur-3xl" />
+        {/* Slow-drifting aurora for living depth */}
+        <div aria-hidden className="aurora pointer-events-none absolute left-[2%] top-[12%] h-[55vmin] w-[55vmin] rounded-full" />
         {/* Readability washes so the text always sits on calm contrast */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/55 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/60 via-transparent to-[#050505]" />
