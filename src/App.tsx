@@ -14,10 +14,9 @@ import Footer from "./components/layout/Footer";
 import HeroSection from "./components/hero/HeroSection";
 import TechnologyMarquee from "./components/sections/TechnologyMarquee";
 import AboutSection from "./components/sections/AboutSection";
-import StatsBand from "./components/sections/StatsBand";
+import BentoSection from "./components/sections/BentoSection";
 import WhatIDoSection from "./components/sections/WhatIDoSection";
 import JourneySection from "./components/sections/JourneySection";
-import NowSection from "./components/sections/NowSection";
 import CapabilitiesSection from "./components/sections/CapabilitiesSection";
 import GitHubActivity from "./components/sections/GitHubActivity";
 import ProjectsSection from "./components/sections/ProjectsSection";
@@ -46,10 +45,9 @@ const App = () => {
             <HeroSection />
             <TechnologyMarquee />
             <AboutSection />
-            <StatsBand />
+            <BentoSection />
             <WhatIDoSection />
             <JourneySection />
-            <NowSection />
             <CapabilitiesSection />
             <GitHubActivity />
             <ProjectsSection />
