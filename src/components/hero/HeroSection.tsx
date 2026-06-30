@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "../../data/portfolio";
-import NameNeurons from "./NameNeurons";
+import HeroBackdrop from "./HeroBackdrop";
 import SocialLinks from "../common/SocialLinks";
 import ProfileCard from "../profile/ProfileCard";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
@@ -46,7 +46,7 @@ const HeroSection = () => {
       {/* Single, calm background: the firing-neuron field */}
       <motion.div style={{ scale }} className="absolute inset-0 z-0">
         <div className="absolute inset-0 opacity-75">
-          <NameNeurons />
+          <HeroBackdrop />
         </div>
         {/* Soft accent glow anchored behind the headline */}
         <div className="absolute left-[10%] top-1/2 h-[60vmin] w-[60vmin] -translate-y-1/2 rounded-full bg-radial-glow blur-3xl" />
