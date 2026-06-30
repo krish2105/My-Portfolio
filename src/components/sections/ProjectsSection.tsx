@@ -52,7 +52,7 @@ const HorizontalGallery = () => {
             <a
               href="#contact"
               data-cursor="Talk"
-              className="font-display text-3xl font-black tracking-tight text-[#687686] transition-colors hover:text-[#00FF94] md:text-5xl"
+              className="font-display text-3xl font-black tracking-tight text-[#7e8c9a] transition-colors hover:text-[#00FF94] md:text-5xl"
             >
               Let's
               <br />

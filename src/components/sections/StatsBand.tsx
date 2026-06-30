@@ -26,7 +26,7 @@ const StatsBand = () => (
               {stat.value}
               {stat.suffix && <span className="text-[#00FF94]">{stat.suffix}</span>}
             </dt>
-            <dd className="mt-3 max-w-[14ch] text-sm leading-snug text-[#687686] md:text-[15px]">
+            <dd className="mt-3 max-w-[14ch] text-sm leading-snug text-[#7e8c9a] md:text-[15px]">
               {stat.label}
             </dd>
           </div>

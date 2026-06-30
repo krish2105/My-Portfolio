@@ -7,7 +7,7 @@
   --surface-2: #161616;
   --text: #edf5fa;
   --text-2: #a0adba;
-  --text-3: #687686;
+  --text-3: #7e8c9a;
 
   /* Single high-contrast accent — neon green */
   --accent: #00ff94;
@@ -196,6 +196,19 @@ body {
 .focus-visible-ring:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+/* Baseline keyboard focus ring for every interactive element (only shows on
+   keyboard navigation, never on mouse). Guarantees visible focus site-wide. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* ── Marquee ───────────────────────────────────────────────────────── */

@@ -11,7 +11,7 @@ const CapabilitiesSection = () => {
 
       <h2 className="mb-16 max-w-4xl font-display text-3xl font-bold leading-[1.15] tracking-tight text-[#EDF5FA] md:text-5xl">
         <RevealText as="span">A toolkit spanning intelligence,</RevealText>{" "}
-        <span className="text-[#687686]">
+        <span className="text-[#7e8c9a]">
           <RevealText as="span" delay={0.08}>
             data and the business it serves.
           </RevealText>
@@ -26,7 +26,7 @@ const CapabilitiesSection = () => {
               <h3 className="font-display text-xl font-bold tracking-tight text-[#EDF5FA] md:text-2xl">
                 {group.title}
               </h3>
-              <p className="mt-2 mb-5 text-sm text-[#687686]">{group.description}</p>
+              <p className="mt-2 mb-5 text-sm text-[#7e8c9a]">{group.description}</p>
               <ul className="mt-auto flex flex-wrap gap-2">
                 {group.skills.map((skill) => {
                   const isCore = skill.level === "Core";

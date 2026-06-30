@@ -20,8 +20,11 @@ export const useSmoothScroll = () => useContext(ScrollContext);
 
 /** Imperative scroll-to helper that respects the Lenis instance. */
 export const scrollTo = (target: string | number, lenis: Lenis | null) => {
+  // Negative offset leaves room for the fixed navbar so section headings
+  // aren't tucked underneath it after a nav click.
+  const NAV_OFFSET = -90;
   if (lenis) {
-    lenis.scrollTo(target, { offset: 0, duration: 1.4 });
+    lenis.scrollTo(target, { offset: NAV_OFFSET, duration: 1.4 });
   } else if (typeof target === "string") {
     document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
   }

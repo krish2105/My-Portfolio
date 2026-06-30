@@ -1,3 +1,8 @@
+/* eslint-disable react-hooks/immutability, react-hooks/purity, react-hooks/use-memo --
+   React Three Fiber's render loop mutates typed-array buffers in place inside
+   useFrame (the documented, performant pattern), and node positions are seeded
+   once with Math.random(). The React Compiler purity/immutability rules don't
+   model this imperative WebGL pattern, so they're disabled for this file only. */
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";

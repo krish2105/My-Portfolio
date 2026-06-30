@@ -17,7 +17,7 @@ const ProjectCover = ({ project }: { project: Project }) => (
         {project.shortTitle}
       </p>
       <div className="mx-auto mt-4 h-px w-12 bg-[#EDF5FA]/15" />
-      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[#687686]">
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[#7e8c9a]">
         {project.category}
       </p>
     </div>

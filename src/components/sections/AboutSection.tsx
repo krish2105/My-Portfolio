@@ -138,7 +138,7 @@ const AboutSection = () => {
           <h2 className="font-display text-4xl font-black leading-[1.05] tracking-tight md:text-7xl">
             <span className="text-[#EDF5FA]">I design and build </span>
             <span className="text-gradient">practical AI systems</span>
-            <span className="text-[#687686]">
+            <span className="text-[#7e8c9a]">
               {" "}
               — where data meets decisions.
             </span>

@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-16 flex flex-col gap-2 border-t border-[var(--border)] pt-8 text-xs text-[#687686] md:flex-row md:items-center md:justify-between">
+      <div className="mt-16 flex flex-col gap-2 border-t border-[var(--border)] pt-8 text-xs text-[#7e8c9a] md:flex-row md:items-center md:justify-between">
         <p>
           © {currentYear} {profile.name} — AI Developer · Data Analyst · GenAI Builder
         </p>

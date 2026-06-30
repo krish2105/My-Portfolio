@@ -27,7 +27,7 @@ const RecognitionSection = () => {
 
               <div className="relative flex items-center justify-between">
                 <span className="font-display text-3xl font-black text-[#00FF94] md:text-4xl">★</span>
-                <span className="font-mono text-xs text-[#687686]">{item.year}</span>
+                <span className="font-mono text-xs text-[#7e8c9a]">{item.year}</span>
               </div>
 
               <h3 className="relative mt-6 font-display text-xl font-black leading-tight tracking-tight text-[#EDF5FA] md:text-2xl">

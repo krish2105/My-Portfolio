@@ -31,7 +31,7 @@ const TimelineCard = ({
         <h4 className="font-display text-base font-bold leading-tight tracking-tight text-[#EDF5FA] md:text-lg">
           {title}
         </h4>
-        <p className="mt-1 text-sm leading-relaxed text-[#687686]">{subtitle}</p>
+        <p className="mt-1 text-sm leading-relaxed text-[#7e8c9a]">{subtitle}</p>
       </div>
     </div>
   </Rise>
@@ -43,7 +43,7 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
     className={`rounded-full border px-3 py-1 text-xs transition-colors ${
       isCore
         ? "border-[#00FF94]/30 bg-[#00FF94]/8 text-[#6BFFC0]"
-        : "border-white/[0.06] text-[#687686] hover:border-white/[0.12]"
+        : "border-white/[0.06] text-[#7e8c9a] hover:border-white/[0.12]"
     }`}
   >
     {name}
@@ -95,7 +95,7 @@ const DownloadCard = () => {
                 </span>
               </a>
             ) : (
-              <span className="inline-flex items-center gap-3 rounded-full border border-dashed border-[#687686]/40 px-7 py-4 text-sm font-medium text-[#687686]">
+              <span className="inline-flex items-center gap-3 rounded-full border border-dashed border-[#7e8c9a]/40 px-7 py-4 text-sm font-medium text-[#7e8c9a]">
                 <Download size={18} />
                 Resume link coming soon
               </span>

@@ -80,13 +80,13 @@ const ProjectCard = ({ project }: { project: Project }) => {
             {project.technologies.slice(0, 6).map((t) => (
               <span
                 key={t}
-                className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px] text-[#687686]"
+                className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px] text-[#7e8c9a]"
               >
                 {t}
               </span>
             ))}
           </div>
-          {project.note && <p className="mt-4 text-xs italic text-[#687686]">{project.note}</p>}
+          {project.note && <p className="mt-4 text-xs italic text-[#7e8c9a]">{project.note}</p>}
 
           {(project.repositoryUrl || project.liveUrl || project.caseStudyUrl) && (
             <div className="mt-5 flex flex-wrap items-center gap-2">

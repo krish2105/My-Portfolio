@@ -40,7 +40,7 @@ const WhatIDoSection = () => {
                 />
                 <span
                   className={`relative font-mono text-sm transition-colors duration-300 ${
-                    isActive ? "text-[#050505]" : "text-[#687686]"
+                    isActive ? "text-[#050505]" : "text-[#7e8c9a]"
                   }`}
                 >
                   0{i + 1}
