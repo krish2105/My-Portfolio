@@ -40,7 +40,7 @@ export const profile: Profile = {
  *  The site turns it into a forced-download link automatically, so clicking
  *  "Download Resume" downloads the file immediately instead of opening a viewer.
  */
-export const RESUME_DRIVE_FILE_ID = "1upvjDh5j7JxcwLfmwb-MPkB3urDhzfuw";
+export const RESUME_DRIVE_FILE_ID: string = "1upvjDh5j7JxcwLfmwb-MPkB3urDhzfuw";
 
 const resumeDownloadUrl =
   RESUME_DRIVE_FILE_ID && RESUME_DRIVE_FILE_ID !== "REPLACE_WITH_YOUR_DRIVE_FILE_ID"
