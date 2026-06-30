@@ -98,6 +98,55 @@ const ProjectVisual = ({ type, className = "" }: ProjectVisualProps) => {
             <rect x="200" y="80" width="50" height="170" fill="rgba(215, 226, 234, 0.05)" />
           </svg>
         );
+      case "mediflow":
+        return (
+          <svg viewBox="0 0 400 300" className="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="300" fill="#0A0A0A" />
+            {/* Hospital cross */}
+            <rect x="178" y="50" width="44" height="120" rx="6" fill="rgba(0, 255, 148, 0.12)" stroke="#00FF94" strokeWidth="1.5" />
+            <rect x="140" y="88" width="120" height="44" rx="6" fill="rgba(0, 255, 148, 0.12)" stroke="#00FF94" strokeWidth="1.5" />
+            {/* RL allocation grid */}
+            {[0, 1, 2, 3].map((c) =>
+              [0, 1].map((r) => (
+                <rect
+                  key={`${c}-${r}`}
+                  x={70 + c * 70}
+                  y={200 + r * 35}
+                  width="50"
+                  height="25"
+                  rx="4"
+                  fill={(c + r) % 2 === 0 ? "rgba(0, 255, 148, 0.18)" : "rgba(215, 226, 234, 0.05)"}
+                  stroke="rgba(215, 226, 234, 0.2)"
+                />
+              ))
+            )}
+            <path d="M 95 200 L 95 132" fill="none" stroke="#00FF94" strokeWidth="1.5" strokeDasharray="3 3" />
+          </svg>
+        );
+      case "lulu":
+        return (
+          <svg viewBox="0 0 400 300" className="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="300" fill="#0A0A0A" />
+            <path d="M 50 240 L 350 240" fill="none" stroke="rgba(215, 226, 234, 0.2)" strokeWidth="1" />
+            {/* Bar chart */}
+            {[120, 80, 160, 110, 190, 140].map((h, i) => (
+              <rect
+                key={i}
+                x={60 + i * 50}
+                y={240 - h}
+                width="30"
+                height={h}
+                rx="3"
+                fill={i === 4 ? "#00FF94" : "rgba(0, 255, 148, 0.25)"}
+              />
+            ))}
+            {/* Trend line */}
+            <path d="M 75 150 L 125 180 L 175 110 L 225 140 L 275 70 L 325 100" fill="none" stroke="#A0ADBA" strokeWidth="2" />
+            {[150, 180, 110, 140, 70, 100].map((y, i) => (
+              <circle key={i} cx={75 + i * 50} cy={y} r="3" fill="#EDF5FA" />
+            ))}
+          </svg>
+        );
       default:
         return <FallbackVisual />;
     }

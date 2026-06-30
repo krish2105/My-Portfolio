@@ -1,5 +1,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { ExternalLink, NotebookPen } from "lucide-react";
+import { FaGithub } from "react-icons/fa6";
 import type { Project } from "../../types/portfolio";
 import ProjectVisual from "../common/ProjectVisual";
 import SafeExternalLink from "../common/SafeExternalLink";
@@ -36,7 +38,17 @@ const ProjectCard = ({ project }: { project: Project }) => {
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-[var(--border)]">
         <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-          <ProjectVisual type={project.visualType} />
+          {project.images && project.images.length > 0 ? (
+            <img
+              src={project.images[0]}
+              alt={`${project.title} — interface screenshot`}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover object-top"
+            />
+          ) : (
+            <ProjectVisual type={project.visualType} />
+          )}
         </div>
         <span className="absolute right-5 top-4 font-display text-5xl font-black text-[#EDF5FA]/10 md:text-7xl">
           {project.number}
@@ -71,6 +83,38 @@ const ProjectCard = ({ project }: { project: Project }) => {
             ))}
           </div>
           {project.note && <p className="mt-4 text-xs italic text-[#687686]">{project.note}</p>}
+
+          {(project.repositoryUrl || project.liveUrl || project.caseStudyUrl) && (
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              {project.repositoryUrl && (
+                <SafeExternalLink
+                  href={project.repositoryUrl}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 text-[11px] font-medium text-[#A0ADBA] transition-colors hover:border-[#00FF94]/50 hover:text-[#00FF94]"
+                  aria-label={`${project.title} source code on GitHub`}
+                >
+                  <FaGithub size={13} aria-hidden /> Code
+                </SafeExternalLink>
+              )}
+              {project.liveUrl && (
+                <SafeExternalLink
+                  href={project.liveUrl}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#00FF94]/40 bg-[#00FF94]/10 px-3 py-1.5 text-[11px] font-medium text-[#00FF94] transition-colors hover:bg-[#00FF94]/20"
+                  aria-label={`${project.title} live demo`}
+                >
+                  <ExternalLink size={13} aria-hidden /> Live Demo
+                </SafeExternalLink>
+              )}
+              {project.caseStudyUrl && (
+                <SafeExternalLink
+                  href={project.caseStudyUrl}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3 py-1.5 text-[11px] font-medium text-[#A0ADBA] transition-colors hover:border-[#00FF94]/50 hover:text-[#00FF94]"
+                  aria-label={`${project.title} notebook or case study`}
+                >
+                  <NotebookPen size={13} aria-hidden /> Notebook
+                </SafeExternalLink>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </motion.article>
