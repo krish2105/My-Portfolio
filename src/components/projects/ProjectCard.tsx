@@ -1,14 +1,17 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { useState } from "react";
 import { ExternalLink, NotebookPen } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 import type { Project } from "../../types/portfolio";
-import ProjectVisual from "../common/ProjectVisual";
+import ProjectCover from "./ProjectCover";
 import SafeExternalLink from "../common/SafeExternalLink";
 
 /** A pointer-tilting project card used in the horizontal gallery. */
 const ProjectCard = ({ project }: { project: Project }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [imgFailed, setImgFailed] = useState(false);
+  const hasImage = !!project.images?.[0] && !imgFailed;
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 20 });
@@ -38,16 +41,17 @@ const ProjectCard = ({ project }: { project: Project }) => {
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-[var(--border)]">
         <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-          {project.images && project.images.length > 0 ? (
+          {hasImage ? (
             <img
               src={project.images[0]}
               alt={`${project.title} — interface screenshot`}
               loading="lazy"
               decoding="async"
+              onError={() => setImgFailed(true)}
               className="h-full w-full object-cover object-top"
             />
           ) : (
-            <ProjectVisual type={project.visualType} />
+            <ProjectCover project={project} />
           )}
         </div>
         <span className="absolute right-5 top-4 font-display text-5xl font-black text-[#EDF5FA]/10 md:text-7xl">

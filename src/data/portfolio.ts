@@ -297,7 +297,7 @@ export const projects: Project[] = [
       "Interactive Streamlit dashboard",
     ],
     technologies: ["Python", "Reinforcement Learning", "Q-Learning", "NumPy", "Pandas", "Streamlit"],
-    images: [],
+    images: ["/projects/mediflow/dashboard.png"],
     repositoryUrl: "https://github.com/krish2105/mediflow-ai-rdmu-final",
     liveUrl: "https://mediflow-ai-rdmu-final-vyj96f9xwbtezqmelhjq6c.streamlit.app/",
     caseStudyUrl:
@@ -322,7 +322,7 @@ export const projects: Project[] = [
       "Dockerised, CI-backed deployment",
     ],
     technologies: ["Next.js", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "Docker", "Python"],
-    images: [],
+    images: ["/projects/lulu/dashboard.png"],
     repositoryUrl: "https://github.com/mercydeez/lulu-sales-intelligence-dashboard",
     note: "Team project — enterprise retail analytics platform.",
     visualType: "lulu",
