@@ -2,19 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
+import { NAV_ITEMS as navItems, SECTION_IDS } from "../../data/nav";
 import MobileMenu from "./MobileMenu";
-
-const navItems = [
-  { id: "about", label: "About" },
-  { id: "services", label: "What I Do" },
-  { id: "journey", label: "Journey" },
-  { id: "skills", label: "Skills" },
-  { id: "projects", label: "Work" },
-  { id: "recognition", label: "Awards" },
-  { id: "resume", label: "Resume" },
-  { id: "contact", label: "Contact" },
-];
-const SECTION_IDS = ["home", ...navItems.map((i) => i.id)];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);

@@ -4,6 +4,10 @@ import ErrorBoundary from "./components/common/ErrorBoundary";
 import SkipLink from "./components/common/SkipLink";
 import SmoothScroll from "./lib/SmoothScroll";
 import Cursor from "./components/common/Cursor";
+import ScrollProgress from "./components/common/ScrollProgress";
+import CommandPalette from "./components/common/CommandPalette";
+import Assistant from "./components/assistant/Assistant";
+import { useCommandPalette } from "./hooks/useCommandPalette";
 import Preloader from "./components/common/Preloader";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -22,6 +26,7 @@ import ContactSection from "./components/sections/ContactSection";
 
 const App = () => {
   const [ready, setReady] = useState(false);
+  const palette = useCommandPalette();
 
   return (
     <ErrorBoundary fallback={<div className="p-8 text-white">Something went wrong. Please refresh the page.</div>}>
@@ -29,6 +34,9 @@ const App = () => {
 
       <SmoothScroll>
         <Cursor />
+        <ScrollProgress />
+        <CommandPalette open={palette.open} onClose={() => palette.setOpen(false)} />
+        <Assistant />
         <div className="grain relative">
           <SkipLink />
           <Navbar />
