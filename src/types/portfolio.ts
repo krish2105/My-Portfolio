@@ -20,6 +20,8 @@ export interface Project {
   description: string;
   features?: string[];
   technologies: string[];
+  /** High-level domains for the projects filter (e.g. "AI/ML", "Deep Learning", "GenAI", "Data"). */
+  tags?: string[];
   images: string[];
   repositoryUrl?: string;
   liveUrl?: string;

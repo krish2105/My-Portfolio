@@ -283,6 +283,7 @@ export const projects: Project[] = [
       "Streamlit alternative UI and C-level deck",
     ],
     technologies: ["Python", "TensorFlow", "LSTM", "RNN", "FastAPI", "React", "Streamlit", "Docker"],
+    tags: ["AI/ML", "Deep Learning"],
     images: [
       "/projects/fraudshield/01_executive_overview.webp",
       "/projects/fraudshield/03_fraud_risk_scoring.webp",
@@ -331,6 +332,7 @@ export const projects: Project[] = [
       "Interactive Streamlit dashboard",
     ],
     technologies: ["Python", "Reinforcement Learning", "Q-Learning", "NumPy", "Pandas", "Streamlit"],
+    tags: ["AI/ML"],
     images: ["/projects/mediflow/dashboard.webp"],
     repositoryUrl: "https://github.com/krish2105/mediflow-ai-rdmu-final",
     liveUrl: "https://mediflow-ai-rdmu-final-vyj96f9xwbtezqmelhjq6c.streamlit.app/",
@@ -375,6 +377,7 @@ export const projects: Project[] = [
       "Dockerised, CI-backed deployment",
     ],
     technologies: ["Next.js", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "Docker", "Python"],
+    tags: ["Data"],
     images: ["/projects/lulu/dashboard.webp"],
     repositoryUrl: "https://github.com/mercydeez/lulu-sales-intelligence-dashboard",
     note: "Team project — enterprise retail analytics platform.",
@@ -416,6 +419,7 @@ export const projects: Project[] = [
       "Modular Python implementation",
     ],
     technologies: ["Python", "Tkinter", "NLTK", "spaCy", "Google Maps API", "Conversational AI"],
+    tags: ["GenAI"],
     images: [],
     note: "Built during an internship at Intelliza Solutions Pvt. Ltd.; confidential client details are not disclosed.",
     problem:
@@ -448,6 +452,7 @@ export const projects: Project[] = [
       "Algorithmic decision support",
     ],
     technologies: ["Python", "NetworkX", "Dijkstra’s Algorithm", "Bellman-Ford Algorithm", "Minimum Spanning Tree", "Graph Theory", "Data Structures", "Route Visualisation"],
+    tags: ["Data"],
     images: [],
     problem:
       "Last-mile delivery networks need fast, defensible routing decisions across many nodes and constraints.",
@@ -486,6 +491,7 @@ export const projects: Project[] = [
       "Optional S3 or MinIO image storage",
     ],
     technologies: ["Python", "TensorFlow", "Keras", "CNN", "Streamlit", "FastAPI", "SQLite", "Docker", "Computer Vision"],
+    tags: ["Deep Learning", "AI/ML"],
     images: [],
     problem:
       "Image classification is the canonical computer-vision workflow — a clean place to prove an end-to-end CNN pipeline.",
@@ -523,6 +529,7 @@ export const projects: Project[] = [
       "SQL execution safeguards",
     ],
     technologies: ["Python", "SQL", "Hugging Face Transformers", "NLP", "Streamlit", "Human-in-the-Loop AI", "Database Systems"],
+    tags: ["GenAI"],
     images: [],
     problem:
       "Natural-language-to-SQL is powerful but risky — a wrong generated query can return confidently incorrect answers or unsafe operations.",
@@ -559,6 +566,7 @@ export const projects: Project[] = [
       "Model comparison",
     ],
     technologies: ["Python", "TensorFlow", "Keras", "Pandas", "NumPy", "Scikit-learn", "Matplotlib", "SimpleRNN", "LSTM", "Time-Series Forecasting", "Google Colab"],
+    tags: ["Deep Learning"],
     images: [],
     problem:
       "Sequence-window length quietly drives time-series forecasting quality — but its effect on SimpleRNN vs LSTM is easy to hand-wave.",
