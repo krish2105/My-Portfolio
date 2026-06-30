@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { profile } from "../../data/portfolio";
+import { profile, socialLinks } from "../../data/portfolio";
 import HeroBackdrop from "./HeroBackdrop";
 import SocialLinks from "../common/SocialLinks";
 import ProfileCard from "../profile/ProfileCard";
@@ -133,9 +133,37 @@ const HeroSection = () => {
               }}
               className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-4 font-bold tracking-wide text-[#050505] transition-transform hover:scale-[1.03]"
             >
-              VIEW SELECTED WORK
+              VIEW PROJECTS
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </a>
+            {socialLinks.resume && (
+              <a
+                href={socialLinks.resume}
+                download="Krishna-Mathur-Resume.pdf"
+                data-cursor="Download"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] px-6 py-4 font-bold tracking-wide text-[#EDF5FA] transition-colors hover:border-[#00FF94] hover:text-[#00FF94]"
+              >
+                Download Resume
+              </a>
+            )}
+            <a
+              href="#contact"
+              data-cursor="Talk"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollTo("#contact", lenis);
+              }}
+              className="font-semibold tracking-wide text-[#A0ADBA] underline-offset-4 transition-colors hover:text-[#EDF5FA] hover:underline"
+            >
+              Contact me →
+            </a>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+            className="mt-6"
+          >
             <SocialLinks />
           </motion.div>
         </div>
