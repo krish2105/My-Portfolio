@@ -313,6 +313,20 @@ export const projects: Project[] = [
       { label: "Serving", value: "FastAPI + React" },
       { label: "Team", value: "3 contributors" },
     ],
+    decisions: [
+      {
+        choice: "Sequence model (LSTM/RNN) over a per-transaction classifier",
+        why: "Fraud is a temporal pattern across a customer's history — modelling the sequence captures behaviour a single-row classifier misses.",
+      },
+      {
+        choice: "FastAPI + React dashboard, not Streamlit-only",
+        why: "A real serving layer + analyst UI is closer to how this would ship in production; Streamlit is kept as a quick alternative UI.",
+      },
+      {
+        choice: "Ship with synthetic data and an explicit honesty note",
+        why: "Perfect scores on a tiny test set are an artifact, not evidence — the repo states this and is built to retrain on the full 6.3M-row PaySim set.",
+      },
+    ],
   },
   {
     id: "mediflow",
@@ -359,6 +373,20 @@ export const projects: Project[] = [
       { label: "Avg wait time", value: "49.3 min" },
       { label: "Patients simulated", value: "500" },
     ],
+    decisions: [
+      {
+        choice: "Reinforcement learning (Q-Learning) with a constraint-based baseline",
+        why: "Benchmarking the learned policy against a rule-based optimiser shows whether RL actually earns its complexity, rather than assuming it.",
+      },
+      {
+        choice: "Report Jain's fairness index alongside utilisation",
+        why: "Allocation is a fairness-vs-efficiency trade-off; a single fairness number makes that trade-off explicit and defensible.",
+      },
+      {
+        choice: "Streamlit dashboard + public Colab notebook",
+        why: "Reproducibility first — anyone can run the exact experiment, which matters more than a polished black box for an academic prototype.",
+      },
+    ],
   },
   {
     id: "lulu-sales",
@@ -399,6 +427,20 @@ export const projects: Project[] = [
       { label: "Coverage", value: "10 stores · 3 regions" },
       { label: "Frontend", value: "Next.js + TS" },
       { label: "Data layer", value: "PostgreSQL + Redis" },
+    ],
+    decisions: [
+      {
+        choice: "Redis alongside PostgreSQL",
+        why: "Live dashboards need sub-second reads on hot data; Redis serves the stream while PostgreSQL stays the durable source of truth.",
+      },
+      {
+        choice: "Role-based access control from the start",
+        why: "The platform exposes sensitive financial data across stores — governance had to be a first-class feature, not an afterthought.",
+      },
+      {
+        choice: "Dockerised with CI",
+        why: "Reproducible, reviewable deploys across a multi-service stack (Next.js + FastAPI + PostgreSQL + Redis) — production hygiene over a one-off demo.",
+      },
     ],
   },
   {

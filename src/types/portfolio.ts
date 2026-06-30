@@ -35,6 +35,8 @@ export interface Project {
   role?: string;
   impact?: string[];
   metrics?: ProjectMetric[];
+  /** Engineering judgment: key technical choices and the reasoning behind them. */
+  decisions?: { choice: string; why: string }[];
 }
 
 export interface CapabilityGroup {

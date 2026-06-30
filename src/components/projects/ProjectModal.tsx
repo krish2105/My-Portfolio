@@ -166,6 +166,22 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
               </SectionBlock>
             )}
 
+            {project.decisions && project.decisions.length > 0 && (
+              <SectionBlock label="Trade-offs & decisions">
+                <ul className="space-y-4">
+                  {project.decisions.map((d, i) => (
+                    <li key={i} className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4">
+                      <p className="text-sm font-semibold text-[var(--text)]">{d.choice}</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-2)]">
+                        <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--accent)]">Why </span>
+                        {d.why}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </SectionBlock>
+            )}
+
             <SectionBlock label="Stack">
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map((t) => (
