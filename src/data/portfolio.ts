@@ -6,6 +6,7 @@ import type {
   Project,
   RecognitionItem,
   ServiceItem,
+  NowItem,
 } from "../types/portfolio";
 
 export const profile: Profile = {
@@ -63,6 +64,33 @@ export const socialLinks: SocialLinks = {
   resume: resumeDownloadUrl,
   website: "",
 };
+
+/**
+ * "Now" — what I'm focused on at the moment. Keep this fresh; it signals
+ * momentum to recruiters. Update the values as things change.
+ */
+export const now: NowItem[] = [
+  {
+    id: "studying",
+    label: "Studying",
+    value: "Master of AI in Business at SP Jain Global, Dubai — Term 3.",
+  },
+  {
+    id: "building",
+    label: "Building",
+    value: "Deep-learning & GenAI projects — fraud detection (LSTM/RNN) and RL-driven resource allocation.",
+  },
+  {
+    id: "exploring",
+    label: "Exploring",
+    value: "Transformers, human-in-the-loop NL2SQL and real-time data dashboards.",
+  },
+  {
+    id: "open-to",
+    label: "Open to",
+    value: "AI / Data roles, internships and collaborations — in Dubai, India or remote.",
+  },
+];
 
 export const services: ServiceItem[] = [
   {

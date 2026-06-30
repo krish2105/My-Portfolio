@@ -12,21 +12,31 @@ const RecognitionSection = () => {
         <RevealText className="kicker">Recognition</RevealText>
       </div>
 
-      <div className="border-t border-[var(--border)]">
+      <Rise>
+        <h2 className="mb-16 max-w-3xl font-display text-4xl font-black leading-[1.05] tracking-tight text-[#EDF5FA] md:text-6xl">
+          Awards &amp; <span className="text-gradient">honours</span>
+        </h2>
+      </Rise>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
         {recognition.map((item, i) => (
-          <Rise key={item.id} delay={i * 0.05}>
-            <div className="group grid grid-cols-1 items-start gap-4 border-b border-[var(--border)] py-10 transition-colors hover:bg-[#0a0a0a] md:grid-cols-[auto_1fr_auto] md:items-center md:gap-10 md:py-14">
-              <span className="font-display text-2xl font-black text-[#00FF94] md:text-4xl">★</span>
-              <div>
-                <h3 className="font-display text-3xl font-black tracking-tight text-[#EDF5FA] transition-transform duration-300 md:text-6xl md:group-hover:translate-x-3">
-                  {item.title}
-                </h3>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#A0ADBA] md:text-base">
-                  {item.context}
-                </p>
+          <Rise key={item.id} delay={i * 0.08}>
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[#0a0a0a] p-7 transition-all duration-500 hover:border-[#00FF94]/30 md:p-8">
+              {/* hover glow */}
+              <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#00FF94]/0 blur-2xl transition-all duration-500 group-hover:bg-[#00FF94]/10" />
+
+              <div className="relative flex items-center justify-between">
+                <span className="font-display text-3xl font-black text-[#00FF94] md:text-4xl">★</span>
+                <span className="font-mono text-xs text-[#687686]">{item.year}</span>
               </div>
-              <span className="font-mono text-sm text-[#687686] md:text-base">{item.year}</span>
-            </div>
+
+              <h3 className="relative mt-6 font-display text-xl font-black leading-tight tracking-tight text-[#EDF5FA] md:text-2xl">
+                {item.title}
+              </h3>
+              <p className="relative mt-3 text-sm leading-relaxed text-[#A0ADBA]">
+                {item.context}
+              </p>
+            </article>
           </Rise>
         ))}
       </div>

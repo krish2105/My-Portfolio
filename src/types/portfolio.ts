@@ -73,3 +73,9 @@ export interface ServiceItem {
   title: string;
   description: string;
 }
+
+export interface NowItem {
+  id: string;
+  label: string;
+  value: string;
+}
