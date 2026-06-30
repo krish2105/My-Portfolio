@@ -32,7 +32,7 @@ const ContactTerminal = () => {
     message: "",
   });
   const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "mailto">("idle");
 
   const setField = (key: FieldKey, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -52,16 +52,39 @@ const ContactTerminal = () => {
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate() || !socialLinks.email) return;
+  /** Open the user's mail client as a last-resort fallback so no message is lost. */
+  const openMailto = () => {
+    if (!socialLinks.email) return;
     const mailto = `${socialLinks.email}?subject=${encodeURIComponent(
       formData.subject || "Contact from Portfolio"
     )}&body=${encodeURIComponent(
       `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
     )}`;
-    setSent(true);
     window.location.href = mailto;
+    setStatus("mailto");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        return;
+      }
+      // API reachable but not configured / errored → fall back to mailto.
+      openMailto();
+    } catch {
+      // Network error or running without the serverless function (e.g. local dev).
+      openMailto();
+    }
   };
 
   return (
@@ -91,13 +114,17 @@ const ContactTerminal = () => {
           <button
             type="submit"
             data-cursor="Send"
-            className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-3.5 font-bold tracking-wide text-[#050505] transition-transform hover:scale-[1.03]"
+            disabled={status === "sending"}
+            className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-3.5 font-bold tracking-wide text-[#050505] transition-transform hover:scale-[1.03] disabled:opacity-60"
           >
-            SEND MESSAGE
+            {status === "sending" ? "SENDING…" : "SEND MESSAGE"}
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </button>
-          {sent && (
-            <span className="text-sm text-[#27c93f]">Opening your mail client ✓</span>
+          {status === "sent" && (
+            <span className="text-sm text-[#27c93f]">Message sent — thanks! I'll reply soon ✓</span>
+          )}
+          {status === "mailto" && (
+            <span className="text-sm text-[#8b95a1]">Opening your mail client…</span>
           )}
         </div>
       </form>

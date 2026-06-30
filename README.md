@@ -144,15 +144,17 @@ npx gh-pages -d dist     # or use a GitHub Actions workflow
 
 ## 11. Environment Variables
 
-This project does not require environment variables by default.
+The site **runs without any environment variables** — if none are set, the contact form gracefully falls back to opening the visitor's mail client (`mailto:`).
 
-The contact form uses a `mailto:` submission, so no service keys are needed. If you later wire up [EmailJS](https://www.emailjs.com/), add these to a `.env` file (and to your host's env settings):
+To enable **real inbox delivery** via [Resend](https://resend.com), set these in your Vercel project (Settings → Environment Variables). They power the serverless function at `api/contact.ts` and are **never exposed to the browser**:
 
 ```
-VITE_EMAILJS_SERVICE_ID=
-VITE_EMAILJS_TEMPLATE_ID=
-VITE_EMAILJS_PUBLIC_KEY=
+RESEND_API_KEY=            # required — your Resend API key (re_...)
+CONTACT_TO_EMAIL=          # optional — defaults to krishnamathur008@gmail.com
+CONTACT_FROM_EMAIL=        # optional — a verified Resend sender; blank uses Resend's onboarding sender
 ```
+
+> See [`.env.example`](.env.example). Note: the `api/contact.ts` function is a **Vercel** serverless function. On Netlify/Cloudflare/GitHub Pages the form still works via the `mailto:` fallback (or port the function to that platform's functions format). To verify a custom `from` domain, follow Resend's domain-verification flow.
 
 ## 12. Customization Guide
 
