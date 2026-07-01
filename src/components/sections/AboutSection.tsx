@@ -4,12 +4,12 @@ import { profile } from "../../data/portfolio";
 import { useTheme } from "../../lib/theme";
 import { RevealText, Rise } from "../common/Reveal";
 
-// Word-reveal dim/bright color pairs, tuned per theme so the dim state
-// independently clears WCAG AA (no opacity blending) against that theme's
-// background: dark ~5.9:1 on #050505, light ~7.4:1 on #f5f7fa.
+// Word-reveal dim/bright color pairs, tuned per theme so the dim state is
+// unambiguously legible (not just past the AA minimum) against that theme's
+// background: dark ~5.9:1 on #050505, light ~10:1 on #f5f7fa.
 const WORD_COLORS = {
   dark: ["#7e8c9a", "#EDF5FA"] as [string, string],
-  light: ["#46535f", "#0c1218"] as [string, string],
+  light: ["#333f49", "#0c1218"] as [string, string],
 };
 
 /* ── Scroll-linked word highlight ─────────────────────────────────────
