@@ -6,6 +6,7 @@
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { useTheme } from "../../lib/theme";
 
 /**
  * A premium AI "neural constellation": a drifting field of nodes connected by
@@ -13,7 +14,10 @@ import * as THREE from "three";
  * hero name. Kept deliberately restrained — node count and connection radius
  * are tuned for 60fps on a mid-range laptop, no postprocessing/bloom.
  */
-const ACCENT = new THREE.Color("#00ff94");
+// Dark theme uses the full neon accent; light theme uses the darker "Lab
+// light" accent so the constellation doesn't wash out against a pale bg.
+const ACCENT_DARK = new THREE.Color("#00ff94");
+const ACCENT_LIGHT = new THREE.Color("#00935a");
 const NODE_COUNT = 78;
 const CONNECT_DIST = 2.5; // world units
 const MAX_LINE_VERTS = NODE_COUNT * 10 * 2; // generous upper bound for line endpoints
@@ -48,6 +52,8 @@ function NeuralField() {
   const linesRef = useRef<THREE.LineSegments>(null);
   const { pointer } = useThree();
   const targetRot = useRef({ x: 0, y: 0 });
+  const { theme } = useTheme();
+  const ACCENT = theme === "light" ? ACCENT_LIGHT : ACCENT_DARK;
 
   const dotTexture = useMemo(makeDotTexture, []);
 

@@ -211,20 +211,28 @@ body {
 }
 
 .bg-radial-glow {
-  background: radial-gradient(circle, rgba(0, 255, 148, 0.16), transparent 65%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%);
 }
 
-/* Slow-drifting accent aurora behind the hero — GPU-cheap (transform/opacity only). */
+/* Slow-drifting accent aurora behind the hero — GPU-cheap (transform/opacity only).
+   Uses the theme's own accent tokens via color-mix so it auto-adapts (and stays
+   subtle) in light mode, rather than a hardcoded neon-on-dark rgba value. */
 .aurora {
   background: radial-gradient(
     closest-side,
-    rgba(0, 255, 148, 0.22),
-    rgba(0, 179, 104, 0.08) 55%,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    color-mix(in srgb, var(--accent-dim) 8%, transparent) 55%,
     transparent 75%
   );
   filter: blur(40px);
   animation: aurora-drift 22s ease-in-out infinite;
   will-change: transform, opacity;
+}
+[data-theme="light"] .aurora {
+  /* A colored blur reads as a glow on dark backgrounds but as a smudge on
+     light ones — keep it much more restrained in "Lab light". */
+  opacity: 0.35;
+  filter: blur(50px);
 }
 @keyframes aurora-drift {
   0%,
