@@ -1,7 +1,16 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "../../data/portfolio";
+import { useTheme } from "../../lib/theme";
 import { RevealText, Rise } from "../common/Reveal";
+
+// Word-reveal dim/bright color pairs, tuned per theme so the dim state
+// independently clears WCAG AA (no opacity blending) against that theme's
+// background: dark ~5.9:1 on #050505, light ~7.4:1 on #f5f7fa.
+const WORD_COLORS = {
+  dark: ["#7e8c9a", "#EDF5FA"] as [string, string],
+  light: ["#46535f", "#0c1218"] as [string, string],
+};
 
 /* ── Scroll-linked word highlight ─────────────────────────────────────
    Each word starts dim and shifts to bright as you scroll through the
@@ -43,10 +52,8 @@ const Word = ({
   range: [number, number];
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
 }) => {
-  // Dim state uses --text-3 (#7e8c9a), which independently clears WCAG AA
-  // (~5.9:1) against the page background — no opacity blending, so contrast
-  // never dips below that floor at any point in the scroll transition.
-  const color = useTransform(progress, range, ["#7e8c9a", "#EDF5FA"]);
+  const { theme } = useTheme();
+  const color = useTransform(progress, range, WORD_COLORS[theme]);
 
   return (
     <motion.span

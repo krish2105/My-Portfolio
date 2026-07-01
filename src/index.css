@@ -40,8 +40,10 @@
   --text: #0c1218;
   --text-2: #46535f;
   --text-3: #5f6c78;
-  --accent: #00935a;
-  --accent-dim: #007a48;
+  /* #00935a only clears ~3.7:1 against this bg — fails WCAG AA (4.5:1) for
+     the small .kicker/accent-text usages. #007a48 clears ~5.1:1. */
+  --accent: #007a48;
+  --accent-dim: #006238;
   --border: rgba(12, 18, 24, 0.12);
   --border-strong: rgba(12, 18, 24, 0.22);
 }
