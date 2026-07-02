@@ -2,12 +2,32 @@ import type { ReactNode } from "react";
 import { MapPin, GraduationCap, Sparkles, ArrowUpRight } from "lucide-react";
 import { profile, projects, capabilities, now } from "../../data/portfolio";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
+import { useViewMode, type ViewMode } from "../../lib/viewMode";
 import { RevealText, Rise } from "../common/Reveal";
 
 const totalSkills = capabilities.reduce((s, g) => s + g.skills.length, 0);
 const roundedSkills = Math.floor(totalSkills / 10) * 10;
 
 const find = (id: string) => now.find((n) => n.id === id)?.value ?? "";
+
+/** Same real facts, framed for whichever audience picked a view mode. */
+const HERO_TILE_COPY: Record<ViewMode, { headline: string; cta: string; target: string }> = {
+  recruiter: {
+    headline: `${projects.length} systems shipped across ML, deep learning, GenAI and analytics — turning data into decisions.`,
+    cta: "Get in touch",
+    target: "#contact",
+  },
+  technical: {
+    headline: `${projects.length} systems, real trade-offs — sequence models, RL under uncertainty, human-in-the-loop NL2SQL.`,
+    cta: "See the architecture",
+    target: "#projects",
+  },
+  business: {
+    headline: `${projects.length} AI systems built for outcomes — fraud caught, resources optimised, decisions made faster.`,
+    cta: "See the business impact",
+    target: "#projects",
+  },
+};
 
 /** A glass bento tile with a pointer-tracked spotlight (CSS vars — no rerender). */
 const Tile = ({ className = "", children }: { className?: string; children: ReactNode }) => (
@@ -49,6 +69,8 @@ const NowTile = ({ label, value }: { label: string; value: string }) => (
 
 const BentoSection = () => {
   const { lenis } = useSmoothScroll();
+  const { mode } = useViewMode();
+  const heroCopy = HERO_TILE_COPY[mode];
 
   return (
     <section
@@ -70,16 +92,16 @@ const BentoSection = () => {
                 Open to opportunities
               </span>
               <p className="mt-5 font-display text-2xl font-bold leading-tight tracking-tight text-[var(--text)] md:text-3xl">
-                Building practical AI, data & GenAI systems — and looking for the next one.
+                {heroCopy.headline}
               </p>
               <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-2)]">{profile.availability}</p>
             </div>
             <button
-              onClick={() => scrollTo("#contact", lenis)}
+              onClick={() => scrollTo(heroCopy.target, lenis)}
               data-cursor="Talk"
               className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#00FF94] px-5 py-2.5 text-sm font-bold text-[#050505] transition-transform hover:scale-[1.03]"
             >
-              Get in touch <ArrowUpRight size={15} aria-hidden />
+              {heroCopy.cta} <ArrowUpRight size={15} aria-hidden />
             </button>
           </Tile>
 

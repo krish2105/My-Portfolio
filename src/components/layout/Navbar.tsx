@@ -5,6 +5,7 @@ import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { NAV_ITEMS as navItems, SECTION_IDS } from "../../data/nav";
 import ThemeToggle from "../common/ThemeToggle";
 import SoundToggle from "../common/SoundToggle";
+import ViewModeToggle from "../common/ViewModeToggle";
 import MobileMenu from "./MobileMenu";
 
 const Navbar = () => {
@@ -60,6 +61,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ViewModeToggle />
           <SoundToggle />
           <ThemeToggle />
           <a
@@ -72,6 +74,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
+          <ViewModeToggle />
           <SoundToggle />
           <ThemeToggle />
           <MobileMenu navItems={navItems} activeId={activeId} />

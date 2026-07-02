@@ -10,14 +10,27 @@ import {
   SunMoon,
   Wrench,
   PartyPopper,
+  Sparkles,
+  FolderOpen,
+  Briefcase,
+  Code2,
+  TrendingUp,
 } from "lucide-react";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import type { ComponentType } from "react";
 import { NAV_ITEMS } from "../../data/nav";
-import { socialLinks } from "../../data/portfolio";
+import { socialLinks, projects } from "../../data/portfolio";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useTheme } from "../../lib/theme";
+import { useViewMode, VIEW_MODES, type ViewMode } from "../../lib/viewMode";
+import { buildHiringSummary } from "../../lib/hiringSummary";
 import { isValidUrl } from "../../utils/linkValidation";
+
+const VIEW_MODE_ICONS: Record<ViewMode, typeof Briefcase> = {
+  recruiter: Briefcase,
+  technical: Code2,
+  business: TrendingUp,
+};
 
 interface Command {
   id: string;
@@ -45,6 +58,7 @@ const CommandPalette = ({
 }) => {
   const { lenis } = useSmoothScroll();
   const { theme, toggle } = useTheme();
+  const { mode, setMode } = useViewMode();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -145,8 +159,52 @@ const CommandPalette = ({
           onClose();
         },
       });
-    return [...nav, ...actions];
-  }, [lenis, onClose, onOpenUses, onEasterEgg, theme, toggle]);
+    actions.push({
+      id: "ask-copilot",
+      label: "Ask the Portfolio Copilot",
+      hint: "Assistant",
+      Icon: Sparkles,
+      run: () => {
+        window.dispatchEvent(new Event("open-portfolio-assistant"));
+        onClose();
+      },
+    });
+    actions.push({
+      id: "copy-hiring-summary",
+      label: "Copy hiring summary",
+      hint: "Clipboard",
+      Icon: Copy,
+      run: () => {
+        navigator.clipboard?.writeText(buildHiringSummary()).catch(() => {});
+        onClose();
+      },
+    });
+
+    const viewModes: Command[] = VIEW_MODES.filter((m) => m.id !== mode).map((m) => ({
+      id: `view-${m.id}`,
+      label: `Switch to ${m.label} view`,
+      hint: "View mode",
+      Icon: VIEW_MODE_ICONS[m.id],
+      run: () => {
+        setMode(m.id);
+        onClose();
+      },
+    }));
+
+    const projectJumps: Command[] = projects.map((p) => ({
+      id: `project-${p.id}`,
+      label: `Open case study: ${p.shortTitle}`,
+      hint: "Work",
+      Icon: FolderOpen,
+      run: () => {
+        onClose();
+        window.history.pushState({}, "", `/work/${p.id}`);
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      },
+    }));
+
+    return [...nav, ...actions, ...viewModes, ...projectJumps];
+  }, [lenis, onClose, onOpenUses, onEasterEgg, theme, toggle, mode, setMode]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

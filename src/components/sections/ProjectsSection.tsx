@@ -157,7 +157,7 @@ const SwipeGallery = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project
   );
 };
 
-const DEFAULT_TITLE = "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder";
+const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
 
 const ProjectsSection = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");

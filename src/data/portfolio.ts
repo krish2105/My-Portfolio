@@ -24,6 +24,7 @@ export const profile: Profile = {
   location: "Dubai, UAE",
   secondaryLocation: "Jaipur, India",
   availability: "Open to opportunities and collaborations in AI, data, GenAI and intelligent software.",
+  tagline: "I build AI that turns messy data, language and business workflows into decisions.",
   aboutStatements: [
     "I am Krishna Mathur, an AI developer, data analyst and GenAI builder currently pursuing a Master of AI in Business at SP Jain School of Global Management in Dubai. I completed my B.Tech in Computer Science and Engineering with a specialisation in Artificial Intelligence and Machine Learning from Manipal University Jaipur.",
     "My work focuses on building practical AI solutions, analysing data, automating workflows and translating technical ideas into useful business applications. My interests include machine learning, natural language processing, deep learning, computer vision, business intelligence, databases and intelligent software development.",
@@ -98,24 +99,24 @@ export const now: NowItem[] = [
 
 export const services: ServiceItem[] = [
   {
-    id: "ai-prototyping",
-    title: "AI PROTOTYPING",
-    description: "Designing and developing functional machine-learning and deep-learning prototypes for practical problems.",
+    id: "fraud-risk",
+    title: "FRAUD & RISK DETECTION",
+    description: "Sequence-aware models that flag evolving fraud/risk patterns a static rule engine misses — see FraudShield AI.",
   },
   {
-    id: "genai-nlp",
-    title: "GENAI AND NLP",
-    description: "Building language-driven systems, conversational workflows, prompt-based solutions and human-in-the-loop AI experiences.",
+    id: "decision-optimisation",
+    title: "DECISION & RESOURCE OPTIMISATION",
+    description: "Reinforcement-learning and constraint-based systems that allocate limited resources under uncertainty — see MediFlow AI.",
   },
   {
-    id: "data-decisions",
-    title: "DATA AND DECISIONS",
-    description: "Transforming structured and unstructured data into understandable insights, visualisations and decision support.",
+    id: "nl-data-access",
+    title: "NATURAL-LANGUAGE DATA ACCESS",
+    description: "Human-in-the-loop NL-to-SQL and conversational workflows that keep a person reviewing every generated query — see TalkToData.",
   },
   {
-    id: "business-aware",
-    title: "BUSINESS-AWARE DEVELOPMENT",
-    description: "Connecting technical implementation with business objectives, user requirements and operational constraints.",
+    id: "analytics-bi",
+    title: "ANALYTICS & BI DASHBOARDS",
+    description: "Real-time, governed dashboards that turn streaming and structured data into decisions leadership can act on — see Lulu Sales Intelligence.",
   },
 ];
 
@@ -500,6 +501,7 @@ export const projects: Project[] = [
     technologies: ["Python", "NetworkX", "Dijkstra’s Algorithm", "Bellman-Ford Algorithm", "Minimum Spanning Tree", "Graph Theory", "Data Structures", "Route Visualisation"],
     tags: ["Data"],
     images: [],
+    note: "Team project code repository is private; source available on request.",
     problem:
       "Last-mile delivery networks need fast, defensible routing decisions across many nodes and constraints.",
     approach: [
@@ -539,6 +541,7 @@ export const projects: Project[] = [
     technologies: ["Python", "TensorFlow", "Keras", "CNN", "Streamlit", "FastAPI", "SQLite", "Docker", "Computer Vision"],
     tags: ["Deep Learning", "AI/ML"],
     images: [],
+    note: "Notebook/code available on request.",
     problem:
       "Image classification is the canonical computer-vision workflow — a clean place to prove an end-to-end CNN pipeline.",
     approach: [
@@ -577,6 +580,7 @@ export const projects: Project[] = [
     technologies: ["Python", "SQL", "Hugging Face Transformers", "NLP", "Streamlit", "Human-in-the-Loop AI", "Database Systems"],
     tags: ["GenAI"],
     images: [],
+    note: "Actively in development; repository not yet public — code available on request.",
     problem:
       "Natural-language-to-SQL is powerful but risky — a wrong generated query can return confidently incorrect answers or unsafe operations.",
     approach: [
@@ -614,6 +618,7 @@ export const projects: Project[] = [
     technologies: ["Python", "TensorFlow", "Keras", "Pandas", "NumPy", "Scikit-learn", "Matplotlib", "SimpleRNN", "LSTM", "Time-Series Forecasting", "Google Colab"],
     tags: ["Deep Learning"],
     images: [],
+    note: "Colab notebook available on request.",
     problem:
       "Sequence-window length quietly drives time-series forecasting quality — but its effect on SimpleRNN vs LSTM is easy to hand-wave.",
     approach: [

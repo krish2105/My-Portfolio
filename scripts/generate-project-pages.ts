@@ -25,7 +25,7 @@ import { projects } from "../src/data/portfolio";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DIST = resolve(ROOT, "dist");
-const SITE = "https://portolio-krishna.vercel.app";
+const SITE = "https://portfolio-krishna.vercel.app";
 
 const templatePath = resolve(DIST, "index.html");
 if (!existsSync(templatePath)) {
@@ -44,6 +44,18 @@ const replaceOnce = (html: string, search: string, replacement: string, label: s
   return html.replace(search, replacement);
 };
 
+/** Same as replaceOnce, but replaces every occurrence — for values shared
+ * verbatim across multiple tags (e.g. og:title and twitter:title use the
+ * exact same site-wide string, so a single-occurrence replace would only
+ * ever update the first one and silently leave the other generic). */
+const replaceAll = (html: string, search: string, replacement: string, label: string): string => {
+  if (!html.includes(search)) {
+    console.warn(`[generate-project-pages] template anchor not found for "${label}" — skipping.`);
+    return html;
+  }
+  return html.split(search).join(replacement);
+};
+
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -59,45 +71,50 @@ for (const project of projects) {
 
   html = replaceOnce(
     html,
-    "<title>Krishna Mathur — AI Developer, Data Analyst & GenAI Builder</title>",
+    "<title>Krishna Mathur — AI Developer building decision tools from data, language & workflows</title>",
     `<title>${escapeHtml(pageTitle)}</title>`,
     "title"
   );
 
   html = replaceOnce(
     html,
-    'content="Portfolio of Krishna Mathur, an AI Developer, Data Analyst and GenAI Builder pursuing a Master of AI in Business in Dubai. Explore projects in machine learning, NLP, deep learning, analytics, databases and intelligent software systems."',
+    'content="Krishna Mathur builds practical AI, ML and GenAI systems — fraud detection, resource optimisation, NL-to-SQL and analytics dashboards — that turn messy data into decisions. Master of AI in Business, Dubai."',
     `content="${escapeHtml(description)}"`,
     "meta description"
   );
 
   html = replaceOnce(
     html,
-    'href="https://portolio-krishna.vercel.app/"',
+    'href="https://portfolio-krishna.vercel.app/"',
     `href="${url}"`,
     "canonical"
   );
 
-  html = replaceOnce(
+  // og:title and twitter:title share the exact same site-wide string, so
+  // this must replace BOTH occurrences (see replaceAll's doc comment).
+  html = replaceAll(
     html,
-    'content="Krishna Mathur — AI Developer, Data Analyst & GenAI Builder"',
+    'content="Krishna Mathur — AI Developer building decision tools from data, language & workflows"',
     `content="${escapeHtml(pageTitle)}"`,
-    "og:title"
+    "og:title / twitter:title"
   );
 
-  html = html.replace(
-    'content="Portfolio of Krishna Mathur, an AI Developer, Data Analyst and GenAI Builder pursuing a Master of AI in Business in Dubai."',
-    `content="${escapeHtml(description)}"`
+  // Likewise og:description and twitter:description share the same string.
+  html = replaceAll(
+    html,
+    'content="AI developer building decision tools from messy data, language and business workflows. Master of AI in Business, Dubai."',
+    `content="${escapeHtml(description)}"`,
+    "og:description / twitter:description"
   );
 
   html = replaceOnce(
     html,
-    'content="https://portolio-krishna.vercel.app/"',
+    'content="https://portfolio-krishna.vercel.app/"',
     `content="${url}"`,
     "og:url"
   );
 
-  html = html.replace(/content="https:\/\/portolio-krishna\.vercel\.app\/og-image\.png"/g, `content="${ogImage}"`);
+  html = html.replace(/content="https:\/\/portfolio-krishna\.vercel\.app\/og-image\.png"/g, `content="${ogImage}"`);
 
   // Insert per-project structured data (CreativeWork + BreadcrumbList) just before </head>.
   const jsonLd = `

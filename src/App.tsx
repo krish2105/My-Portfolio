@@ -30,7 +30,7 @@ import TestimonialsSection from "./components/sections/TestimonialsSection";
 import ResumeSection from "./components/sections/ResumeSection";
 import ContactSection from "./components/sections/ContactSection";
 
-const DEFAULT_TITLE = "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder";
+const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
 
 const App = () => {
   const [ready, setReady] = useState(false);

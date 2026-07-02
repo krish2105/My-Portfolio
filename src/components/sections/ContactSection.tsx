@@ -229,7 +229,7 @@ const ContactSection = () => {
 
       <Rise delay={0.1} className="mt-10 max-w-2xl">
         <RevealWords
-          text="Open to opportunities and collaborations in AI development, machine learning, data analytics, GenAI and intelligent software."
+          text="Tell me the decision you're trying to make with AI — I'm open to roles and collaborations in ML, GenAI, data analytics and intelligent software."
           className="text-base text-[var(--text-2)] md:text-lg"
         />
       </Rise>

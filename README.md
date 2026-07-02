@@ -10,11 +10,13 @@ This is a single-page portfolio that presents Krishna's work across AI, machine 
 
 ## 2. Live Demo
 
-**🔗 [portolio-krishna.vercel.app](https://portolio-krishna.vercel.app/)**
+**🔗 [portfolio-krishna.vercel.app](https://portfolio-krishna.vercel.app/)**
 
 ## 3. Preview
 
-The hero renders an interactive WebGL "neural constellation"; project cards open rich case-study dialogs with real metrics. *(To add a static preview image, drop one at `public/preview.png` and reference it here.)*
+![Krishna Mathur's portfolio hero — a kinetic name over an interactive WebGL neural constellation, next to a tilting profile card](public/preview.png)
+
+The hero renders an interactive WebGL "neural constellation"; project cards open rich case-study dialogs with real metrics.
 
 ## 4. Features
 
@@ -186,13 +188,9 @@ Other touch points:
 
 ### Personalization TODO
 - [ ] Add real Instagram/Twitter/website links in `src/data/portfolio.ts` (currently hidden — `""` — since the old placeholders 404'd).
-- [ ] Confirm GitHub URL (`github.com/krish2105`) is correct.
-- [ ] Add a real Open Graph image and uncomment the `og:url` / `og:image` tags in `index.html` after deployment.
-- [ ] Add a `public/preview.png` screenshot and reference it in the README Preview section.
-- [ ] Paste the live URL into the [Live Demo](#2-live-demo) section.
-- [ ] Verify the projects in `projects` reflect your real, public work and links.
-- [ ] **Live domain is misspelled** — `portolio-krishna.vercel.app` (missing an "f"). Fix the Vercel project's subdomain, or better, point a real custom domain at it, then update the canonical/OG URLs in `index.html`, `sitemap.xml`/`robots.txt`, and this README (currently uses the misspelled domain throughout).
-- [ ] **5 of 8 projects have no screenshots** (`smartloanbot`, `waselx`, `flower-classifier`, `talktodata`, `electric-production` in `src/data/portfolio.ts` all ship `images: []`). Add at least a hero screenshot or an architecture diagram per project — the redesigned project cards' hover-preview and cover art both fall back to a generated placeholder otherwise.
+- [ ] **Rename the Vercel subdomain to match the code.** The codebase now points at `portfolio-krishna.vercel.app` (corrected spelling) everywhere — canonical/OG/JSON-LD in `index.html`, `scripts/generate-project-pages.ts`, `sitemap.xml`, `robots.txt`. Rename the Vercel project's subdomain (Project Settings → Domains) to match, or point a real custom domain at it instead.
+- [ ] **5 of 8 projects have no screenshots** (`smartloanbot`, `waselx`, `flower-classifier`, `talktodata`, `electric-production` in `src/data/portfolio.ts` all ship `images: []`). Each now has an honest "code/notebook available on request" note in place of a dead link — add a real screenshot or architecture diagram per project when available.
+- [ ] Real testimonials, LinkedIn recommendations, mentor/faculty feedback and writing/articles — see `docs/CONTENT_TODO.md` (added in Phase 3 of the AI Command Center plan) for ready-to-send request templates.
 
 ## 13. Performance & Accessibility Notes
 

@@ -4,7 +4,7 @@ import { track } from "@vercel/analytics";
 import { Sparkles, X, ArrowUp, Zap, Loader2 } from "lucide-react";
 import {
   ASSISTANT_INTENTS,
-  ASSISTANT_SUGGESTIONS,
+  ASSISTANT_SUGGESTIONS_BY_MODE,
   ASSISTANT_GREETING,
   ASSISTANT_FALLBACK,
   type AssistantAction,
@@ -12,6 +12,7 @@ import {
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useKnowledgeSearch } from "../../hooks/useKnowledgeSearch";
+import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
 
 interface Msg {
   role: "user" | "bot";
@@ -42,6 +43,9 @@ const Assistant = () => {
   const { lenis } = useSmoothScroll();
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
   const { status: smartStatus, enable: enableSmart, search } = useKnowledgeSearch();
+  const { mode } = useViewMode();
+  const suggestions = ASSISTANT_SUGGESTIONS_BY_MODE[mode];
+  const modeLabel = VIEW_MODES.find((m) => m.id === mode)?.label ?? "Recruiter";
   const [open, setOpen] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: "bot", text: ASSISTANT_GREETING }]);
@@ -81,6 +85,14 @@ const Assistant = () => {
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  // Lets other UI (the command palette's "Ask Copilot…" action) open the
+  // assistant without lifting its open state into a shared context.
+  useEffect(() => {
+    const onOpenRequest = () => setOpen(true);
+    window.addEventListener("open-portfolio-assistant", onOpenRequest);
+    return () => window.removeEventListener("open-portfolio-assistant", onOpenRequest);
+  }, []);
 
   const keywordReply = (q: string): Msg => {
     const intent = match(q);
@@ -171,8 +183,10 @@ const Assistant = () => {
                   <Sparkles size={14} aria-hidden />
                 </span>
                 <div className="leading-tight">
-                  <p className="text-sm font-bold text-[var(--text)]">Portfolio Assistant</p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-3)]">Ask about Krishna</p>
+                  <p className="text-sm font-bold text-[var(--text)]">Portfolio Copilot</p>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-3)]">
+                    {modeLabel} view · change in navbar
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
@@ -245,7 +259,7 @@ const Assistant = () => {
                     )}
                     {m.role === "bot" && m.text === ASSISTANT_FALLBACK && (
                       <div className="mt-2.5 flex flex-col gap-1.5">
-                        {ASSISTANT_SUGGESTIONS.map((s) => (
+                        {suggestions.map((s) => (
                           <button
                             key={s}
                             onClick={() => send(s)}
@@ -279,7 +293,7 @@ const Assistant = () => {
               {/* Starter suggestions (only before the user has asked anything) */}
               {messages.length === 1 && !thinking && (
                 <div className="flex flex-col gap-1.5 pt-1">
-                  {ASSISTANT_SUGGESTIONS.map((s) => (
+                  {suggestions.map((s) => (
                     <button
                       key={s}
                       onClick={() => send(s)}

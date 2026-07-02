@@ -141,11 +141,11 @@ const AboutSection = () => {
       <div className="max-w-5xl md:pl-8">
         <Rise>
           <h2 className="font-display text-4xl font-black leading-[1.05] tracking-tight md:text-7xl">
-            <span className="text-[var(--text)]">I design and build </span>
-            <span className="text-gradient">practical AI systems</span>
+            <span className="text-[var(--text)]">I build AI for </span>
+            <span className="text-gradient">decisions</span>
             <span className="text-[var(--text-3)]">
               {" "}
-              — where data meets decisions.
+              — not demos.
             </span>
           </h2>
         </Rise>

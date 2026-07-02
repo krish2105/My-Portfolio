@@ -1,7 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2 } from "lucide-react";
+import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check } from "lucide-react";
+import { track } from "@vercel/analytics";
 import { journey, capabilities, recognition, socialLinks } from "../../data/portfolio";
+import { buildHiringSummary } from "../../lib/hiringSummary";
 import { RevealText, Rise } from "../common/Reveal";
 
 /* ── Compact timeline card ────────────────────────────────────────── */
@@ -53,6 +55,28 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
 /* ── Download CTA card ────────────────────────────────────────────── */
 const DownloadCard = () => {
   const hasResume = !!socialLinks.resume;
+  const [copied, setCopied] = useState(false);
+
+  const copySummary = async () => {
+    const summary = buildHiringSummary();
+    try {
+      await navigator.clipboard.writeText(summary);
+    } catch {
+      // Clipboard API unavailable (e.g. insecure context) — fall back to a
+      // manual-select textarea so the content is still reachable.
+      const ta = document.createElement("textarea");
+      ta.value = summary;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    track("hiring_summary_copied");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
 
   return (
     <Rise delay={0.1}>
@@ -70,11 +94,11 @@ const DownloadCard = () => {
           </div>
 
           <h3 className="font-display text-2xl font-black tracking-tight text-[var(--text)] md:text-3xl">
-            Get my full resume
+            The one-page version
           </h3>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-2)] md:text-base">
-            Detailed overview of my education, experience, projects, technical
-            skills, and certifications — ready for download.
+            Education, experience, projects and technical skills — ready for
+            download, or copy a hiring summary straight to your clipboard.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -112,6 +136,18 @@ const DownloadCard = () => {
                 LinkedIn
               </a>
             )}
+            <button
+              type="button"
+              onClick={copySummary}
+              data-cursor="Copy"
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+            >
+              {copied ? <Check size={16} className="text-[var(--accent)]" /> : <Copy size={16} />}
+              {copied ? "Copied" : "Copy hiring summary"}
+            </button>
+            <span className="sr-only" aria-live="polite">
+              {copied ? "Hiring summary copied to clipboard" : ""}
+            </span>
           </div>
         </div>
       </div>

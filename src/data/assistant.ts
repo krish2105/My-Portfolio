@@ -96,15 +96,39 @@ export const ASSISTANT_INTENTS: AssistantIntent[] = [
   },
 ];
 
-export const ASSISTANT_SUGGESTIONS = [
-  "What has Krishna built?",
-  "What's his strongest project?",
-  "Is he available for work?",
-  "What are his skills?",
-];
+/**
+ * Suggested prompts, biased by the site-wide view mode (see lib/viewMode.tsx)
+ * so the Copilot leads with what that audience actually asks — "modes-lite":
+ * every prompt still routes through the same real intents/answers below,
+ * just phrased and prioritised per audience. Full mode-aware ranking of the
+ * semantic search path is a later phase.
+ */
+export const ASSISTANT_SUGGESTIONS_BY_MODE = {
+  recruiter: [
+    "What has Krishna built?",
+    "What's his strongest project?",
+    "Is he available for work?",
+    "What are his skills?",
+  ],
+  technical: [
+    "What's his strongest project?",
+    "What GenAI or NLP work has he done?",
+    "What's his experience?",
+    "What are his skills?",
+  ],
+  business: [
+    "What has Krishna built?",
+    "Is he available for work?",
+    "What's his experience?",
+    "How can I get in touch?",
+  ],
+} as const;
+
+/** Back-compat default (used only if a caller doesn't pass a mode). */
+export const ASSISTANT_SUGGESTIONS = ASSISTANT_SUGGESTIONS_BY_MODE.recruiter;
 
 export const ASSISTANT_GREETING =
-  "Hi! I'm Krishna's portfolio assistant. Ask me about his projects, skills, experience or how to get in touch.";
+  "Hi, I'm Krishna's Portfolio Copilot. I can help you explore his AI projects, compare case studies, summarize his strengths for hiring, or find the most relevant work for your role.";
 
 export const ASSISTANT_FALLBACK =
   "I can answer questions about Krishna's projects, skills, experience, availability and contact details. Try one of these:";

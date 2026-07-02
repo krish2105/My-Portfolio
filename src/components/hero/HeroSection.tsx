@@ -204,9 +204,9 @@ const HeroSection = () => {
               <RoleRotator />
             </p>
             <p className="max-w-lg text-base text-[var(--text-2)] leading-relaxed">
-              I build practical AI systems — from{" "}
-              <span className="text-[var(--text)]">fraud detection</span> and healthcare
-              optimisation to analytics dashboards and GenAI workflows — that turn data into decisions.
+              {profile.tagline} From{" "}
+              <span className="text-[var(--text)]">fraud detection</span> to hospital
+              resource allocation, analytics dashboards and GenAI workflows.
             </p>
           </motion.div>
 
@@ -228,7 +228,7 @@ const HeroSection = () => {
                 }}
                 className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-4 font-bold tracking-wide text-[#050505] transition-shadow hover:shadow-[0_0_30px_rgba(0,255,148,0.45)]"
               >
-                VIEW PROJECTS
+                EXPLORE THE WORK
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
             </MagneticButton>
@@ -255,7 +255,7 @@ const HeroSection = () => {
               }}
               className="font-semibold tracking-wide text-[var(--text-2)] underline-offset-4 transition-colors hover:text-[var(--text)] hover:underline"
             >
-              Contact me →
+              Start a conversation →
             </a>
           </motion.div>
           <motion.div

@@ -68,6 +68,9 @@ export interface Profile {
   secondaryLocation: string;
   availability: string;
   aboutStatements: string[];
+  /** The core one-line positioning statement — reused in the hero, About,
+   * SEO helpers and the Copilot's hiring summary so it never drifts. */
+  tagline: string;
 }
 
 export interface SocialLinks {
