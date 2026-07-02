@@ -376,7 +376,7 @@ export const projects: Project[] = [
     liveUrl: "https://mediflow-ai-rdmu-final-vyj96f9xwbtezqmelhjq6c.streamlit.app/",
     caseStudyUrl:
       "https://colab.research.google.com/drive/1LjqDNOLf4z481r_s1NxHATEMKN2ynbZO",
-    note: "Master of AI in Business — Reasoning & Decision Making under Uncertainty (DSC 103).",
+    note: "Master of AI in Business — Reasoning & Decision Making under Uncertainty (DSC 103). The live Streamlit demo is on a free tier and may take ~30s to wake up if it's been idle.",
     problem:
       "Emergency departments must allocate limited beds, staff and equipment to patients of varying urgency under stochastic arrivals — constantly trading fairness against efficiency.",
     approach: [

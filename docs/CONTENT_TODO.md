@@ -35,6 +35,14 @@ Classifier, TalkToData, Electric Production. Each already carries an honest
 development"). Replace the note with a real `liveUrl`/`repositoryUrl` as
 soon as one exists.
 
+**Link-check result (2026-07-02):** all 8 existing GitHub/Colab/Kaggle
+links resolve (HTTP 200). MediFlow's Streamlit `liveUrl`
+(`mediflow-ai-rdmu-final-....streamlit.app`) redirects to Streamlit's
+"wake the app up" auth flow when the free-tier app has gone to sleep from
+inactivity — not broken, but a cold visitor can land on a sleep screen
+instead of the dashboard. Worth a visit every so often to keep it warm, or
+a short note near the link ("may take ~30s to wake up").
+
 ## 5. Résumé
 
 Confirm `RESUME_DRIVE_FILE_ID` in `src/data/portfolio.ts` still points at

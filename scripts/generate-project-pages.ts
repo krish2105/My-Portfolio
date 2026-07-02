@@ -130,7 +130,10 @@ for (const project of projects) {
             "image": ${JSON.stringify(ogImage)},
             "creator": { "@type": "Person", "name": "Krishna Mathur", "url": "${SITE}/" },
             "about": ${JSON.stringify(project.category)},
-            "keywords": ${JSON.stringify((project.technologies || []).join(", "))}
+            "abstract": ${JSON.stringify(project.valueProp ?? project.description)},
+            "keywords": ${JSON.stringify(
+              [...(project.tags || []), ...(project.technologies || [])].join(", ")
+            )}
           },
           {
             "@type": "BreadcrumbList",
