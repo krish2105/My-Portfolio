@@ -13,14 +13,8 @@ import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useKnowledgeSearch } from "../../hooks/useKnowledgeSearch";
 import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
-
-interface Msg {
-  role: "user" | "bot";
-  text: string;
-  actions?: AssistantAction[];
-  /** True when this answer came from the semantic (RAG) search path, not the keyword matcher. */
-  semantic?: boolean;
-}
+import { projects } from "../../data/portfolio";
+import { specialCommandReply, MODE_TAG_BIAS, type Msg } from "../../lib/copilotCommands";
 
 /** A match is only trusted if it clears this cosine-similarity bar; otherwise fall back to keyword matching. */
 const SEMANTIC_THRESHOLD = 0.35;
@@ -106,10 +100,23 @@ const Assistant = () => {
     setMessages((m) => [...m, { role: "user", text: q }]);
     setThinking(true);
 
-    let reply: Msg;
-    if (smartStatus === "ready") {
-      const results = await search(q, 1);
-      const top = results[0];
+    let reply: Msg | null = specialCommandReply(q);
+
+    if (!reply && smartStatus === "ready") {
+      const results = await search(q, 3);
+      // Mode-biased ranking: nudge (don't override) semantic results toward
+      // projects tagged for the current audience before picking the top match.
+      const biasTags = MODE_TAG_BIAS[mode];
+      const reranked =
+        biasTags.length > 0
+          ? [...results].sort((x, y) => {
+              const projFor = (id: string) => projects.find((p) => `project-${p.id}` === id);
+              const bx = projFor(x.chunk.id)?.tags?.some((t) => biasTags.includes(t)) ? 0.05 : 0;
+              const by = projFor(y.chunk.id)?.tags?.some((t) => biasTags.includes(t)) ? 0.05 : 0;
+              return y.score + by - (x.score + bx);
+            })
+          : results;
+      const top = reranked[0];
       reply =
         top && top.score >= SEMANTIC_THRESHOLD
           ? {
@@ -119,7 +126,7 @@ const Assistant = () => {
               semantic: true,
             }
           : keywordReply(q);
-    } else {
+    } else if (!reply) {
       reply = keywordReply(q);
     }
 
@@ -238,7 +245,7 @@ const Assistant = () => {
                         : "border border-[var(--border)] bg-[var(--panel)] text-[var(--text)]"
                     }`}
                   >
-                    <p>{m.text}</p>
+                    <p className="whitespace-pre-line">{m.text}</p>
                     {m.semantic && (
                       <p className="mt-1.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent)]">
                         <Zap size={10} aria-hidden /> Semantic match — in-browser embedding search

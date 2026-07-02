@@ -106,19 +106,19 @@ export const ASSISTANT_INTENTS: AssistantIntent[] = [
 export const ASSISTANT_SUGGESTIONS_BY_MODE = {
   recruiter: [
     "What has Krishna built?",
-    "What's his strongest project?",
+    "Best project for a data analyst role",
     "Is he available for work?",
     "What are his skills?",
   ],
   technical: [
-    "What's his strongest project?",
+    "Compare FraudShield vs MediFlow",
+    "Interview questions for TalkToData",
     "What GenAI or NLP work has he done?",
-    "What's his experience?",
     "What are his skills?",
   ],
   business: [
+    "Best project for a healthcare product",
     "What has Krishna built?",
-    "Is he available for work?",
     "What's his experience?",
     "How can I get in touch?",
   ],
