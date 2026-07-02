@@ -81,7 +81,12 @@ const HorizontalGallery = ({
           <Header />
           <FilterBar filter={filter} setFilter={setFilter} />
         </div>
-        <motion.div ref={trackRef} style={{ x }} className="flex gap-8 px-6 md:px-[8vw]">
+        <motion.div
+          ref={trackRef}
+          data-cursor="Drag"
+          style={{ x }}
+          className="flex gap-8 px-6 md:px-[8vw]"
+        >
           {items.map((p) => (
             <motion.div
               key={p.id}
@@ -108,14 +113,49 @@ const HorizontalGallery = ({
   );
 };
 
-/** Mobile: simple vertical stack — robust and swipe-free. */
-const VerticalStack = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project) => void }) => (
-  <div className="space-y-8 px-6 pt-8">
-    {items.map((p) => (
-      <ProjectCard key={p.id} project={p} onOpen={() => onOpen(p)} />
-    ))}
-  </div>
-);
+/**
+ * Mobile: a swipe-driven horizontal gallery with native momentum + snap
+ * (CSS scroll-snap — robust, accessible, no gesture library needed) instead
+ * of a plain vertical stack, so the "kinetic" feel carries over to touch.
+ */
+const SwipeGallery = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project) => void }) => {
+  const [active, setActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const onScroll = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    const cardWidth = el.scrollWidth / items.length;
+    setActive(Math.round(el.scrollLeft / cardWidth));
+  };
+
+  return (
+    <div className="pt-8">
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((p) => (
+          <div key={p.id} className="w-[85vw] shrink-0 snap-center">
+            <ProjectCard project={p} onOpen={() => onOpen(p)} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 flex justify-center gap-2" role="tablist" aria-label="Project slides">
+        {items.map((p, i) => (
+          <span
+            key={p.id}
+            role="presentation"
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? "w-6 bg-[var(--accent)]" : "w-1.5 bg-[var(--border-strong)]"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const DEFAULT_TITLE = "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder";
 
@@ -163,7 +203,7 @@ const ProjectsSection = () => {
         <>
           <Header />
           <FilterBar filter={filter} setFilter={setFilter} />
-          <VerticalStack items={filtered} onOpen={openProject} />
+          <SwipeGallery items={filtered} onOpen={openProject} />
         </>
       )}
       <ProjectModal project={selected} onClose={closeProject} />

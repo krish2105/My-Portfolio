@@ -39,10 +39,22 @@ The hero renders an interactive WebGL "neural constellation"; project cards open
 | Styling | Tailwind CSS v4 (`@tailwindcss/vite`) |
 | Animation | Motion, Lenis (smooth scroll) |
 | 3D / WebGL | Three.js, `@react-three/fiber` (lazy-loaded) |
+| In-browser ML | `@huggingface/transformers` (RAG assistant + live sentiment demo), models + ONNX runtime WASM self-hosted under `public/models/` and `public/ort/` (same-origin, lazy-loaded only when a visitor opens the assistant or demo — see note below) |
 | Contact API | Vercel serverless function + [Resend](https://resend.com) |
 | Analytics | `@vercel/speed-insights` (Core Web Vitals) |
 | Icons | lucide-react, react-icons |
 | Tooling | ESLint (typescript-eslint, react-hooks, react-refresh) — passes clean |
+
+> **Note — self-hosted ML models:** the RAG assistant and live sentiment
+> demo load their models from this site's own origin
+> (`src/lib/transformersEnv.ts`) instead of the Hugging Face CDN, because
+> HF's CDN redirects to region-specific edge domains that a static CSP
+> `connect-src` allowlist can't fully cover — that caused real "couldn't
+> load the model" failures for some visitors. The trade-off: `public/models/`
+> + `public/ort/` add ~110 MB of binary assets to the repo (never fetched
+> unless a visitor opens the assistant/demo, so it doesn't affect page
+> load). If clone/CI time ever becomes a problem, migrate `*.onnx`/`*.wasm`
+> to Git LFS.
 
 ## 6. Folder Structure
 
@@ -173,12 +185,14 @@ Other touch points:
 - **Tech marquee logos:** add SVGs to `public/logos/`.
 
 ### Personalization TODO
-- [ ] Replace placeholder social usernames (`instagram`, `twitter`/`x`, `website`) in `src/data/portfolio.ts`.
+- [ ] Add real Instagram/Twitter/website links in `src/data/portfolio.ts` (currently hidden — `""` — since the old placeholders 404'd).
 - [ ] Confirm GitHub URL (`github.com/krish2105`) is correct.
 - [ ] Add a real Open Graph image and uncomment the `og:url` / `og:image` tags in `index.html` after deployment.
 - [ ] Add a `public/preview.png` screenshot and reference it in the README Preview section.
 - [ ] Paste the live URL into the [Live Demo](#2-live-demo) section.
 - [ ] Verify the projects in `projects` reflect your real, public work and links.
+- [ ] **Live domain is misspelled** — `portolio-krishna.vercel.app` (missing an "f"). Fix the Vercel project's subdomain, or better, point a real custom domain at it, then update the canonical/OG URLs in `index.html`, `sitemap.xml`/`robots.txt`, and this README (currently uses the misspelled domain throughout).
+- [ ] **5 of 8 projects have no screenshots** (`smartloanbot`, `waselx`, `flower-classifier`, `talktodata`, `electric-production` in `src/data/portfolio.ts` all ship `images: []`). Add at least a hero screenshot or an architecture diagram per project — the redesigned project cards' hover-preview and cover art both fall back to a generated placeholder otherwise.
 
 ## 13. Performance & Accessibility Notes
 

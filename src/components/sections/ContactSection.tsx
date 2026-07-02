@@ -23,8 +23,11 @@ const FIELDS: {
   { key: "message", label: "Message", placeholder: "Tell me about your project or idea…", required: true, textarea: true },
 ];
 
-/** A normal contact form wrapped in macOS-window chrome. Submits via mailto. */
-const ContactTerminal = () => {
+/** A normal contact form wrapped in macOS-window chrome. Submits via mailto.
+ * Exported (in addition to the default ContactSection) so the honeypot/
+ * timing-guard + submit logic is directly unit-testable without mounting
+ * the whole decorative section tree. */
+export const ContactTerminal = () => {
   const [formData, setFormData] = useState<Record<FieldKey, string>>({
     name: "",
     email: "",

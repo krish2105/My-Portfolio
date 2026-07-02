@@ -41,7 +41,7 @@ const match = (query: string) => {
 const Assistant = () => {
   const { lenis } = useSmoothScroll();
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const { status: smartStatus, progress: smartProgress, enable: enableSmart, search } = useKnowledgeSearch();
+  const { status: smartStatus, enable: enableSmart, search } = useKnowledgeSearch();
   const [open, setOpen] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: "bot", text: ASSISTANT_GREETING }]);
@@ -201,7 +201,7 @@ const Assistant = () => {
                   ) : (
                     <Zap size={12} aria-hidden />
                   )}
-                  {smartStatus === "loading" ? `${smartProgress}%` : smartStatus === "ready" ? "Smart: On" : "Smart answers"}
+                  {smartStatus === "loading" ? "Loading…" : smartStatus === "ready" ? "Smart: On" : "Smart answers"}
                 </button>
                 <button
                   onClick={() => setOpen(false)}

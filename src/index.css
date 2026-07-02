@@ -23,6 +23,10 @@
   --font-display: "Kanit", "Arial Black", sans-serif;
   --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+  /* Kinetic display face — a true variable font (wght 100-900) used for the
+     hero name, whose weight is driven live by scroll velocity / cursor
+     proximity (HeroSection.tsx). Falls back to the static display face. */
+  --font-kinetic: "Archivo Variable", var(--font-display);
 
   /* Signature easing used across the whole site */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -122,6 +126,9 @@ body {
 }
 .font-mono {
   font-family: var(--font-mono);
+}
+.font-kinetic {
+  font-family: var(--font-kinetic);
 }
 
 .text-gradient {
@@ -235,6 +242,18 @@ body {
      light ones — keep it much more restrained in "Lab light". */
   opacity: 0.35;
   filter: blur(50px);
+}
+.aurora-layer-2 {
+  animation-duration: 17s;
+  animation-delay: -6s;
+  opacity: 0.6;
+  filter: blur(32px);
+}
+.aurora-layer-3 {
+  animation-duration: 27s;
+  animation-delay: -14s;
+  opacity: 0.45;
+  filter: blur(48px);
 }
 @keyframes aurora-drift {
   0%,

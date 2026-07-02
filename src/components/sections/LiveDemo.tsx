@@ -19,7 +19,7 @@ const EXAMPLES = [
 ];
 
 const LiveDemo = () => {
-  const { status, progress, run } = useTransformersPipeline("text-classification", MODEL);
+  const { status, run } = useTransformersPipeline("text-classification", MODEL);
   const [text, setText] = useState(EXAMPLES[0]);
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [busy, setBusy] = useState(false);
@@ -95,7 +95,7 @@ const LiveDemo = () => {
               {status === "loading" ? (
                 <>
                   <Loader2 size={16} className="animate-spin" aria-hidden />
-                  Downloading model… {progress}%
+                  Downloading model…
                 </>
               ) : busy ? (
                 <>

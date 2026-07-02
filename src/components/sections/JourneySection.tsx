@@ -1,7 +1,49 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { journey } from "../../data/portfolio";
-import { RevealText, Rise } from "../common/Reveal";
+import type { JourneyItem } from "../../types/portfolio";
+import { RevealText } from "../common/Reveal";
+
+/**
+ * One timeline entry, continuously scroll-scrubbed against the timeline's
+ * own progress (not a once-off intersection reveal) — settles into place as
+ * the fill line reaches it, so the copy and the line always feel connected.
+ */
+const JourneyEntry = ({
+  item,
+  index,
+  total,
+  progress,
+}: {
+  item: JourneyItem;
+  index: number;
+  total: number;
+  progress: MotionValue<number>;
+}) => {
+  const start = (index / total) * 0.7;
+  const end = start + 0.3;
+  const opacity = useTransform(progress, [start, end], [0, 1]);
+  const x = useTransform(progress, [start, end], [-24, 0]);
+
+  return (
+    <motion.div style={{ opacity, x }} className="relative">
+      <span className="absolute -left-8 top-2 grid h-3 w-3 -translate-x-1/2 place-items-center rounded-full bg-[#00FF94] shadow-[0_0_16px_rgba(0,255,148,0.7)] md:-left-12" />
+      <span className="kicker">{item.date}</span>
+      <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-4xl">
+        {item.title}
+      </h3>
+      <p className="mt-1 text-sm font-medium text-[var(--accent)] md:text-base">{item.institution}</p>
+      {item.description && (
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--text-2)] md:text-base">
+          {item.description}
+        </p>
+      )}
+      <span className="pointer-events-none absolute -top-6 right-0 font-display text-6xl font-black text-[var(--ghost-dim)] md:text-8xl">
+        0{index + 1}
+      </span>
+    </motion.div>
+  );
+};
 
 const JourneySection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -23,22 +65,7 @@ const JourneySection = () => {
 
         <div className="space-y-16 md:space-y-24">
           {journey.map((item, i) => (
-            <Rise key={item.id} delay={0.05} className="relative">
-              <span className="absolute -left-8 top-2 grid h-3 w-3 -translate-x-1/2 place-items-center rounded-full bg-[#00FF94] shadow-[0_0_16px_rgba(0,255,148,0.7)] md:-left-12" />
-              <span className="kicker">{item.date}</span>
-              <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-4xl">
-                {item.title}
-              </h3>
-              <p className="mt-1 text-sm font-medium text-[var(--accent)] md:text-base">{item.institution}</p>
-              {item.description && (
-                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--text-2)] md:text-base">
-                  {item.description}
-                </p>
-              )}
-              <span className="pointer-events-none absolute -top-6 right-0 font-display text-6xl font-black text-[var(--ghost-dim)] md:text-8xl">
-                0{i + 1}
-              </span>
-            </Rise>
+            <JourneyEntry key={item.id} item={item} index={i} total={journey.length} progress={scrollYProgress} />
           ))}
         </div>
       </div>

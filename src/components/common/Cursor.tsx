@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
+import { Download, Move } from "lucide-react";
+
+/** Cursor targets opt into a semantic variant via [data-cursor]. */
+const ICON_VARIANTS: Record<string, "download" | "drag"> = {
+  Download: "download",
+  Drag: "drag",
+};
 
 /**
  * Blended custom cursor. A small dot follows the pointer 1:1 and a larger ring
@@ -15,6 +22,7 @@ const Cursor = () => {
   const [hovering, setHovering] = useState(false);
   const [label, setLabel] = useState("");
   const [hidden, setHidden] = useState(false);
+  const variant = ICON_VARIANTS[label];
 
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) {
@@ -62,7 +70,9 @@ const Cursor = () => {
         style={{ x: ringX, y: ringY }}
       >
         <motion.div
-          className="flex items-center justify-center rounded-full border border-white/80"
+          className={`flex items-center justify-center rounded-full border ${
+            variant ? "border-transparent bg-[#00FF94]" : "border-white/80"
+          }`}
           animate={{
             width: hovering ? 64 : 34,
             height: hovering ? 64 : 34,
@@ -71,7 +81,9 @@ const Cursor = () => {
           }}
           transition={{ type: "spring", stiffness: 300, damping: 24 }}
         >
-          {label && (
+          {variant === "download" && <Download size={20} className="text-[#050505]" aria-hidden />}
+          {variant === "drag" && <Move size={20} className="text-[#050505]" aria-hidden />}
+          {!variant && label && (
             <span className="text-[9px] font-mono uppercase tracking-widest text-white">
               {label}
             </span>

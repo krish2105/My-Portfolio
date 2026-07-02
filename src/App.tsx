@@ -18,11 +18,13 @@ import AboutSection from "./components/sections/AboutSection";
 import BentoSection from "./components/sections/BentoSection";
 import WhatIDoSection from "./components/sections/WhatIDoSection";
 import JourneySection from "./components/sections/JourneySection";
+import WritingSection from "./components/sections/WritingSection";
 import CapabilitiesSection from "./components/sections/CapabilitiesSection";
 import GitHubActivity from "./components/sections/GitHubActivity";
 import LiveDemo from "./components/sections/LiveDemo";
 import ProjectsSection from "./components/sections/ProjectsSection";
 import RecognitionSection from "./components/sections/RecognitionSection";
+import TestimonialsSection from "./components/sections/TestimonialsSection";
 import ResumeSection from "./components/sections/ResumeSection";
 import ContactSection from "./components/sections/ContactSection";
 
@@ -49,11 +51,13 @@ const App = () => {
             <BentoSection />
             <WhatIDoSection />
             <JourneySection />
+            <WritingSection />
             <CapabilitiesSection />
             <GitHubActivity />
             <LiveDemo />
             <ProjectsSection />
             <RecognitionSection />
+            <TestimonialsSection />
             <ResumeSection />
             <ContactSection />
             {/* Fixed-position; lives in <main> only so it's reachable via landmark navigation. */}

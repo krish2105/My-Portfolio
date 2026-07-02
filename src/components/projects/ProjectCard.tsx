@@ -1,10 +1,75 @@
-import { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "motion/react";
 import { ExternalLink, NotebookPen, ArrowUpRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 import type { Project } from "../../types/portfolio";
 import ProjectCover from "./ProjectCover";
 import SafeExternalLink from "../common/SafeExternalLink";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useSound } from "../../lib/sound";
+
+/**
+ * A magnified preview of the project — a small "peek" beyond the always-
+ * visible thumbnail. On desktop it follows the cursor (spring-lagged, so it
+ * trails rather than snaps); on touch (`centered`) it's triggered by a
+ * long-press and simply appears centered in the viewport, since a held
+ * finger doesn't produce a meaningful stream of positions to follow.
+ */
+const HoverPreview = ({
+  project,
+  active,
+  centered = false,
+}: {
+  project: Project;
+  active: boolean;
+  centered?: boolean;
+}) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 260, damping: 32, mass: 0.6 });
+  const springY = useSpring(y, { stiffness: 260, damping: 32, mass: 0.6 });
+
+  useEffect(() => {
+    if (!active || centered) return;
+    const onMove = (e: PointerEvent) => {
+      x.set(e.clientX + 24);
+      y.set(e.clientY + 24);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [active, centered, x, y]);
+
+  return (
+    <motion.div aria-hidden className="pointer-events-none fixed inset-0 z-[80]">
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            style={centered ? undefined : { x: springX, y: springY }}
+            className={
+              centered
+                ? "absolute left-1/2 top-1/2 h-48 w-72 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-[var(--border-strong)] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]"
+                : "absolute h-40 w-64 overflow-hidden rounded-xl border border-[var(--border-strong)] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]"
+            }
+          >
+            {project.images?.[0] ? (
+              <img
+                src={project.images[0]}
+                alt=""
+                className="h-full w-full object-cover object-top"
+              />
+            ) : (
+              <ProjectCover project={project} />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 /**
  * A pointer-tilting project card. Clicking (or Enter/Space) opens the
@@ -14,9 +79,23 @@ import SafeExternalLink from "../common/SafeExternalLink";
 const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => void }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [imgFailed, setImgFailed] = useState(false);
+  const [titleHover, setTitleHover] = useState(false);
+  const [longPress, setLongPress] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const hasImage = !!project.images?.[0] && !imgFailed;
+  const fine = useMediaQuery("(pointer: fine)");
+  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const { play } = useSound();
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
+
+  const startLongPress = () => {
+    longPressTimer.current = setTimeout(() => setLongPress(true), 450);
+  };
+  const endLongPress = () => {
+    clearTimeout(longPressTimer.current);
+    setLongPress(false);
+  };
   const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 20 });
   const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { stiffness: 200, damping: 20 });
 
@@ -49,10 +128,19 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
       <button
         type="button"
         onClick={onOpen}
+        onPointerEnter={() => {
+          setTitleHover(true);
+          play("hover");
+        }}
+        onPointerLeave={() => setTitleHover(false)}
+        onTouchStart={startLongPress}
+        onTouchEnd={endLongPress}
+        onTouchCancel={endLongPress}
         aria-label={`Open case study: ${project.title}`}
         data-cursor="View"
         className="absolute inset-0 z-[1] cursor-pointer focus-visible-ring"
       />
+      {!reduced && <HoverPreview project={project} active={fine ? titleHover : longPress} centered={!fine} />}
 
       {/* Pointer-tracked spotlight */}
       <div

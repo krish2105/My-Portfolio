@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import { ThemeProvider } from './lib/theme.tsx';
+import { SoundProvider } from './lib/sound.tsx';
 import './index.css';
 
 // Prevent the browser from restoring a mid-page scroll position on reload/back-nav
@@ -13,7 +14,9 @@ window.scrollTo(0, 0);
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider>
-      <App />
+      <SoundProvider>
+        <App />
+      </SoundProvider>
     </ThemeProvider>
   </React.StrictMode>,
 );

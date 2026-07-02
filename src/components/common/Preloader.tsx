@@ -2,6 +2,24 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%*<>?/\\|";
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * Resolves once the critical hero assets are actually ready to paint: the
+ * self-hosted fonts and the hero avatar image. Capped by a safety timeout so
+ * a slow/broken asset never hangs the preloader indefinitely.
+ */
+const waitForCriticalAssets = (): Promise<void> => {
+  const fontsReady = document.fonts?.ready?.catch(() => undefined) ?? Promise.resolve();
+  const avatarReady = new Promise<void>((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = "/avatar.webp";
+  });
+  const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2600));
+  return Promise.race([Promise.all([fontsReady, avatarReady]).then(() => undefined), timeout]);
+};
 
 /** Scrambles each character to random glyphs before resolving to the final character. */
 const DecryptedText = ({
@@ -58,8 +76,11 @@ const DecryptedText = ({
 };
 
 /**
- * Full-screen entry sequence: a counter races 0 → 100 while the name decrypts,
- * then the panel slides away to expose the hero. Skipped for reduced motion.
+ * Full-screen entry sequence: a counter climbs toward 100 while the name
+ * decrypts, but only actually REACHES 100 once the critical hero assets
+ * (fonts, avatar) are ready to paint — the count isn't a fake timer. The
+ * panel then clip-path wipes away, on the site's signature ease, to expose
+ * the hero. Skipped for reduced motion.
  */
 const Preloader = ({ onDone }: { onDone: () => void }) => {
   const [count, setCount] = useState(0);
@@ -79,16 +100,26 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
     const initTimer = setTimeout(() => setStarted(true), 50);
 
     let n = 0;
+    let assetsReady = false;
     const id = setInterval(() => {
-      n += Math.max(2, Math.round((100 - n) / 5));
+      // Ramp climbs to 92% on its own (keeps the decrypt sequence feeling
+      // alive even on a fast connection), then holds there until the real
+      // asset-readiness signal arrives, at which point it's let through to 100.
+      const ceiling = assetsReady ? 100 : 92;
+      if (n < ceiling) {
+        n = Math.min(ceiling, n + Math.max(1, Math.round((ceiling - n) / 5)));
+        setCount(n);
+      }
       if (n >= 100) {
-        n = 100;
         clearInterval(id);
         setTimeout(() => setExit(true), 150);
-        setTimeout(onDone, 800);
+        setTimeout(onDone, 850);
       }
-      setCount(n);
     }, 26);
+
+    waitForCriticalAssets().then(() => {
+      assetsReady = true;
+    });
 
     return () => {
       clearInterval(id);
@@ -100,9 +131,12 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
     <AnimatePresence>
       {!exit && (
         <motion.div
+          role="status"
+          aria-label="Loading site"
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--bg)]"
-          exit={{ y: "-100%" }}
-          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+          exit={{ clipPath: "inset(0 0 100% 0)" }}
+          transition={{ duration: 0.8, ease: EASE }}
+          style={{ clipPath: "inset(0 0 0% 0)" }}
         >
           <div className="overflow-hidden">
             <motion.h1
@@ -140,10 +174,17 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
             )}
           </motion.div>
 
-          <div className="absolute bottom-10 right-8 md:right-16 font-display font-black text-[18vw] md:text-[12vw] leading-none text-[var(--ghost-dim)] select-none">
+          {/* Decorative watermark counter — intentionally low-contrast, and the
+              same progress is already conveyed accessibly via the status role
+              above and the visible bar below, so this is hidden from a11y trees
+              rather than contrast-boosted (which would ruin the effect). */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-10 right-8 md:right-16 font-display font-black text-[18vw] md:text-[12vw] leading-none text-[var(--text-3)] select-none"
+          >
             {count}
           </div>
-          <div className="absolute bottom-0 left-0 h-[2px] bg-[#00FF94]" style={{ width: `${count}%` }} />
+          <div aria-hidden="true" className="absolute bottom-0 left-0 h-[2px] bg-[#00FF94]" style={{ width: `${count}%` }} />
         </motion.div>
       )}
     </AnimatePresence>

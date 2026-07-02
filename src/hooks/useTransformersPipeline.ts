@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { configureLocalModels } from "../lib/transformersEnv";
 
 export type PipelineStatus = "idle" | "loading" | "ready" | "error";
 
@@ -21,19 +22,23 @@ export const useTransformersPipeline = (task: string, model: string) => {
     setProgress(0);
     try {
       const mod = await import("@huggingface/transformers");
+      await configureLocalModels();
       const create = mod.pipeline as unknown as (
         t: string,
         m: string,
         o?: Record<string, unknown>
       ) => Promise<PipeFn>;
-      pipeRef.current = await create(task, model, {
-        progress_callback: (p: { progress?: number }) => {
-          if (typeof p.progress === "number") setProgress(Math.min(100, Math.round(p.progress)));
-        },
-      });
+      // No progress_callback: transformers.js's streaming reader re-allocates
+      // its whole buffer on every chunk when Content-Length is absent (common
+      // for on-the-fly-compressed same-origin static responses), which is slow
+      // and can fail outright on constrained networks. Without a callback it
+      // takes the plain `response.arrayBuffer()` fast path instead — reliable,
+      // at the cost of a numeric progress percentage.
+      pipeRef.current = await create(task, model);
       setStatus("ready");
       return true;
-    } catch {
+    } catch (err) {
+      console.error("[useTransformersPipeline] failed to load the model", err);
       setStatus("error");
       return false;
     }

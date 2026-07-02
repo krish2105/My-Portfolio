@@ -7,6 +7,8 @@ import type {
   RecognitionItem,
   ServiceItem,
   NowItem,
+  Testimonial,
+  WritingItem,
 } from "../types/portfolio";
 
 export const profile: Profile = {
@@ -56,11 +58,13 @@ const resumeDownloadUrl =
  */
 export const socialLinks: SocialLinks = {
   email: "mailto:krishnamathur008@gmail.com",
-  github: "https://github.com/krish2105",        // ← replace
-  linkedin: "https://www.linkedin.com/in/krishnamathurmay/", // ← replace
-  instagram: "https://instagram.com/your-username",  // ← replace
-  kaggle: "https://www.kaggle.com/krishna21052003",         // ← replace
-  twitter: "https://x.com/your-username",             // ← replace
+  github: "https://github.com/krish2105",
+  linkedin: "https://www.linkedin.com/in/krishnamathurmay/",
+  // Hidden (not fake placeholders) until real profiles are supplied — a
+  // "your-username" link that 404s is worse than no icon at all.
+  instagram: "",
+  kaggle: "https://www.kaggle.com/krishna21052003",
+  twitter: "",
   resume: resumeDownloadUrl,
   website: "",
 };
@@ -644,3 +648,19 @@ export const recognition: RecognitionItem[] = [
     context: "Elected by the SP Jain (Dubai) cohort to lead communication and coordination between students and faculty — a trust-and-leadership role alongside a demanding AI/business curriculum.",
   },
 ];
+
+/**
+ * Testimonials — real LinkedIn recommendations or mentor quotes only. Left
+ * empty on purpose (honesty gate): TestimonialsSection renders nothing until
+ * this has real entries. Add objects shaped like:
+ *   { id: "t-01", quote: "...", author: "Full Name", role: "Title, Company", sourceUrl: "https://..." }
+ */
+export const testimonials: Testimonial[] = [];
+
+/**
+ * Writing / insights — real published posts only (Medium, LinkedIn, Dev.to,
+ * a personal blog). Left empty on purpose (honesty gate): WritingSection
+ * renders nothing until this has real entries. Add objects shaped like:
+ *   { id: "w-01", title: "...", blurb: "...", date: "2026-01", url: "https://..." }
+ */
+export const writing: WritingItem[] = [];

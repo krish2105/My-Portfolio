@@ -81,6 +81,17 @@ function NeuralField() {
   useFrame((state) => {
     const t = state.clock.elapsedTime;
 
+    // Scroll-linked camera dolly: as the visitor scrolls through the hero
+    // (one viewport height), the camera pushes in and drifts up slightly —
+    // the scene keeps advancing with scroll instead of only reacting to the
+    // pointer. Read directly off window.scrollY (Lenis keeps it in sync with
+    // native scroll — the same assumption the rest of the site's scroll-
+    // linked motion relies on) so this needs no cross-Canvas context/props.
+    const scrollProgress = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight)));
+    state.camera.position.z = 11 - scrollProgress * 3.5;
+    state.camera.position.y += (scrollProgress * 1.4 - state.camera.position.y) * 0.06;
+    state.camera.lookAt(0, 0, 0);
+
     // 1. Drift each node on a gentle sine path.
     for (let i = 0; i < NODE_COUNT; i++) {
       const n = nodes[i];

@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { buildKnowledgeBase, type KBChunk } from "../data/knowledgeBase";
+import { configureLocalModels } from "../lib/transformersEnv";
 
 /**
  * Client-side RAG: embeds the portfolio's real content (via transformers.js,
@@ -59,16 +60,19 @@ export const useKnowledgeSearch = () => {
 
       if (!pipeRef.current) {
         const mod = await import("@huggingface/transformers");
+        await configureLocalModels();
         const create = mod.pipeline as unknown as (
           t: string,
           m: string,
           o?: Record<string, unknown>
         ) => Promise<EmbedFn>;
-        pipeRef.current = await create("feature-extraction", MODEL, {
-          progress_callback: (p: { progress?: number }) => {
-            if (typeof p.progress === "number") setProgress(Math.min(100, Math.round(p.progress)));
-          },
-        });
+        // No progress_callback: transformers.js's streaming reader re-allocates
+        // its whole buffer on every chunk when Content-Length is absent (common
+        // for on-the-fly-compressed same-origin static responses), which is slow
+        // and can fail outright on constrained networks. Without a callback it
+        // takes the plain `response.arrayBuffer()` fast path instead — reliable,
+        // at the cost of a numeric progress percentage (see setProgress below).
+        pipeRef.current = await create("feature-extraction", MODEL);
       }
 
       const output = await pipeRef.current(
@@ -84,7 +88,10 @@ export const useKnowledgeSearch = () => {
       }
       setStatus("ready");
       return true;
-    } catch {
+    } catch (err) {
+      // Surfaced so a real production failure (e.g. a CDN/proxy quirk) is
+      // diagnosable instead of silently landing on the scripted fallback.
+      console.error("[useKnowledgeSearch] failed to load the semantic model", err);
       setStatus("error");
       return false;
     }

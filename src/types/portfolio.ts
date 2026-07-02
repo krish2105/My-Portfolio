@@ -93,3 +93,20 @@ export interface NowItem {
   label: string;
   value: string;
 }
+
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  /** Link to the original source (LinkedIn recommendation, email, etc.) — optional. */
+  sourceUrl?: string;
+}
+
+export interface WritingItem {
+  id: string;
+  title: string;
+  blurb: string;
+  date: string;
+  url: string;
+}

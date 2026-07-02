@@ -4,6 +4,7 @@ import { useActiveSection } from "../../hooks/useActiveSection";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { NAV_ITEMS as navItems, SECTION_IDS } from "../../data/nav";
 import ThemeToggle from "../common/ThemeToggle";
+import SoundToggle from "../common/SoundToggle";
 import MobileMenu from "./MobileMenu";
 
 const Navbar = () => {
@@ -59,6 +60,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <SoundToggle />
           <ThemeToggle />
           <a
             href="#contact"
@@ -70,6 +72,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
+          <SoundToggle />
           <ThemeToggle />
           <MobileMenu navItems={navItems} activeId={activeId} />
         </div>
