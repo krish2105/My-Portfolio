@@ -332,6 +332,24 @@ export const projects: Project[] = [
         why: "Perfect scores on a tiny test set are an artifact, not evidence — the repo states this and is built to retrain on the full 6.3M-row PaySim set.",
       },
     ],
+    valueProp: "Sequence-aware fraud scoring that flags evolving patterns a rule engine misses.",
+    audience: "Fintech and risk teams evaluating transaction-monitoring systems.",
+    architecture: [
+      { label: "Transaction sequence" },
+      { label: "LSTM/RNN scoring model" },
+      { label: "FastAPI scoring service" },
+      { label: "Risk score + recommended action" },
+      { label: "React analyst dashboard" },
+    ],
+    limitations: [
+      "Trained and evaluated on synthetic, PaySim-style sample data — not a live production transaction stream.",
+      "Not yet validated against a real fraud-ops workflow or calibrated on real loss data.",
+    ],
+    nextSteps: [
+      "Retrain on the full 6.3M-row PaySim dataset.",
+      "Add calibration curves and threshold tuning for the recommended-action logic.",
+    ],
+    flagship: true,
   },
   {
     id: "mediflow",
@@ -392,6 +410,24 @@ export const projects: Project[] = [
         why: "Reproducibility first — anyone can run the exact experiment, which matters more than a polished black box for an academic prototype.",
       },
     ],
+    valueProp: "RL that allocates ER beds, staff and equipment under uncertainty — balancing fairness and efficiency.",
+    audience: "Healthcare operations and hospital administration teams.",
+    architecture: [
+      { label: "Stochastic patient arrivals" },
+      { label: "Q-Learning allocation policy" },
+      { label: "Constraint-based baseline" },
+      { label: "Fairness vs. efficiency analysis" },
+      { label: "Streamlit dashboard" },
+    ],
+    limitations: [
+      "Runs on a simulated environment (500 patients) — not deployed against a live hospital census.",
+      "The Q-Learning policy hasn't been tested under real, non-stationary demand shocks.",
+    ],
+    nextSteps: [
+      "Scale the simulation to larger, multi-department scenarios.",
+      "Compare against a deep-RL policy (e.g. DQN) as a stronger baseline.",
+    ],
+    flagship: true,
   },
   {
     id: "lulu-sales",
@@ -447,6 +483,24 @@ export const projects: Project[] = [
         why: "Reproducible, reviewable deploys across a multi-service stack (Next.js + FastAPI + PostgreSQL + Redis) — production hygiene over a one-off demo.",
       },
     ],
+    valueProp: "Real-time, governed sales analytics across stores — streaming data to decisions.",
+    audience: "Retail leadership and store operations teams.",
+    architecture: [
+      { label: "Store POS / sales streams" },
+      { label: "Redis hot-path cache" },
+      { label: "PostgreSQL system of record" },
+      { label: "FastAPI analytics service" },
+      { label: "Next.js dashboard (RBAC)" },
+    ],
+    limitations: [
+      "Team project — Krishna's specific contribution was the analytics dashboard and backend services, not the full platform.",
+      "No public live deployment; the architecture was verified in a Dockerised dev/staging environment.",
+    ],
+    nextSteps: [
+      "Publish a live demo deployment.",
+      "Add anomaly-detection alerting to the dashboard.",
+    ],
+    flagship: true,
   },
   {
     id: "smartloanbot",
@@ -481,6 +535,13 @@ export const projects: Project[] = [
       "Demonstrated an automated first-line loan-advisory experience.",
       "Modular Python design that separates NLP, workflow and UI concerns.",
     ],
+    valueProp: "Conversational first-line loan guidance that scales past a human advisor's capacity.",
+    audience: "FinTech and lending teams wanting automated first-line support.",
+    limitations: [
+      "Built as an internship deliverable — confidential client specifics are not disclosed.",
+      "Ships as a desktop Tkinter interface, not a deployed web product.",
+    ],
+    flagship: false,
   },
   {
     id: "waselx",
@@ -514,6 +575,13 @@ export const projects: Project[] = [
       "Turned routing into an explainable, algorithm-backed decision-support tool.",
       "Compared multiple routing strategies on the same network.",
     ],
+    valueProp: "Graph-based routing that turns last-mile delivery decisions into explainable, algorithm-backed comparisons.",
+    audience: "Logistics and operations teams evaluating routing strategies.",
+    limitations: [
+      "Academic exercise on a modelled delivery network, not a live logistics operation.",
+      "Team repository is private — source available on request.",
+    ],
+    flagship: false,
   },
   {
     id: "flower-classifier",
@@ -553,6 +621,13 @@ export const projects: Project[] = [
     impact: [
       "A complete, reproducible image-classification workflow from data to trained model.",
     ],
+    valueProp: "A clean, reproducible CNN pipeline proving the end-to-end computer-vision workflow.",
+    audience: "Learning/portfolio project — demonstrates CV fundamentals, not a shipped product.",
+    limitations: [
+      "Prototype stage — the prediction interface, API and storage layer are planned, not built.",
+      "Trained on the standard TensorFlow flowers dataset, not a client-specific dataset.",
+    ],
+    flagship: false,
   },
   {
     id: "talktodata",
@@ -593,6 +668,24 @@ export const projects: Project[] = [
       "Prioritises trust and safety over fully-autonomous query generation.",
       "Active development — transformer-backed candidate generation is next.",
     ],
+    valueProp: "Human-in-the-loop NL-to-SQL — safe natural-language access to business data.",
+    audience: "Data analysts and ops teams who need safe self-serve queries.",
+    architecture: [
+      { label: "Business question (NL)" },
+      { label: "Schema-aware candidate SQL generation" },
+      { label: "Human review & comparison" },
+      { label: "Validation & safety checks" },
+      { label: "Approved query execution" },
+    ],
+    limitations: [
+      "Candidate generation is currently rule-based; transformer-backed generation is planned, not yet built.",
+      "Not yet tested against a production database or a real analyst workflow.",
+    ],
+    nextSteps: [
+      "Integrate Hugging Face transformer models for candidate SQL generation.",
+      "Add a query-explanation output alongside each candidate.",
+    ],
+    flagship: true,
   },
   {
     id: "electric-production",
@@ -630,6 +723,13 @@ export const projects: Project[] = [
     impact: [
       "Showed concretely how window length and architecture change forecast accuracy.",
     ],
+    valueProp: "An honest, side-by-side study of how sequence-window length changes SimpleRNN vs LSTM forecasting.",
+    audience: "Anyone evaluating RNN vs. LSTM trade-offs for time-series work.",
+    limitations: [
+      "Single dataset (electric production) — findings are illustrative, not universally generalised.",
+      "Colab notebook, not a deployed forecasting service.",
+    ],
+    flagship: false,
   },
 ];
 

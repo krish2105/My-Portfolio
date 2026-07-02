@@ -10,6 +10,11 @@ export interface ProjectMetric {
   value: string;
 }
 
+export interface ArchitectureStep {
+  label: string;
+  detail?: string;
+}
+
 export interface Project {
   id: string;
   number: string;
@@ -37,6 +42,18 @@ export interface Project {
   metrics?: ProjectMetric[];
   /** Engineering judgment: key technical choices and the reasoning behind them. */
   decisions?: { choice: string; why: string }[];
+  /** One-line "why this matters" — shown above the description on the card and modal. */
+  valueProp?: string;
+  /** Who this project is most relevant to (recruiter/engineer/founder framing). */
+  audience?: string;
+  /** Ordered system flow, rendered as an architecture map. Flagship projects only. */
+  architecture?: ArchitectureStep[];
+  /** Honest, stated scope limits — what this has NOT been validated against. */
+  limitations?: string[];
+  /** What would come next if this project continued. */
+  nextSteps?: string[];
+  /** Flagship projects get the full dashboard-style case-study treatment. */
+  flagship?: boolean;
 }
 
 export interface CapabilityGroup {

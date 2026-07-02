@@ -172,6 +172,11 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
         <span className="absolute left-5 top-5 rounded-full border border-[#00FF94]/40 bg-[var(--bg)]/60 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-[var(--accent)] backdrop-blur">
           {project.status}
         </span>
+        {project.flagship && (
+          <span className="absolute left-5 top-12 rounded-full border border-[var(--border-strong)] bg-[var(--bg)]/60 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-[var(--text-2)] backdrop-blur">
+            Flagship
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-6 md:p-8">
@@ -184,7 +189,10 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
             className="mt-1 shrink-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
         </h3>
-        <p className="mt-4 text-sm leading-relaxed text-[var(--text-2)]">{project.description}</p>
+        {project.valueProp && (
+          <p className="mt-3 text-sm font-medium leading-snug text-[var(--accent)]">{project.valueProp}</p>
+        )}
+        <p className="mt-2 text-sm leading-relaxed text-[var(--text-2)]">{project.description}</p>
 
         <div className="mt-auto pt-6">
           <div className="flex flex-wrap gap-2">

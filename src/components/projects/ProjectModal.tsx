@@ -4,6 +4,8 @@ import { X, ExternalLink, NotebookPen } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 import type { Project } from "../../types/portfolio";
 import SafeExternalLink from "../common/SafeExternalLink";
+import ProjectTelemetry from "./ProjectTelemetry";
+import ArchitectureMap from "./ArchitectureMap";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -113,6 +115,15 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
               {project.title}
             </h2>
             <p className="mt-2 text-sm text-[var(--text-3)]">{project.category}</p>
+            {project.valueProp && (
+              <p className="mt-4 max-w-[85%] text-base font-medium leading-snug text-[var(--accent)] md:text-lg">
+                {project.valueProp}
+              </p>
+            )}
+
+            <div className="mt-6">
+              <ProjectTelemetry project={project} />
+            </div>
 
             {/* Screenshot gallery */}
             {project.images.length > 0 && (
@@ -159,6 +170,12 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
               </SectionBlock>
             )}
 
+            {project.architecture && project.architecture.length > 0 && (
+              <SectionBlock label="System flow">
+                <ArchitectureMap steps={project.architecture} />
+              </SectionBlock>
+            )}
+
             {project.role && (
               <SectionBlock label="What I built">
                 <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.role}</p>
@@ -184,6 +201,18 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
                     </li>
                   ))}
                 </ul>
+              </SectionBlock>
+            )}
+
+            {project.limitations && project.limitations.length > 0 && (
+              <SectionBlock label="Limitations">
+                <BulletList items={project.limitations} />
+              </SectionBlock>
+            )}
+
+            {project.nextSteps && project.nextSteps.length > 0 && (
+              <SectionBlock label="Next steps">
+                <BulletList items={project.nextSteps} />
               </SectionBlock>
             )}
 
