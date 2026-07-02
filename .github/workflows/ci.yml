@@ -44,8 +44,14 @@ jobs:
         run: |
           npx axe http://localhost:4173/ --load-delay 2000 --exit
           npx axe http://localhost:4173/work/fraudshield/ --load-delay 2000 --exit
+          npx axe http://localhost:4173/uses --load-delay 2000 --exit
 
-      - name: Lighthouse CI
-        run: npx lhci autorun
+      - name: Lighthouse CI (desktop — enforced)
+        run: npx lhci autorun --config=lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Lighthouse CI (mobile — perf warn-only, a11y/BP/SEO enforced)
+        run: npx lhci autorun --config=lighthouserc.mobile.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
