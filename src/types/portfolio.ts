@@ -114,6 +114,9 @@ export interface NowItem {
   value: string;
 }
 
+export type TestimonialType = "linkedin" | "faculty" | "internship";
+export type ContentStatus = "verified" | "pending" | "published" | "planned";
+
 export interface Testimonial {
   id: string;
   quote: string;
@@ -121,6 +124,10 @@ export interface Testimonial {
   role: string;
   /** Link to the original source (LinkedIn recommendation, email, etc.) — optional. */
   sourceUrl?: string;
+  type: TestimonialType;
+  status: ContentStatus;
+  /** Whether the author has explicitly given permission to publish — required before adding a real quote. */
+  permission?: boolean;
 }
 
 export interface WritingItem {
@@ -129,4 +136,15 @@ export interface WritingItem {
   blurb: string;
   date: string;
   url: string;
+  status: ContentStatus;
+}
+
+/** Describes an empty "slot" honestly — no fake content, just what's pending and how to request it. */
+export interface TrustPlaceholder {
+  id: string;
+  category: TestimonialType | "writing";
+  label: string;
+  emptyStateCopy: string;
+  ctaLabel: string;
+  ctaHref: string;
 }

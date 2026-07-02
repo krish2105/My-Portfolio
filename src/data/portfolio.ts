@@ -9,6 +9,7 @@ import type {
   NowItem,
   Testimonial,
   WritingItem,
+  TrustPlaceholder,
 } from "../types/portfolio";
 
 export const profile: Profile = {
@@ -755,17 +756,61 @@ export const recognition: RecognitionItem[] = [
 ];
 
 /**
- * Testimonials — real LinkedIn recommendations or mentor quotes only. Left
- * empty on purpose (honesty gate): TestimonialsSection renders nothing until
- * this has real entries. Add objects shaped like:
- *   { id: "t-01", quote: "...", author: "Full Name", role: "Title, Company", sourceUrl: "https://..." }
+ * Testimonials — real LinkedIn recommendations, faculty/mentor quotes, or
+ * internship feedback only. Left empty on purpose (honesty gate): the Trust
+ * & Thinking section renders an honest "pending" placeholder per category
+ * until this has real, permissioned entries. Add objects shaped like:
+ *   { id: "t-01", quote: "...", author: "Full Name", role: "Title, Company",
+ *     sourceUrl: "https://...", type: "linkedin", status: "verified", permission: true }
  */
 export const testimonials: Testimonial[] = [];
 
 /**
  * Writing / insights — real published posts only (Medium, LinkedIn, Dev.to,
- * a personal blog). Left empty on purpose (honesty gate): WritingSection
- * renders nothing until this has real entries. Add objects shaped like:
- *   { id: "w-01", title: "...", blurb: "...", date: "2026-01", url: "https://..." }
+ * a personal blog). Left empty on purpose (honesty gate): the Trust &
+ * Thinking section renders an honest "planned" placeholder until this has
+ * real entries. Add objects shaped like:
+ *   { id: "w-01", title: "...", blurb: "...", date: "2026-01", url: "https://...", status: "published" }
  */
 export const writing: WritingItem[] = [];
+
+/**
+ * Describes each empty Trust & Thinking "slot" honestly — the category and
+ * how a visitor (or Krishna) can help fill it. Never fake content; each
+ * placeholder disappears automatically once `testimonials`/`writing` above
+ * has a real entry of that category (see TrustCards/WritingCards).
+ */
+export const trustPlaceholders: TrustPlaceholder[] = [
+  {
+    id: "linkedin",
+    category: "linkedin",
+    label: "LinkedIn Recommendations",
+    emptyStateCopy: "Pending verified recommendation — real ones will appear here once requested and confirmed.",
+    ctaLabel: "Request a recommendation",
+    ctaHref: socialLinks.linkedin || "mailto:krishnamathur008@gmail.com?subject=LinkedIn%20recommendation%20request",
+  },
+  {
+    id: "faculty",
+    category: "faculty",
+    label: "Mentor & Faculty Feedback",
+    emptyStateCopy: "Awaiting verified academic feedback — quotes are only added with the faculty member's permission and attribution.",
+    ctaLabel: "Request a quote",
+    ctaHref: "mailto:krishnamathur008@gmail.com?subject=Faculty%20feedback%20request",
+  },
+  {
+    id: "internship",
+    category: "internship",
+    label: "Internship & Collaboration",
+    emptyStateCopy: "Permission-based feedback coming soon — from the Intelliza Solutions internship, pending sign-off.",
+    ctaLabel: "Request feedback",
+    ctaHref: "mailto:krishnamathur008@gmail.com?subject=Internship%20feedback%20request",
+  },
+  {
+    id: "writing",
+    category: "writing",
+    label: "Writing & Insights",
+    emptyStateCopy: "Planned article — coming soon. These slots fill with real, published posts only.",
+    ctaLabel: "Notify me when published",
+    ctaHref: "mailto:krishnamathur008@gmail.com?subject=Notify%20me%20when%20Krishna%20publishes",
+  },
+];

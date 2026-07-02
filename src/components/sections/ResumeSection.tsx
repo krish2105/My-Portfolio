@@ -2,9 +2,10 @@ import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { journey, capabilities, recognition, socialLinks } from "../../data/portfolio";
+import { journey, capabilities, recognition, socialLinks, projects } from "../../data/portfolio";
 import { buildHiringSummary } from "../../lib/hiringSummary";
 import { RevealText, Rise } from "../common/Reveal";
+import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
 
 /* ── Compact timeline card ────────────────────────────────────────── */
 const TimelineCard = ({
@@ -155,6 +156,23 @@ const DownloadCard = () => {
   );
 };
 
+/** One flagship project, summarised differently per audience — same underlying
+ * real data (`valueProp`/`technologies`/`impact`), just a different lens. */
+const FlagshipRow = ({ project, mode }: { project: (typeof projects)[number]; mode: "recruiter" | "technical" | "business" }) => {
+  const detail =
+    mode === "technical"
+      ? project.technologies.slice(0, 5).join(" · ")
+      : mode === "business"
+        ? project.impact?.[0] ?? project.description
+        : project.valueProp ?? project.description;
+  return (
+    <li className="flex flex-col gap-0.5 py-2.5">
+      <span className="text-sm font-semibold text-[var(--text)]">{project.shortTitle}</span>
+      <span className="text-xs leading-relaxed text-[var(--text-3)]">{detail}</span>
+    </li>
+  );
+};
+
 /* ── Main section ─────────────────────────────────────────────────── */
 const ResumeSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -163,17 +181,20 @@ const ResumeSection = () => {
     offset: ["start end", "end start"],
   });
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const { mode, setMode } = useViewMode();
+  const [expanded, setExpanded] = useState(false);
 
-  // Pick top 12 core skills for the resume snapshot
-  const coreSkills = capabilities
-    .flatMap((g) => g.skills)
-    .filter((s) => s.level === "Core")
-    .slice(0, 12);
+  const allSkills = capabilities.flatMap((g) => g.skills);
+  const coreAll = allSkills.filter((s) => s.level === "Core");
+  const workingAll = allSkills.filter((s) => s.level === "Working Knowledge");
+  const restAll = allSkills.filter((s) => s.level !== "Core" && s.level !== "Working Knowledge");
 
-  const workingSkills = capabilities
-    .flatMap((g) => g.skills)
-    .filter((s) => s.level === "Working Knowledge")
-    .slice(0, 8);
+  // Pick top 12 core skills for the resume snapshot, or all of them once expanded.
+  const coreSkills = expanded ? coreAll : coreAll.slice(0, 12);
+  const workingSkills = expanded ? workingAll : workingAll.slice(0, 8);
+  const restSkills = expanded ? restAll : [];
+
+  const flagshipProjects = projects.filter((p) => p.flagship);
 
   // Timeline entries — education & experience interleaved
   const timelineEntries = [
@@ -254,9 +275,28 @@ const ResumeSection = () => {
           {/* Core skills */}
           <Rise delay={0.05}>
             <div className="rounded-xl border border-white/[0.06] bg-[var(--panel)]/60 p-6 backdrop-blur-sm md:p-7">
-              <div className="mb-4 flex items-center gap-3">
-                <Code2 size={18} className="text-[var(--accent)]" />
-                <h3 className="kicker">Core competencies</h3>
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Code2 size={18} className="text-[var(--accent)]" />
+                  <h3 className="kicker">Core competencies</h3>
+                </div>
+                <div className="flex gap-1.5" role="group" aria-label="Snapshot audience">
+                  {VIEW_MODES.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setMode(m.id)}
+                      aria-pressed={mode === m.id}
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors ${
+                        mode === m.id
+                          ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                          : "border-[var(--border)] text-[var(--text-3)] hover:text-[var(--text)]"
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {coreSkills.map((s) => (
@@ -267,6 +307,30 @@ const ResumeSection = () => {
                 {workingSkills.map((s) => (
                   <SkillChip key={s.name} name={s.name} isCore={false} />
                 ))}
+              </div>
+              {expanded && restSkills.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {restSkills.map((s) => (
+                    <SkillChip key={s.name} name={s.name} isCore={false} />
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                aria-expanded={expanded}
+                className="mt-4 text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
+              >
+                {expanded ? "Show fewer skills" : "Show all skills"}
+              </button>
+
+              <div className="mt-6 border-t border-white/[0.06] pt-5">
+                <p className="kicker mb-1">Flagship projects — {VIEW_MODES.find((m) => m.id === mode)?.label} snapshot</p>
+                <ul className="divide-y divide-white/[0.06]">
+                  {flagshipProjects.map((p) => (
+                    <FlagshipRow key={p.id} project={p} mode={mode} />
+                  ))}
+                </ul>
               </div>
             </div>
           </Rise>

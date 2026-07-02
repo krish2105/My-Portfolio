@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
 import { capabilities } from "../../data/portfolio";
 import type { CapabilityGroup } from "../../types/portfolio";
 import { RevealText } from "../common/Reveal";
+import SkillConstellation from "./SkillConstellation";
 
 /**
  * One capability card, continuously scroll-scrubbed (not a once-off
@@ -77,6 +78,8 @@ const CapabilitiesSection = () => {
           </RevealText>
         </span>
       </h2>
+
+      <SkillConstellation groups={capabilities} />
 
       <div
         ref={ref}

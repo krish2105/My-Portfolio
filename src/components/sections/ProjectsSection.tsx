@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { Network } from "lucide-react";
 import { projects } from "../../data/portfolio";
 import type { Project } from "../../types/portfolio";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import ProjectCard from "../projects/ProjectCard";
 import ProjectModal from "../projects/ProjectModal";
+import ProjectSystemMap from "../projects/ProjectSystemMap";
 import { RevealText } from "../common/Reveal";
 
 const FILTERS = ["All", "AI/ML", "Deep Learning", "GenAI", "Data"] as const;
@@ -21,6 +23,40 @@ const Header = () => (
     </h2>
   </div>
 );
+
+/**
+ * Standalone toggle + panel for the Project System Map. Deliberately kept
+ * OUTSIDE the pinned horizontal-scroll gallery below: that gallery's height
+ * math (`h-screen` + `overflow-hidden`, scroll-linked track position) is
+ * tightly tuned, and any extra content inside it risks pushing the toggle
+ * itself out of the visible/hit-testable area at some viewport sizes.
+ */
+const SystemMapPanel = ({ onOpen }: { onOpen: (p: Project) => void }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-t border-[var(--border)] px-6 py-10 md:px-[8vw]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="project-system-map"
+        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible-ring ${
+          open
+            ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+            : "border-[var(--border)] text-[var(--text-2)] hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+        }`}
+      >
+        <Network size={13} aria-hidden />
+        {open ? "Hide system map" : "View system map — projects × domains"}
+      </button>
+      {open && (
+        <div id="project-system-map" className="mt-6">
+          <ProjectSystemMap projects={projects} onOpen={onOpen} />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const FilterBar = ({ filter, setFilter }: { filter: Filter; setFilter: (f: Filter) => void }) => (
   <div className="mt-7 flex flex-wrap gap-2 px-6 md:px-[8vw]" role="group" aria-label="Filter projects by domain">
@@ -206,6 +242,7 @@ const ProjectsSection = () => {
           <SwipeGallery items={filtered} onOpen={openProject} />
         </>
       )}
+      <SystemMapPanel onOpen={openProject} />
       <ProjectModal project={selected} onClose={closeProject} />
     </section>
   );
