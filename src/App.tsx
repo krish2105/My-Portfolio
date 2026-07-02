@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 import ErrorBoundary from "./components/common/ErrorBoundary";
@@ -7,6 +7,8 @@ import SmoothScroll from "./lib/SmoothScroll";
 import Cursor from "./components/common/Cursor";
 import ScrollProgress from "./components/common/ScrollProgress";
 import CommandPalette from "./components/common/CommandPalette";
+import UsesModal from "./components/common/UsesModal";
+import EasterEgg from "./components/common/EasterEgg";
 import Assistant from "./components/assistant/Assistant";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import Preloader from "./components/common/Preloader";
@@ -28,9 +30,35 @@ import TestimonialsSection from "./components/sections/TestimonialsSection";
 import ResumeSection from "./components/sections/ResumeSection";
 import ContactSection from "./components/sections/ContactSection";
 
+const DEFAULT_TITLE = "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder";
+
 const App = () => {
   const [ready, setReady] = useState(false);
   const palette = useCommandPalette();
+  const [usesOpen, setUsesOpen] = useState(false);
+  const [partyActive, setPartyActive] = useState(false);
+
+  const triggerEasterEgg = () => {
+    setPartyActive(true);
+    setTimeout(() => setPartyActive(false), 1600);
+  };
+
+  const openUses = () => {
+    setUsesOpen(true);
+    if (window.location.pathname !== "/uses") window.history.pushState({ uses: true }, "", "/uses");
+  };
+  const closeUses = () => {
+    setUsesOpen(false);
+    document.title = DEFAULT_TITLE;
+    if (window.location.pathname === "/uses") window.history.pushState({}, "", "/");
+  };
+
+  useEffect(() => {
+    const sync = () => setUsesOpen(window.location.pathname === "/uses");
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
 
   return (
     <ErrorBoundary fallback={<div className="p-8 text-white">Something went wrong. Please refresh the page.</div>}>
@@ -39,7 +67,14 @@ const App = () => {
       <SmoothScroll>
         <Cursor />
         <ScrollProgress />
-        <CommandPalette open={palette.open} onClose={() => palette.setOpen(false)} />
+        <CommandPalette
+          open={palette.open}
+          onClose={() => palette.setOpen(false)}
+          onOpenUses={openUses}
+          onEasterEgg={triggerEasterEgg}
+        />
+        <UsesModal open={usesOpen} onClose={closeUses} />
+        <EasterEgg active={partyActive} />
         <div className="grain relative">
           <SkipLink />
           <Navbar />

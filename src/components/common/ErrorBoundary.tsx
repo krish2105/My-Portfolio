@@ -1,5 +1,6 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
+import { reportBoundaryError } from "../../lib/errorReporting";
 
 interface Props {
   children: ReactNode;
@@ -23,6 +24,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (import.meta.env.DEV) {
       console.error("Uncaught error:", error, errorInfo);
     }
+    reportBoundaryError(error, errorInfo.componentStack ?? undefined);
   }
 
   public render() {

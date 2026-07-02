@@ -8,6 +8,8 @@ import {
   CornerDownLeft,
   Compass,
   SunMoon,
+  Wrench,
+  PartyPopper,
 } from "lucide-react";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import type { ComponentType } from "react";
@@ -23,11 +25,24 @@ interface Command {
   hint?: string;
   Icon: ComponentType<{ size?: number; className?: string }>;
   run: () => void;
+  /** Hidden from the default/substring-matched list; only surfaces on an exact query match. */
+  secret?: boolean;
 }
 
 const EMAIL = "krishnamathur008@gmail.com";
+const EASTER_EGG_PHRASE = "party";
 
-const CommandPalette = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const CommandPalette = ({
+  open,
+  onClose,
+  onOpenUses,
+  onEasterEgg,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onOpenUses?: () => void;
+  onEasterEgg?: () => void;
+}) => {
   const { lenis } = useSmoothScroll();
   const { theme, toggle } = useTheme();
   const [query, setQuery] = useState("");
@@ -108,13 +123,37 @@ const CommandPalette = ({ open, onClose }: { open: boolean; onClose: () => void 
         onClose();
       },
     });
+    if (onOpenUses)
+      actions.push({
+        id: "uses",
+        label: "What this site is built with",
+        hint: "/uses",
+        Icon: Wrench,
+        run: () => {
+          onOpenUses();
+          onClose();
+        },
+      });
+    if (onEasterEgg)
+      actions.push({
+        id: EASTER_EGG_PHRASE,
+        label: "🎉",
+        Icon: PartyPopper,
+        secret: true,
+        run: () => {
+          onEasterEgg();
+          onClose();
+        },
+      });
     return [...nav, ...actions];
-  }, [lenis, onClose, theme, toggle]);
+  }, [lenis, onClose, onOpenUses, onEasterEgg, theme, toggle]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return commands;
-    return commands.filter((c) => (c.label + " " + (c.hint ?? "")).toLowerCase().includes(q));
+    if (!q) return commands.filter((c) => !c.secret);
+    const secretMatch = commands.find((c) => c.secret && c.id === q);
+    if (secretMatch) return [secretMatch];
+    return commands.filter((c) => !c.secret && (c.label + " " + (c.hint ?? "")).toLowerCase().includes(q));
   }, [commands, query]);
 
   useEffect(() => {
