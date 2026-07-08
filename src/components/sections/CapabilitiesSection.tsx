@@ -44,7 +44,7 @@ const CapabilityCard = ({
                 key={skill.name}
                 className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                   isCore
-                    ? "border-[#00FF94]/40 bg-[#00FF94]/10 text-[#6BFFC0]"
+                    ? "border-[#00FF94]/40 bg-[#00FF94]/10 text-[var(--accent)]"
                     : "border-[var(--border)] text-[var(--text-2)] hover:border-[var(--border-strong)]"
                 }`}
                 title={skill.level}

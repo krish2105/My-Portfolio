@@ -45,7 +45,7 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
   <span
     className={`rounded-full border px-3 py-1 text-xs transition-colors ${
       isCore
-        ? "border-[#00FF94]/30 bg-[#00FF94]/8 text-[#6BFFC0]"
+        ? "border-[#00FF94]/30 bg-[#00FF94]/8 text-[var(--accent)]"
         : "border-white/[0.06] text-[var(--text-3)] hover:border-white/[0.12]"
     }`}
   >

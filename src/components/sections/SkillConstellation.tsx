@@ -122,7 +122,7 @@ const SkillConstellation = ({ groups }: { groups: CapabilityGroup[] }) => {
                 exit={reduced ? undefined : { opacity: 0, scale: 0.7 }}
                 transition={{ duration: 0.2, delay: reduced ? 0 : i * 0.03 }}
                 style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-[#00FF94]/30 bg-[var(--bg)]/80 px-2.5 py-1 font-mono text-[10px] text-[#6BFFC0] backdrop-blur"
+                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-[#00FF94]/30 bg-[var(--bg)]/80 px-2.5 py-1 font-mono text-[10px] text-[var(--accent)] backdrop-blur"
               >
                 {s.name}
               </motion.span>
