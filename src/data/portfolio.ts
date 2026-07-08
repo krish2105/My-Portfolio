@@ -54,6 +54,12 @@ const resumeDownloadUrl =
     ? `https://drive.google.com/uc?export=download&id=${RESUME_DRIVE_FILE_ID}`
     : "";
 
+/** Full international format (no spaces/dashes) — single source for both
+ * the tel: and wa.me links below, so they can never drift apart. */
+const PHONE_E164 = "+971501946921";
+/** Human-readable version of the same number, for visible display. */
+export const PHONE_DISPLAY = "+971 50 194 6921";
+
 /**
  * ─────────────────────────────────────────────────────────────────────────────
  *  SOCIAL LINKS — replace the placeholder usernames with your real profiles.
@@ -71,6 +77,8 @@ export const socialLinks: SocialLinks = {
   twitter: "",
   resume: resumeDownloadUrl,
   website: "",
+  phone: `tel:${PHONE_E164}`,
+  whatsapp: `https://wa.me/${PHONE_E164.replace("+", "")}`,
 };
 
 /**

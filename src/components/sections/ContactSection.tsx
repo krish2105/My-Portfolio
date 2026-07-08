@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
-import { profile, socialLinks } from "../../data/portfolio";
+import { profile, socialLinks, PHONE_DISPLAY } from "../../data/portfolio";
 import SafeExternalLink from "../common/SafeExternalLink";
 import SocialLinks from "../common/SocialLinks";
 import ResumeButton from "../common/ResumeButton";
@@ -259,6 +259,16 @@ const ContactSection = () => {
             <div>
               <p className="kicker mb-3">Based in</p>
               <p className="font-display text-2xl font-bold text-[var(--text)]">Dubai, UAE</p>
+            </div>
+            <div>
+              <p className="kicker mb-3">Call or WhatsApp</p>
+              <a
+                href={socialLinks.phone}
+                data-cursor="Call"
+                className="font-display text-2xl font-bold text-[var(--text)] transition-colors hover:text-[var(--accent)]"
+              >
+                {PHONE_DISPLAY}
+              </a>
             </div>
             <div>
               <p className="kicker mb-3">Find me online</p>

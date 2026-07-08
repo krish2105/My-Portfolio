@@ -105,6 +105,10 @@ export interface SocialLinks {
   /** Direct-download URL for the resume (Google Drive uc?export=download link). */
   resume: string;
   website: string;
+  /** Click-to-call `tel:` link, built from PHONE_E164 in portfolio.ts. */
+  phone: string;
+  /** wa.me deep link, built from the same PHONE_E164 value. */
+  whatsapp: string;
 }
 
 export interface ServiceItem {
