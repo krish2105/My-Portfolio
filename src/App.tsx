@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 import ErrorBoundary from "./components/common/ErrorBoundary";
@@ -21,13 +21,18 @@ import BentoSection from "./components/sections/BentoSection";
 import WhatIDoSection from "./components/sections/WhatIDoSection";
 import JourneySection from "./components/sections/JourneySection";
 import CapabilitiesSection from "./components/sections/CapabilitiesSection";
-import GitHubActivity from "./components/sections/GitHubActivity";
-import LiveDemo from "./components/sections/LiveDemo";
 import ProjectsSection from "./components/sections/ProjectsSection";
-import RecognitionSection from "./components/sections/RecognitionSection";
-import TrustAndThinkingSection from "./components/sections/trust/TrustAndThinkingSection";
-import ResumeSection from "./components/sections/ResumeSection";
 import ContactSection from "./components/sections/ContactSection";
+
+// Below-the-fold sections: not needed for first paint, so split into their
+// own chunks to shrink the main bundle and cut initial parse/hydrate work
+// (2026-07-08 perf audit — App.tsx previously imported all 18 sections
+// eagerly with no code-splitting beyond the R3F hero).
+const GitHubActivity = lazy(() => import("./components/sections/GitHubActivity"));
+const LiveDemo = lazy(() => import("./components/sections/LiveDemo"));
+const RecognitionSection = lazy(() => import("./components/sections/RecognitionSection"));
+const TrustAndThinkingSection = lazy(() => import("./components/sections/trust/TrustAndThinkingSection"));
+const ResumeSection = lazy(() => import("./components/sections/ResumeSection"));
 
 const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
 
@@ -86,12 +91,22 @@ const App = () => {
             <WhatIDoSection />
             <JourneySection />
             <CapabilitiesSection />
-            <GitHubActivity />
-            <LiveDemo />
+            <Suspense fallback={null}>
+              <GitHubActivity />
+            </Suspense>
+            <Suspense fallback={null}>
+              <LiveDemo />
+            </Suspense>
             <ProjectsSection />
-            <RecognitionSection />
-            <TrustAndThinkingSection />
-            <ResumeSection />
+            <Suspense fallback={null}>
+              <RecognitionSection />
+            </Suspense>
+            <Suspense fallback={null}>
+              <TrustAndThinkingSection />
+            </Suspense>
+            <Suspense fallback={null}>
+              <ResumeSection />
+            </Suspense>
             <ContactSection />
             {/* Fixed-position; lives in <main> only so it's reachable via landmark navigation. */}
             <Assistant />

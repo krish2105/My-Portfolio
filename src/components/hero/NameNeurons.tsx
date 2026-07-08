@@ -41,6 +41,9 @@ const NameNeurons = () => {
     const nodes: Node[] = [];
     const pulses: Pulse[] = [];
     const pointer = { x: -9999, y: -9999, active: false };
+    // Cached canvas rect, refreshed only on resize — avoids a forced
+    // synchronous layout read on every pointermove (2026-07-08 perf audit).
+    let canvasRect: DOMRect = canvas.getBoundingClientRect();
 
     const resize = () => {
       const rect = canvas.parentElement!.getBoundingClientRect();
@@ -51,6 +54,7 @@ const NameNeurons = () => {
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvasRect = canvas.getBoundingClientRect();
     };
 
     const seed = () => {
@@ -73,16 +77,20 @@ const NameNeurons = () => {
       seed();
     };
     const onMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = e.clientX - rect.left;
-      pointer.y = e.clientY - rect.top;
+      pointer.x = e.clientX - canvasRect.left;
+      pointer.y = e.clientY - canvasRect.top;
       pointer.active = true;
     };
     const onLeave = () => (pointer.active = false);
 
-    window.addEventListener("resize", onResize);
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerleave", onLeave);
+    const onScroll = () => {
+      canvasRect = canvas.getBoundingClientRect();
+    };
+
+    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave, { passive: true });
 
     let raf = 0;
     let lastFire = 0;
@@ -185,6 +193,7 @@ const NameNeurons = () => {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
     };

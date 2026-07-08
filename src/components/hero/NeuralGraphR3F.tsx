@@ -77,6 +77,13 @@ function NeuralField() {
   const pointPositions = useMemo(() => new Float32Array(NODE_COUNT * 3), []);
   const linePositions = useMemo(() => new Float32Array(MAX_LINE_VERTS * 3), []);
   const live = useMemo(() => nodes.map((n) => n.base.clone()), [nodes]);
+  // The O(n^2) proximity/line rebuild below is the heaviest per-frame cost
+  // in this scene (~3000 pair checks + a buffer upload). Node positions and
+  // pointer parallax still update every frame for smooth motion, but the
+  // line connections only need to be rebuilt every other frame — the eye
+  // can't tell the difference on a subtle background effect, and this
+  // halves the dominant cost (2026-07-08 perf audit).
+  const frameCount = useRef(0);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
@@ -109,31 +116,35 @@ function NeuralField() {
     if (pointGeo) pointGeo.attributes.position.needsUpdate = true;
 
     // 2. Connect nearby nodes with lines (opacity handled by material; we just build segments).
-    let v = 0;
-    const maxPairVerts = MAX_LINE_VERTS;
-    for (let i = 0; i < NODE_COUNT && v < maxPairVerts; i++) {
-      for (let j = i + 1; j < NODE_COUNT && v < maxPairVerts; j++) {
-        const a = live[i];
-        const b = live[j];
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const dz = a.z - b.z;
-        if (dx * dx + dy * dy + dz * dz < CONNECT_DIST * CONNECT_DIST) {
-          linePositions[v * 3] = a.x;
-          linePositions[v * 3 + 1] = a.y;
-          linePositions[v * 3 + 2] = a.z;
-          v++;
-          linePositions[v * 3] = b.x;
-          linePositions[v * 3 + 1] = b.y;
-          linePositions[v * 3 + 2] = b.z;
-          v++;
+    // Rebuilt every other frame only — see frameCount comment above.
+    frameCount.current++;
+    if (frameCount.current % 2 === 0) {
+      let v = 0;
+      const maxPairVerts = MAX_LINE_VERTS;
+      for (let i = 0; i < NODE_COUNT && v < maxPairVerts; i++) {
+        for (let j = i + 1; j < NODE_COUNT && v < maxPairVerts; j++) {
+          const a = live[i];
+          const b = live[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dz = a.z - b.z;
+          if (dx * dx + dy * dy + dz * dz < CONNECT_DIST * CONNECT_DIST) {
+            linePositions[v * 3] = a.x;
+            linePositions[v * 3 + 1] = a.y;
+            linePositions[v * 3 + 2] = a.z;
+            v++;
+            linePositions[v * 3] = b.x;
+            linePositions[v * 3 + 1] = b.y;
+            linePositions[v * 3 + 2] = b.z;
+            v++;
+          }
         }
       }
-    }
-    const lineGeo = linesRef.current?.geometry;
-    if (lineGeo) {
-      lineGeo.setDrawRange(0, v);
-      lineGeo.attributes.position.needsUpdate = true;
+      const lineGeo = linesRef.current?.geometry;
+      if (lineGeo) {
+        lineGeo.setDrawRange(0, v);
+        lineGeo.attributes.position.needsUpdate = true;
+      }
     }
 
     // 3. Soft pointer parallax on the whole group.

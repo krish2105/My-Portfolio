@@ -44,16 +44,31 @@ const useKineticWeight = (containerRef: RefObject<HTMLElement | null>) => {
     if (!active) return;
     const el = containerRef.current;
     if (!el) return;
+
+    // Cache the rect, refreshed on resize/scroll only — avoids a forced
+    // synchronous layout read on every pointermove (2026-07-08 perf audit).
+    let rect = el.getBoundingClientRect();
+    const updateRect = () => {
+      rect = el.getBoundingClientRect();
+    };
+    updateRect();
+    const ro = new ResizeObserver(updateRect);
+    ro.observe(el);
+    window.addEventListener("scroll", updateRect, { passive: true });
+
     const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
       const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-      const maxDist = Math.max(r.width, r.height) * 0.9;
+      const maxDist = Math.max(rect.width, rect.height) * 0.9;
       proximity.set(Math.max(0, 1 - dist / maxDist));
     };
     window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("pointermove", onMove);
+    };
   }, [active, containerRef, proximity]);
 
   const weight = useTransform(

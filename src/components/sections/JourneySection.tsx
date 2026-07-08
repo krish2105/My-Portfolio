@@ -48,7 +48,10 @@ const JourneyEntry = ({
 const JourneySection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 60%", "end 60%"] });
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // A transform (scaleY), not height — height is a layout property that
+  // forces reflow on every scroll frame; scaleY is compositor-only
+  // (2026-07-08 perf audit).
+  const lineProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <section id="journey" className="relative border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
@@ -60,7 +63,10 @@ const JourneySection = () => {
       <div ref={ref} className="relative pl-8 md:pl-16">
         {/* track + animated fill */}
         <div className="absolute left-0 top-2 bottom-2 w-[2px] bg-[var(--border)] md:left-4">
-          <motion.div style={{ height: lineHeight }} className="w-full bg-[#00FF94]" />
+          <motion.div
+            style={{ scaleY: lineProgress, transformOrigin: "top" }}
+            className="h-full w-full bg-[#00FF94]"
+          />
         </div>
 
         <div className="space-y-16 md:space-y-24">

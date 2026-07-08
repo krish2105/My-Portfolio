@@ -157,13 +157,27 @@ const HorizontalGallery = ({
 const SwipeGallery = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project) => void }) => {
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  // rAF-coalesced: a touch-scroll fires far more often than 60fps worth of
+  // useful updates, and each tick was forcing a scrollWidth/scrollLeft
+  // layout read — cap the read to once per animation frame (2026-07-08 perf audit).
+  const rafRef = useRef<number | null>(null);
 
   const onScroll = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / items.length;
-    setActive(Math.round(el.scrollLeft / cardWidth));
+    if (rafRef.current != null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const el = trackRef.current;
+      if (!el) return;
+      const cardWidth = el.scrollWidth / items.length;
+      setActive(Math.round(el.scrollLeft / cardWidth));
+    });
   };
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
     <div className="pt-8">

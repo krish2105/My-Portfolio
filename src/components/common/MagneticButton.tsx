@@ -1,38 +1,63 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
-import { motion } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
 }
 
+const SPRING = { stiffness: 150, damping: 15, mass: 0.1 };
+
+/**
+ * Magnetic hover pull. Uses Framer motion values (not React state) for the
+ * offset so mousemove never triggers a re-render, and caches the button's
+ * bounding rect (refreshed on resize/scroll via a ref, not on every
+ * mousemove) instead of calling getBoundingClientRect() per pixel of
+ * movement — that combination was the main source of mouse-input lag found
+ * in the 2026-07-08 perf audit, since this wraps most primary CTAs.
+ */
 const MagneticButton = ({ children, className = "" }: MagneticButtonProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isReducedMotion, setIsReducedMotion] = useState(() => 
-    typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
-  );
+  const rectRef = useRef<DOMRect | null>(null);
+  const isReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, SPRING);
+  const springY = useSpring(y, SPRING);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+    if (isReducedMotion) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const updateRect = () => {
+      rectRef.current = el.getBoundingClientRect();
+    };
+    updateRect();
+
+    const ro = new ResizeObserver(updateRect);
+    ro.observe(el);
+    window.addEventListener("scroll", updateRect, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", updateRect);
+    };
+  }, [isReducedMotion]);
 
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isReducedMotion) return;
-    
+    if (isReducedMotion || !rectRef.current) return;
     const { clientX, clientY } = e;
-    const { height, width, left, top } = ref.current!.getBoundingClientRect();
-    const middleX = clientX - (left + width / 2);
-    const middleY = clientY - (top + height / 2);
-    setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
+    const { height, width, left, top } = rectRef.current;
+    x.set((clientX - (left + width / 2)) * 0.2);
+    y.set((clientY - (top + height / 2)) * 0.2);
   };
 
   const reset = () => {
-    setPosition({ x: 0, y: 0 });
+    x.set(0);
+    y.set(0);
   };
 
   if (isReducedMotion) {
@@ -44,8 +69,7 @@ const MagneticButton = ({ children, className = "" }: MagneticButtonProps) => {
       ref={ref}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+      style={{ x: springX, y: springY }}
       className={`inline-block ${className}`}
     >
       {children}

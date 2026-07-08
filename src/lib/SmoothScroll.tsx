@@ -8,17 +8,20 @@ import Lenis from "lenis";
 
 /**
  * Smooth-scroll engine (Lenis). Drives the whole kinetic feel of the site.
- * Exposes the live scroll velocity so components can react to scroll speed
- * (velocity-skewed marquees, parallax, etc.). Lenis keeps the native scroll
- * position in sync, so framer-motion's useScroll keeps working untouched.
+ * Lenis keeps the native scroll position in sync, so framer-motion's
+ * useScroll/useVelocity keep working untouched for any component that needs
+ * reactive scroll/velocity values — this context only exposes the stable
+ * `lenis` instance (for imperative `.scrollTo()` calls), set once on mount.
+ * It intentionally does NOT re-publish scroll/velocity on every tick: every
+ * consumer only ever destructures `{ lenis }`, so doing so previously forced
+ * 8 component trees to re-render on every single scroll frame for no
+ * benefit — the #1 cause of scroll jank found in the 2026-07-08 perf audit.
  */
 interface ScrollState {
-  velocity: number;
-  scroll: number;
   lenis: Lenis | null;
 }
 
-const ScrollContext = createContext<ScrollState>({ velocity: 0, scroll: 0, lenis: null });
+const ScrollContext = createContext<ScrollState>({ lenis: null });
 
 export const useSmoothScroll = () => useContext(ScrollContext);
 
@@ -36,7 +39,7 @@ export const scrollTo = (target: string | number, lenis: Lenis | null) => {
 
 const SmoothScroll = ({ children }: { children: ReactNode }) => {
   const lenisRef = useRef<Lenis | null>(null);
-  const [state, setState] = useState<ScrollState>({ velocity: 0, scroll: 0, lenis: null });
+  const [state, setState] = useState<ScrollState>({ lenis: null });
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -50,11 +53,11 @@ const SmoothScroll = ({ children }: { children: ReactNode }) => {
       wheelMultiplier: 1,
     });
     lenisRef.current = lenis;
-    setState((s) => ({ ...s, lenis }));
-
-    lenis.on("scroll", ({ velocity, scroll }: { velocity: number; scroll: number }) => {
-      setState({ velocity, scroll, lenis });
-    });
+    // Set once on mount only — do NOT re-set on every "scroll" tick. Any
+    // component that needs reactive velocity/scroll should use Framer
+    // Motion's own useScroll()/useVelocity() (already the pattern used in
+    // HeroSection/Marquee), not this context.
+    setState({ lenis });
 
     let raf = 0;
     const loop = (time: number) => {

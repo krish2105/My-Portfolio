@@ -84,6 +84,10 @@ const ProfileCardComponent = ({
 
   const enterTimerRef = useRef<number | null>(null);
   const leaveRafRef = useRef<number | null>(null);
+  // Cached bounding rect, refreshed on resize/scroll instead of on every
+  // pointermove — avoids a forced synchronous layout read per pixel of
+  // mouse movement (2026-07-08 perf audit).
+  const rectRef = useRef<DOMRect | null>(null);
 
   const tiltEngine = useMemo<TiltEngine | null>(() => {
     if (!enableTilt) return null;
@@ -198,7 +202,7 @@ const ProfileCardComponent = ({
   }, [enableTilt]);
 
   const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
-    const rect = el.getBoundingClientRect();
+    const rect = rectRef.current ?? el.getBoundingClientRect();
     return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
   };
 
@@ -283,9 +287,17 @@ const ProfileCardComponent = ({
     const pointerLeaveHandler = handlePointerLeave;
     const deviceOrientationHandler = handleDeviceOrientation;
 
-    shell.addEventListener("pointerenter", pointerEnterHandler);
-    shell.addEventListener("pointermove", pointerMoveHandler);
-    shell.addEventListener("pointerleave", pointerLeaveHandler);
+    const updateRect = () => {
+      rectRef.current = shell.getBoundingClientRect();
+    };
+    updateRect();
+    const ro = new ResizeObserver(updateRect);
+    ro.observe(shell);
+    window.addEventListener("scroll", updateRect, { passive: true });
+
+    shell.addEventListener("pointerenter", pointerEnterHandler, { passive: true });
+    shell.addEventListener("pointermove", pointerMoveHandler, { passive: true });
+    shell.addEventListener("pointerleave", pointerLeaveHandler, { passive: true });
 
     const handleClick = () => {
       if (!enableMobileTilt || location.protocol !== "https:") return;
@@ -312,6 +324,8 @@ const ProfileCardComponent = ({
     tiltEngine.beginInitial(ANIMATION_CONFIG.INITIAL_DURATION);
 
     return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", updateRect);
       shell.removeEventListener("pointerenter", pointerEnterHandler);
       shell.removeEventListener("pointermove", pointerMoveHandler);
       shell.removeEventListener("pointerleave", pointerLeaveHandler);

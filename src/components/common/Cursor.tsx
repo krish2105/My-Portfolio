@@ -50,7 +50,7 @@ const Cursor = () => {
     const leave = () => setHidden(true);
     const enter = () => setHidden(false);
 
-    window.addEventListener("pointermove", move);
+    window.addEventListener("pointermove", move, { passive: true });
     document.addEventListener("pointerleave", leave);
     document.addEventListener("pointerenter", enter);
     return () => {
