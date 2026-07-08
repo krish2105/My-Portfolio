@@ -45,9 +45,23 @@ a short note near the link ("may take ~30s to wake up").
 
 ## 5. Résumé
 
-Confirm `RESUME_DRIVE_FILE_ID` in `src/data/portfolio.ts` still points at
-the current PDF. Not yet done: an ATS-plain-text variant and an inline PDF
-preview on `ResumeSection` (currently a direct-download link only).
+**Done (2026-07-08):** inline PDF preview shipped on `ResumeSection`
+(click-to-expand Google Drive `/preview` iframe, with an "Open full PDF"
+fallback link). **Not yet done:** an ATS-plain-text variant — deferred by
+choice, resurface only if wanted.
+
+**New, higher-priority finding (2026-07-08 recruiter audit):** the actual
+résumé PDF (`Krishna_Mathur_Dubai_Executive_Resume.pdf`) does not mention
+any of the 4 flagship web projects (FraudShield, MediFlow, Lulu Sales
+Intelligence, TalkToData) and has zero quantified numbers in any bullet —
+while the website leads with these projects and MediFlow's real metrics
+(67% utilisation, 0.859 Jain's index). Since recruiters forward the PDF
+internally (not the portfolio link), this mismatch means the strongest
+work often never reaches a hiring manager. Action: add at least one bullet
+per flagship project to the résumé, each with one real number already
+documented on the site, then re-upload to the same
+`RESUME_DRIVE_FILE_ID` (`src/data/portfolio.ts:50`) so the existing link
+and inline preview keep working with no code change.
 
 ## 6. Testimonials / recommendations
 

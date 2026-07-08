@@ -43,7 +43,7 @@ describe("compareProjects", () => {
 
   it("honestly reports 'Not yet measured' when a project has no metrics", () => {
     const a = projects.find((p) => p.id === "smartloanbot")!; // no metrics in real data
-    const b = projects.find((p) => p.id === "waselx")!;
+    const b = projects.find((p) => p.id === "flower-classifier")!; // no metrics in real data
     const cmp = compareProjects(a, b);
     const row = cmp.rows.find((r) => r.label === "Key metric");
     expect(row?.a).toBe("Not yet measured");

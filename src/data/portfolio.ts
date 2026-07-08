@@ -565,6 +565,11 @@ export const projects: Project[] = [
     technologies: ["Python", "NetworkX", "Dijkstra’s Algorithm", "Bellman-Ford Algorithm", "Minimum Spanning Tree", "Graph Theory", "Data Structures", "Route Visualisation"],
     tags: ["Data"],
     images: [],
+    metrics: [
+      { label: "Network modelled", value: "15 nodes / 24 roads" },
+      { label: "Algorithms & data structures", value: "16" },
+      { label: "Team size", value: "3" },
+    ],
     note: "Team project code repository is private; source available on request.",
     problem:
       "Last-mile delivery networks need fast, defensible routing decisions across many nodes and constraints.",
