@@ -25,7 +25,7 @@ import { projects } from "../src/data/portfolio";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DIST = resolve(ROOT, "dist");
-const SITE = "https://portfolio-krishna.vercel.app";
+const SITE = "https://krishnamathur-ai.vercel.app";
 
 const templatePath = resolve(DIST, "index.html");
 if (!existsSync(templatePath)) {
@@ -85,7 +85,7 @@ for (const project of projects) {
 
   html = replaceOnce(
     html,
-    'href="https://portfolio-krishna.vercel.app/"',
+    'href="https://krishnamathur-ai.vercel.app/"',
     `href="${url}"`,
     "canonical"
   );
@@ -109,12 +109,12 @@ for (const project of projects) {
 
   html = replaceOnce(
     html,
-    'content="https://portfolio-krishna.vercel.app/"',
+    'content="https://krishnamathur-ai.vercel.app/"',
     `content="${url}"`,
     "og:url"
   );
 
-  html = html.replace(/content="https:\/\/portfolio-krishna\.vercel\.app\/og-image\.png"/g, `content="${ogImage}"`);
+  html = html.replace(/content="https:\/\/krishnamathur-ai\.vercel\.app\/og-image\.png"/g, `content="${ogImage}"`);
 
   // Insert per-project structured data (CreativeWork + BreadcrumbList) just before </head>.
   const jsonLd = `

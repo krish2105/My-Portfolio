@@ -8,7 +8,7 @@ verification discipline.
 ## Phase status
 
 - [x] **Phase 0 — Emergency polish.** Domain typo fixed everywhere
-      (`portfolio-krishna.vercel.app`), all project links audited, real
+      (`krishnamathur-ai.vercel.app`), all project links audited, real
       `public/preview.png` added, sitemap/robots/OG regenerated.
 - [x] **Phase 1 — Brand & content upgrade.** New hero/about/services/SEO
       copy, Recruiter/Technical/Business view-mode toggle, "Copy hiring
@@ -53,12 +53,9 @@ verification discipline.
 
 ## Known open items (not blockers, tracked honestly)
 
-- **Vercel subdomain rename.** The code already points every canonical/OG/
-  sitemap/JSON-LD URL at `portfolio-krishna.vercel.app`. Krishna needs to
-  rename the actual Vercel project subdomain (Project Settings → Domains)
-  to match — until that happens, the *live* URL and the URLs baked into
-  meta tags won't agree, which will 404 shared links. Do this rename
-  **before or together with** the next deploy, not after.
+- **Vercel subdomain alignment — DONE (2026-07-08).** Confirmed the live
+  Vercel project subdomain is `krishnamathur-ai.vercel.app`; every
+  canonical/OG/sitemap/JSON-LD URL in the code now matches it.
 - **Custom domain.** Not yet decided/purchased. `SITE` in
   `scripts/generate-project-pages.ts` is the one line to change if/when a
   real domain (e.g. `krishnamathur.dev`) is added — see Section 11 of the

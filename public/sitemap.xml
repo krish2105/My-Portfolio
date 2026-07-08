@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://portfolio-krishna.vercel.app/</loc>
+    <loc>https://krishnamathur-ai.vercel.app/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/uses</loc>
+    <loc>https://krishnamathur-ai.vercel.app/uses</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/fraudshield</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/fraudshield</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/mediflow</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/mediflow</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/lulu-sales</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/lulu-sales</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/smartloanbot</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/smartloanbot</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/waselx</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/waselx</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/flower-classifier</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/flower-classifier</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/talktodata</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/talktodata</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://portfolio-krishna.vercel.app/work/electric-production</loc>
+    <loc>https://krishnamathur-ai.vercel.app/work/electric-production</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

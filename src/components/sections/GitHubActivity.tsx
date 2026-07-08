@@ -5,6 +5,18 @@ import { RevealText, Rise } from "../common/Reveal";
 
 const GH_USERNAME = "krish2105";
 
+/** Coarse "3 days ago"-style relative time — no dependency needed for this. */
+const relativeTime = (iso: string): string => {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo ago`;
+  return `${Math.floor(months / 12)}y ago`;
+};
+
 const Stat = ({
   icon: Icon,
   value,
@@ -53,7 +65,23 @@ const GitHubActivity = () => {
               <Stat icon={Code2} value={stats.topLanguages[0] ?? "—"} label="Top language" />
             </div>
 
-            <div className="mt-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            {stats.lastPush && (
+              <p className="mt-6 flex items-center gap-2 text-sm text-[var(--text-2)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden />
+                Last shipped:{" "}
+                <a
+                  href={stats.lastPush.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-[var(--text)] hover:text-[var(--accent)] hover:underline"
+                >
+                  {stats.lastPush.repo}
+                </a>{" "}
+                · {relativeTime(stats.lastPush.at)}
+              </p>
+            )}
+
+            <div className="mt-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
               <div className="flex flex-wrap gap-2">
                 {stats.topLanguages.map((l) => (
                   <span

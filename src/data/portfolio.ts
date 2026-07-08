@@ -25,6 +25,8 @@ export const profile: Profile = {
   location: "Dubai, UAE",
   secondaryLocation: "Jaipur, India",
   availability: "Open to opportunities and collaborations in AI, data, GenAI and intelligent software.",
+  availabilityShort: "Open to roles",
+  responseTime: "Usually replies within 24–48h.",
   tagline: "I build AI that turns messy data, language and business workflows into decisions.",
   aboutStatements: [
     "I am Krishna Mathur, an AI developer, data analyst and GenAI builder currently pursuing a Master of AI in Business at SP Jain School of Global Management in Dubai. I completed my B.Tech in Computer Science and Engineering with a specialisation in Artificial Intelligence and Machine Learning from Manipal University Jaipur.",

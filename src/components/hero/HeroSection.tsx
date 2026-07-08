@@ -13,6 +13,7 @@ import HeroBackdrop from "./HeroBackdrop";
 import MagneticButton from "../common/MagneticButton";
 import SocialLinks from "../common/SocialLinks";
 import ProfileCard from "../profile/ProfileCard";
+import HeroMetrics from "./HeroMetrics";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useSound } from "../../lib/sound";
@@ -213,6 +214,15 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="mt-8"
+          >
+            <HeroMetrics />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.05 }}
             className="mt-9 flex flex-wrap items-center gap-5"
           >
@@ -279,7 +289,7 @@ const HeroSection = () => {
             name="Krishna Mathur"
             title="AI / ML Developer · GenAI Builder"
             handle="krishnamathur"
-            status="Online"
+            status={profile.availabilityShort}
             contactText="Contact Me"
             avatarUrl="/avatar.webp"
             miniAvatarUrl="/avatar.webp"

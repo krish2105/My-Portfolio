@@ -122,7 +122,7 @@ Done — `public/preview.png` exists and is referenced in `README.md`.
 
 ## 10. Custom domain
 
-Decision: Vercel subdomain renamed to `portfolio-krishna.vercel.app`
+Decision: Vercel subdomain renamed to `krishnamathur-ai.vercel.app`
 (code already points at this everywhere). Revisit only if a real custom
 domain (e.g. `krishnamathur.dev`) is purchased later — see
 `docs/LAUNCH_CHECKLIST.md` for the cutover steps.

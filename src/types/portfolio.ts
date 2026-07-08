@@ -84,6 +84,11 @@ export interface Profile {
   location: string;
   secondaryLocation: string;
   availability: string;
+  /** Short badge-length version of `availability` (e.g. "Open to roles"),
+   * for tight UI slots like the profile card status pill. */
+  availabilityShort: string;
+  /** Static, honest response-time expectation shown near the contact CTA. */
+  responseTime: string;
   aboutStatements: string[];
   /** The core one-line positioning statement — reused in the hero, About,
    * SEO helpers and the Copilot's hiring summary so it never drifts. */

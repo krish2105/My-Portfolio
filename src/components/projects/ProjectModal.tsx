@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, ExternalLink, NotebookPen } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
+import { track } from "@vercel/analytics";
 import type { Project } from "../../types/portfolio";
 import SafeExternalLink from "../common/SafeExternalLink";
 import ProjectTelemetry from "./ProjectTelemetry";
@@ -37,6 +38,7 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
 
   useEffect(() => {
     if (!project) return;
+    track("project_modal_open", { id: project.id });
     prevFocus.current = document.activeElement as HTMLElement;
     document.body.style.overflow = "hidden";
 
@@ -205,14 +207,28 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
             )}
 
             {project.limitations && project.limitations.length > 0 && (
-              <SectionBlock label="Limitations">
-                <BulletList items={project.limitations} />
+              <SectionBlock label="Limitations — what I'd flag honestly">
+                <ul className="space-y-2.5 rounded-xl border border-amber-500/25 bg-amber-500/[0.06] p-4">
+                  {project.limitations.map((item, i) => (
+                    <li key={i} className="flex gap-3 text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </SectionBlock>
             )}
 
             {project.nextSteps && project.nextSteps.length > 0 && (
-              <SectionBlock label="Next steps">
-                <BulletList items={project.nextSteps} />
+              <SectionBlock label="Next steps — what I'd do differently">
+                <ul className="space-y-2.5 rounded-xl border border-[#00FF94]/25 bg-[#00FF94]/[0.06] p-4">
+                  {project.nextSteps.map((item, i) => (
+                    <li key={i} className="flex gap-3 text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00FF94]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </SectionBlock>
             )}
 

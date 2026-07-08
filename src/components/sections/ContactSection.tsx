@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { socialLinks } from "../../data/portfolio";
+import { track } from "@vercel/analytics";
+import { profile, socialLinks } from "../../data/portfolio";
 import SafeExternalLink from "../common/SafeExternalLink";
 import SocialLinks from "../common/SocialLinks";
 import ResumeButton from "../common/ResumeButton";
@@ -89,6 +90,7 @@ export const ContactTerminal = () => {
       });
       if (res.ok) {
         setStatus("sent");
+        track("contact_submit_success");
         setFormData({ name: "", email: "", subject: "", message: "" });
         return;
       }
@@ -232,6 +234,11 @@ const ContactSection = () => {
           text="Tell me the decision you're trying to make with AI — I'm open to roles and collaborations in ML, GenAI, data analytics and intelligent software."
           className="text-base text-[var(--text-2)] md:text-lg"
         />
+      </Rise>
+
+      <Rise delay={0.13} className="mt-3 flex items-center gap-2 text-sm text-[var(--text-2)]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden />
+        {profile.responseTime}
       </Rise>
 
       {/* Giant email link */}

@@ -10,7 +10,7 @@ This is a single-page portfolio that presents Krishna's work across AI, machine 
 
 ## 2. Live Demo
 
-**🔗 [portfolio-krishna.vercel.app](https://portfolio-krishna.vercel.app/)**
+**🔗 [krishnamathur-ai.vercel.app](https://krishnamathur-ai.vercel.app/)**
 
 ## 3. Preview
 
@@ -188,7 +188,7 @@ Other touch points:
 
 ### Personalization TODO
 - [ ] Add real Instagram/Twitter/website links in `src/data/portfolio.ts` (currently hidden — `""` — since the old placeholders 404'd).
-- [ ] **Rename the Vercel subdomain to match the code.** The codebase now points at `portfolio-krishna.vercel.app` (corrected spelling) everywhere — canonical/OG/JSON-LD in `index.html`, `scripts/generate-project-pages.ts`, `sitemap.xml`, `robots.txt`. Rename the Vercel project's subdomain (Project Settings → Domains) to match, or point a real custom domain at it instead.
+- [ ] **Rename the Vercel subdomain to match the code.** The codebase now points at `krishnamathur-ai.vercel.app` (corrected spelling) everywhere — canonical/OG/JSON-LD in `index.html`, `scripts/generate-project-pages.ts`, `sitemap.xml`, `robots.txt`. Rename the Vercel project's subdomain (Project Settings → Domains) to match, or point a real custom domain at it instead.
 - [ ] **5 of 8 projects have no screenshots** (`smartloanbot`, `waselx`, `flower-classifier`, `talktodata`, `electric-production` in `src/data/portfolio.ts` all ship `images: []`). Each now has an honest "code/notebook available on request" note in place of a dead link — add a real screenshot or architecture diagram per project when available.
 - [ ] Real testimonials, LinkedIn recommendations, mentor/faculty feedback and writing/articles — see `docs/CONTENT_TODO.md` (added in Phase 3 of the AI Command Center plan) for ready-to-send request templates.
 

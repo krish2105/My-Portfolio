@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check } from "lucide-react";
+import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { journey, capabilities, recognition, socialLinks, projects } from "../../data/portfolio";
+import { journey, capabilities, recognition, socialLinks, projects, RESUME_DRIVE_FILE_ID } from "../../data/portfolio";
 import { buildHiringSummary } from "../../lib/hiringSummary";
 import { RevealText, Rise } from "../common/Reveal";
 import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
@@ -57,6 +57,10 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
 const DownloadCard = () => {
   const hasResume = !!socialLinks.resume;
   const [copied, setCopied] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const canPreview =
+    hasResume && !!RESUME_DRIVE_FILE_ID && RESUME_DRIVE_FILE_ID !== "REPLACE_WITH_YOUR_DRIVE_FILE_ID";
+  const previewUrl = `https://drive.google.com/file/d/${RESUME_DRIVE_FILE_ID}/preview`;
 
   const copySummary = async () => {
     const summary = buildHiringSummary();
@@ -125,6 +129,21 @@ const DownloadCard = () => {
                 Resume link coming soon
               </span>
             )}
+            {canPreview && (
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !previewOpen;
+                  setPreviewOpen(next);
+                  if (next) track("resume_preview_opened");
+                }}
+                data-cursor={previewOpen ? "Close" : "Preview"}
+                className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+              >
+                {previewOpen ? <EyeOff size={16} /> : <Eye size={16} />}
+                {previewOpen ? "Hide preview" : "Preview resume"}
+              </button>
+            )}
             {socialLinks.linkedin && (
               <a
                 href={socialLinks.linkedin}
@@ -150,6 +169,31 @@ const DownloadCard = () => {
               {copied ? "Hiring summary copied to clipboard" : ""}
             </span>
           </div>
+
+          {canPreview && previewOpen && (
+            <div className="mt-6 overflow-hidden rounded-xl border border-white/[0.08] bg-black/20">
+              <iframe
+                src={previewUrl}
+                title="Résumé preview"
+                loading="lazy"
+                className="h-[70vh] w-full"
+                allow="autoplay"
+              />
+              <div className="flex items-center justify-between border-t border-white/[0.08] px-4 py-2">
+                <span className="text-xs text-[var(--text-3)]">
+                  Blocked by your browser?
+                </span>
+                <a
+                  href={socialLinks.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-[var(--accent)] hover:underline"
+                >
+                  Open full PDF →
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Rise>

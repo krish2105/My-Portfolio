@@ -93,3 +93,49 @@ results here once done, following the same table format as this section.
 (+9 for Trust & Thinking / NL2SQL / IntersectionObserver test-env fix,
 +15 for the Copilot's comparison/best-for-role/interview-question logic).
 `npm run lint` and `npm run build` are green.
+
+## 2026-07-08 — Domain fix + proof/signal features (senior-designer audit follow-up)
+
+**Domain correctness:** confirmed with Krishna that the live Vercel
+subdomain is `krishnamathur-ai.vercel.app` (not `portfolio-krishna.vercel.app`,
+which was hardcoded everywhere). Replaced across all 8 affected files
+(`index.html`, `scripts/generate-project-pages.ts`, `public/robots.txt`,
+`public/sitemap.xml`, `README.md`, and 3 docs files). `npm run build`
+regenerates the static `/work/:slug` pages with the corrected canonical/OG/
+JSON-LD URLs — confirmed `Generated 8/8 static case-study pages.` and zero
+remaining `portfolio-krishna` references in the repo.
+
+**New features added and manually verified in the Chromium preview**
+(desktop 1440px, mobile 375px, dark + light theme, 0 console errors
+throughout):
+
+- Hero quantified-impact strip (`HeroMetrics.tsx`) — 8 shipped systems / 4
+  flagships / 67% MediFlow utilisation, all derived live from `projects[]`
+  so the numbers can't drift from the underlying data. Confirmed correct
+  `<dl>`/`<dt>`/`<dd>` semantics via the accessibility tree.
+- Profile card status pill now shows the real `profile.availabilityShort`
+  ("Open to roles") instead of a hardcoded fake "Online".
+- Contact section shows a static, honest response-time line ("Usually
+  replies within 24–48h").
+- Résumé section gained a click-to-expand inline PDF preview (Google Drive
+  `/preview` iframe, lazy-loaded, with an "Open full PDF" fallback link) —
+  confirmed the iframe loads the actual résumé content. CSP updated
+  (`frame-src https://drive.google.com`) to permit it.
+- GitHub activity section now shows "Last shipped: `<repo>` · `<relative
+  time>`", computed from data already being fetched (no extra API call) —
+  confirmed against the live GitHub API that `krish2105/krish2105` really
+  was the most recently pushed repo at verification time.
+- Added missing analytics events (`contact_submit_success`,
+  `project_modal_open`) so the funnel is now fully observable.
+- Project modal's Limitations/Next Steps sections got a distinct callout
+  treatment (amber/green) instead of blending into routine case-study
+  prose, per the audit's finding that this self-aware content was
+  under-emphasized.
+
+`npm run lint`, `npm run test` (64/64), and `npm run build` all green
+after these changes.
+
+**Cross-browser status unchanged from the 2026-07-02 entry above** — still
+only Chromium-verified in this environment. Safari (desktop + iOS), Firefox,
+and a real throttled-network pass remain outstanding and need Krishna to
+run them on real devices/browsers.

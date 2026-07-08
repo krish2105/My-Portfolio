@@ -7,9 +7,13 @@ export interface GitHubStats {
   totalStars: number;
   topLanguages: string[];
   profileUrl: string;
+  lastPush: { repo: string; url: string; at: string } | null;
 }
 
 interface GitHubRepo {
+  name: string;
+  html_url: string;
+  pushed_at: string;
   stargazers_count: number;
   language: string | null;
   fork: boolean;
@@ -69,6 +73,10 @@ export const useGitHubStats = (username: string) => {
           .slice(0, 5)
           .map(([l]) => l);
 
+        const mostRecentlyPushed = [...repos].sort(
+          (a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime()
+        )[0];
+
         const data: GitHubStats = {
           username,
           publicRepos: user.public_repos ?? repos.length,
@@ -76,6 +84,9 @@ export const useGitHubStats = (username: string) => {
           totalStars,
           topLanguages,
           profileUrl: user.html_url ?? `https://github.com/${username}`,
+          lastPush: mostRecentlyPushed
+            ? { repo: mostRecentlyPushed.name, url: mostRecentlyPushed.html_url, at: mostRecentlyPushed.pushed_at }
+            : null,
         };
         if (!alive) return;
         setStats(data);
