@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { capabilities } from "../../data/portfolio";
 import type { CapabilityGroup } from "../../types/portfolio";
@@ -99,4 +99,4 @@ const CapabilitiesSection = () => {
   );
 };
 
-export default CapabilitiesSection;
+export default memo(CapabilitiesSection);

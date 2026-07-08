@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { profile, socialLinks } from "../../data/portfolio";
 import SafeExternalLink from "../common/SafeExternalLink";
@@ -277,4 +277,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection;
+export default memo(ContactSection);

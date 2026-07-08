@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
@@ -84,4 +84,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);

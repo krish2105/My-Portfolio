@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { FaGithub } from "react-icons/fa6";
 import { Star, GitFork, Users, Code2 } from "lucide-react";
 import { useGitHubStats } from "../../hooks/useGitHubStats";
@@ -110,4 +111,4 @@ const GitHubActivity = () => {
   );
 };
 
-export default GitHubActivity;
+export default memo(GitHubActivity);

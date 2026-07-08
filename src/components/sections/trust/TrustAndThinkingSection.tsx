@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { testimonials, writing, trustPlaceholders } from "../../../data/portfolio";
 import { RevealText, Rise } from "../../common/Reveal";
 import TrustCards from "./TrustCards";
@@ -44,4 +45,4 @@ const TrustAndThinkingSection = () => {
   );
 };
 
-export default TrustAndThinkingSection;
+export default memo(TrustAndThinkingSection);

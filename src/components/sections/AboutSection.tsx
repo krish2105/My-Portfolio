@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "../../data/portfolio";
 import { useTheme } from "../../lib/theme";
@@ -186,4 +186,4 @@ const AboutSection = () => {
   );
 };
 
-export default AboutSection;
+export default memo(AboutSection);

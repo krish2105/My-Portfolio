@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff } from "lucide-react";
 import { track } from "@vercel/analytics";
@@ -396,4 +396,4 @@ const ResumeSection = () => {
   );
 };
 
-export default ResumeSection;
+export default memo(ResumeSection);

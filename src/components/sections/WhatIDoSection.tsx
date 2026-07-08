@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { motion } from "motion/react";
 import { services } from "../../data/portfolio";
 import { RevealText } from "../common/Reveal";
@@ -68,4 +68,4 @@ const WhatIDoSection = () => {
   );
 };
 
-export default WhatIDoSection;
+export default memo(WhatIDoSection);

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { recognition } from "../../data/portfolio";
 import { RevealText, Rise } from "../common/Reveal";
 
@@ -44,4 +45,4 @@ const RecognitionSection = () => {
   );
 };
 
-export default RecognitionSection;
+export default memo(RecognitionSection);

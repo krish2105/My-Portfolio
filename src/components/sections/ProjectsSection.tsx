@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Network } from "lucide-react";
 import { projects } from "../../data/portfolio";
@@ -262,4 +262,4 @@ const ProjectsSection = () => {
   );
 };
 
-export default ProjectsSection;
+export default memo(ProjectsSection);

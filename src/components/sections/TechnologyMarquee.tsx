@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   SiPython,
   SiTensorflow,
@@ -99,4 +100,4 @@ const TechnologyMarquee = () => {
   );
 };
 
-export default TechnologyMarquee;
+export default memo(TechnologyMarquee);

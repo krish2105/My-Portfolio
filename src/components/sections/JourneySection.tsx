@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { journey } from "../../data/portfolio";
 import type { JourneyItem } from "../../types/portfolio";
@@ -79,4 +79,4 @@ const JourneySection = () => {
   );
 };
 
-export default JourneySection;
+export default memo(JourneySection);

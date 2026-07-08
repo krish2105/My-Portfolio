@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { Sparkles, ShieldCheck, Loader2, Database } from "lucide-react";
@@ -276,4 +276,4 @@ const LiveDemo = () => {
   );
 };
 
-export default LiveDemo;
+export default memo(LiveDemo);

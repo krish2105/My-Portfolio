@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { ReactNode } from "react";
 import { MapPin, GraduationCap, Sparkles, ArrowUpRight } from "lucide-react";
 import { profile, projects, capabilities, now } from "../../data/portfolio";
@@ -154,4 +155,4 @@ const BentoSection = () => {
   );
 };
 
-export default BentoSection;
+export default memo(BentoSection);

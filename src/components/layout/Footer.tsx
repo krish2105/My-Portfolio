@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { profile } from "../../data/portfolio";
 import SocialLinks from "../common/SocialLinks";
 import { ArrowUp } from "lucide-react";
@@ -45,4 +46,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default memo(Footer);
