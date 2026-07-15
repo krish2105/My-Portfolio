@@ -193,6 +193,14 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
             />
           )}
         </div>
+        {/* Scrim so the status/flagship badges read clearly regardless of what's
+            underneath them in the actual screenshot (real app UI, not a
+            designed cover — headline text can land right in this corner).
+            Strong enough to recede the screenshot's own text, not just tint it. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black from-0% via-black via-75% to-transparent"
+        />
         <span className="absolute right-5 top-4 font-display text-5xl font-black text-[var(--text)]/10 md:text-7xl">
           {project.number}
         </span>
