@@ -46,6 +46,24 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: false,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Safety net, not the primary splitting mechanism: the R3F hero and
+        // transformers.js are already deferred via lazy()/dynamic import()
+        // (see HeroBackdrop.tsx, transformersEnv.ts). This just guarantees
+        // those two heavy vendor trees can never get silently re-inlined
+        // into the main chunk if a future import accidentally pulls them in
+        // eagerly elsewhere.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+          if (id.includes("three") || id.includes("@react-three")) return "r3f-vendor";
+          if (id.includes("@huggingface/transformers")) return "transformers-vendor";
+          return undefined;
+        },
+      },
+    },
+  },
   plugins: [
     serveOnnxAssetsInDev(),
     react(),
@@ -76,7 +94,12 @@ export default defineConfig({
       workbox: {
         // Don't precache the heavy lazy 3D / ML chunks or big media; runtime-cache instead.
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
-        globIgnores: ["**/NeuralGraphR3F*.js", "**/transformers*.js", "**/ort*.js"],
+        // r3f-vendor/transformers-vendor are the manualChunks names (see
+        // build.rollupOptions.output.manualChunks above) that now carry the
+        // actual heavy three.js/transformers.js code — NeuralGraphR3F*.js
+        // itself shrank to just component logic once the vendor code moved
+        // into its own chunk, so it no longer needs excluding.
+        globIgnores: ["**/r3f-vendor*.js", "**/transformers-vendor*.js", "**/ort*.js"],
         maximumFileSizeToCacheInBytes: 2_500_000,
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [

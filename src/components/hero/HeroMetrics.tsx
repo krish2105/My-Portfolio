@@ -24,10 +24,14 @@ const HeroMetrics = () => {
       {stats.map((s) => (
         <div key={s.label} className="flex flex-col">
           <dt className="sr-only">{s.label}</dt>
-          <dd className="font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-3xl">
-            {s.value}
+          <dd className="flex flex-col">
+            <span className="font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-3xl">
+              {s.value}
+            </span>
+            <span aria-hidden="true" className="text-xs uppercase tracking-wide text-[var(--text-2)]">
+              {s.label}
+            </span>
           </dd>
-          <span className="text-xs uppercase tracking-wide text-[var(--text-2)]">{s.label}</span>
         </div>
       ))}
     </dl>

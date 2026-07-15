@@ -221,8 +221,9 @@ const HeroSection = () => {
             </p>
             <p className="max-w-lg text-base text-[var(--text-2)] leading-relaxed">
               {profile.tagline} From{" "}
-              <span className="text-[var(--text)]">fraud detection</span> to hospital
-              resource allocation, analytics dashboards and GenAI workflows.
+              <span className="text-[var(--text)]">cited, agentic RAG copilots</span> to
+              multi-agent deal intelligence, regulated-domain AI and explainable
+              computer vision — shipped live, not just prototyped.
             </p>
           </motion.div>
 

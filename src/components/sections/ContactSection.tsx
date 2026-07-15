@@ -210,7 +210,7 @@ const ContactSection = () => {
       <div className="absolute -top-1/3 left-1/2 -z-10 h-[60vh] w-[60vh] -translate-x-1/2 bg-radial-glow opacity-60" />
 
       <div className="mb-10 flex items-center gap-4">
-        <span className="kicker">(08)</span>
+        <span className="kicker">(09)</span>
         <RevealText className="kicker">Contact</RevealText>
       </div>
 

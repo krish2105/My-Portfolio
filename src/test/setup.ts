@@ -24,6 +24,17 @@ if (typeof window.IntersectionObserver === "undefined") {
   window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 }
 
+// jsdom doesn't implement ResizeObserver — MagneticButton/ProfileCard (and
+// anything else tracking element size) need this stubbed or they throw on mount.
+if (typeof window.ResizeObserver === "undefined") {
+  class MockResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+}
+
 // jsdom doesn't implement matchMedia — every hook/component that checks
 // prefers-reduced-motion / pointer capability needs this stubbed.
 if (!window.matchMedia) {

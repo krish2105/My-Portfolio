@@ -284,7 +284,7 @@ const ResumeSection = () => {
 
       {/* ── Header ── */}
       <div className="mb-16 flex items-center gap-4">
-        <span className="kicker">(07)</span>
+        <span className="kicker">(08)</span>
         <RevealText className="kicker">Resume</RevealText>
       </div>
 

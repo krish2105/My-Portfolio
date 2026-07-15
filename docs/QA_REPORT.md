@@ -105,6 +105,76 @@ regenerates the static `/work/:slug` pages with the corrected canonical/OG/
 JSON-LD URLs — confirmed `Generated 8/8 static case-study pages.` and zero
 remaining `portfolio-krishna` references in the repo.
 
+## 2026-07-15 — Post-project-swap content/IA realignment + mobile gate enforced
+
+**Content/IA changes:** after replacing 4 weak academic projects with 4
+independent production systems (FinCopilot, Sakan AI, ComplianceAgent,
+AutoValuate — see `docs/CONTENT_TODO.md`), realigned every piece of copy
+that still referenced the old project set (hero subhead, `BentoSection`
+view-mode headlines, `now`/`services`/`capabilities`/`journey` in
+`portfolio.ts`) and fixed a real dead reference: `services` still said "see
+TalkToData" for a project that no longer exists. Also reordered
+`src/App.tsx`: `BentoSection` moved to right after the hero (was
+duplicating `AboutSection`'s "about me" beat), and `GitHubActivity`/
+`LiveDemo` moved to after `ProjectsSection` (were previously showing demos
+before the case studies they reinforce). Section kicker numbers cascaded:
+Trust & Thinking `(06B)→(07)`, Resume `(07)→(08)`, Contact `(08)→(09)`.
+
+**Real accessibility bug found and fixed by this pass's own axe-core run**
+(not pre-existing/known — `docs/QA_REPORT.md`'s last scan predates this):
+`HeroMetrics.tsx`'s `<dl>` wrapped `<dt>`+`<dd>`+a stray `<span>` per stat,
+violating the HTML5 definition-list content model (a `<div>` inside `<dl>`
+must contain only `dt`/`dd`). Axe's `definition-list` rule caught it on the
+home page (`/`). Fixed by nesting the visible label inside the `<dd>`
+instead of as a sibling. Re-ran axe against `/`, `/work/fraudshield/`,
+`/uses`, and the new `/work/fincopilot/` — **0 violations on all four.**
+
+**Suspense fallbacks:** the 5 lazy sections (`GitHubActivity`, `LiveDemo`,
+`RecognitionSection`, `TrustAndThinkingSection`, `ResumeSection`) previously
+used `<Suspense fallback={null}>`, popping in abruptly with no reserved
+space. Added a shared `SectionSkeleton` component (`motion-safe:animate-pulse`,
+so it already no-ops under reduced-motion) wired into all 5.
+
+**`vite.config.ts` `manualChunks` added** as a safety net for the two heavy
+vendor trees (`three`/`@react-three/fiber` → `r3f-vendor`,
+`@huggingface/transformers` → `transformers-vendor`), so a future accidental
+eager import can't silently re-inline them into the main chunk. This
+required updating the PWA `workbox.globIgnores` patterns to match the new
+chunk names (`r3f-vendor*.js`/`transformers-vendor*.js` instead of
+`NeuralGraphR3F*.js`/`transformers*.js`) — the old patterns matched on the
+pre-split filenames and would have silently started precaching the 890 KB
+r3f-vendor chunk otherwise. Confirmed precache stayed flat (850.69 KiB → 850.77 KiB) after the fix.
+
+**Mobile Lighthouse gate — re-measured, now enforced.** Old gate
+(`warn ≥0.50`) was backed by a single stale local run. Ran
+`npx lhci autorun --config=lighthouserc.mobile.json` fresh (3 runs) against
+this change:
+
+| Run | Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|
+| 1 | 0.54 | 1.00 | 0.96 | 1.00 |
+| 2 | 0.66 | 1.00 | 0.96 | 1.00 |
+| 3 | 0.66 | 1.00 | 0.96 | 1.00 |
+
+Median performance 0.66, comfortably clearing 0.50 across all 3 runs (the
+0.54–0.66 spread is the same environment-noise pattern documented in the
+desktop gate change above, not a regression). Raised
+`categories:performance` from `warn` to **`error ≥0.50`** — the same
+threshold, now actually enforced instead of advisory-only. Did **not** jump
+straight to a desktop-style `≥0.75`: mobile's Lighthouse CPU/network
+throttling profile is inherently harsher, and only 3 runs of data exist —
+raise further once more CI runs accumulate. Accessibility/best-practices/SEO
+were already comfortably above their existing `≥0.90` error gates.
+
+**Test suite:** 70 Vitest/RTL tests passing (up from 64), lint/build/tsc
+all clean. New tests: `Preloader.test.tsx` (reduced-motion path calls
+`onDone` immediately), `HeroSection.test.tsx` (renders real profile data,
+subhead no longer references retired project names), `SectionSkeleton.test.tsx`.
+Also added a `ResizeObserver` stub to `src/test/setup.ts` (same category of
+jsdom gap as the existing `IntersectionObserver`/`matchMedia` stubs) —
+needed once `HeroSection`'s tree (via `MagneticButton`/`ProfileCard`) was
+actually exercised in a test for the first time.
+
 **New features added and manually verified in the Chromium preview**
 (desktop 1440px, mobile 375px, dark + light theme, 0 console errors
 throughout):

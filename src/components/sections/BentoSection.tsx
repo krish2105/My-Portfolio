@@ -14,17 +14,17 @@ const find = (id: string) => now.find((n) => n.id === id)?.value ?? "";
 /** Same real facts, framed for whichever audience picked a view mode. */
 const HERO_TILE_COPY: Record<ViewMode, { headline: string; cta: string; target: string }> = {
   recruiter: {
-    headline: `${projects.length} systems shipped across ML, deep learning, GenAI and analytics — turning data into decisions.`,
+    headline: `${projects.length} systems shipped across agentic AI, GenAI, deep learning and analytics — live demos, not just decks.`,
     cta: "Get in touch",
     target: "#contact",
   },
   technical: {
-    headline: `${projects.length} systems, real trade-offs — sequence models, RL under uncertainty, human-in-the-loop NL2SQL.`,
+    headline: `${projects.length} systems, real trade-offs — agentic RAG pipelines, a from-scratch GNN, on-device CV, CI-gated evals.`,
     cta: "See the architecture",
     target: "#projects",
   },
   business: {
-    headline: `${projects.length} AI systems built for outcomes — fraud caught, resources optimised, decisions made faster.`,
+    headline: `${projects.length} AI systems built for outcomes — cited answers, compliant decisions, valuations that explain themselves.`,
     cta: "See the business impact",
     target: "#projects",
   },

@@ -15,11 +15,11 @@ import type {
 export const profile: Profile = {
   name: "Krishna Mathur",
   titles: [
+    "Agentic AI Engineer",
     "Machine Learning Developer",
     "AI Product Builder",
-    "NLP Practitioner",
+    "GenAI & RAG Systems Builder",
     "Deep Learning Practitioner",
-    "Business Intelligence Enthusiast",
     "Creative Technologist",
   ],
   location: "Dubai, UAE",
@@ -30,8 +30,8 @@ export const profile: Profile = {
   tagline: "I build AI that turns messy data, language and business workflows into decisions.",
   aboutStatements: [
     "I am Krishna Mathur, an AI developer, data analyst and GenAI builder currently pursuing a Master of AI in Business at SP Jain School of Global Management in Dubai. I completed my B.Tech in Computer Science and Engineering with a specialisation in Artificial Intelligence and Machine Learning from Manipal University Jaipur.",
-    "My work focuses on building practical AI solutions, analysing data, automating workflows and translating technical ideas into useful business applications. My interests include machine learning, natural language processing, deep learning, computer vision, business intelligence, databases and intelligent software development.",
-    "I enjoy developing end-to-end prototypes that combine technical implementation with a clear understanding of users, decisions and business requirements.",
+    "My work focuses on shipping real, live AI systems — agentic RAG pipelines, multi-agent orchestration, explainable ML and computer vision — not just prototypes. Recent independent builds run in production with real test suites, CI-gated evaluations and public live demos, spanning fintech, real estate, compliance and automotive valuation.",
+    "I enjoy developing end-to-end systems that combine rigorous engineering — grounded retrieval, human-approval gates, honest evaluation metrics — with a clear understanding of users, decisions and business requirements.",
   ],
 };
 
@@ -94,12 +94,12 @@ export const now: NowItem[] = [
   {
     id: "building",
     label: "Building",
-    value: "Deep-learning & GenAI projects — fraud detection (LSTM/RNN) and RL-driven resource allocation.",
+    value: "Independent agentic AI systems — cited RAG copilots, multi-agent pipelines and explainable ML, shipped live.",
   },
   {
     id: "exploring",
     label: "Exploring",
-    value: "Transformers, human-in-the-loop NL2SQL and real-time data dashboards.",
+    value: "LangGraph orchestration, graph neural networks, and on-device computer vision.",
   },
   {
     id: "open-to",
@@ -110,28 +110,36 @@ export const now: NowItem[] = [
 
 export const services: ServiceItem[] = [
   {
-    id: "fraud-risk",
-    title: "FRAUD & RISK DETECTION",
-    description: "Sequence-aware models that flag evolving fraud/risk patterns a static rule engine misses — see FraudShield AI.",
+    id: "agentic-rag",
+    title: "AGENTIC AI & RAG SYSTEMS",
+    description: "Cited, grounded copilots that refuse to guess — hybrid retrieval, faithfulness gates and adaptive agent routing — see FinCopilot.",
   },
   {
-    id: "decision-optimisation",
-    title: "DECISION & RESOURCE OPTIMISATION",
-    description: "Reinforcement-learning and constraint-based systems that allocate limited resources under uncertainty — see MediFlow AI.",
+    id: "multi-agent-intelligence",
+    title: "MULTI-AGENT DEAL INTELLIGENCE",
+    description: "Multi-stage LangGraph pipelines with live reasoning traces, turning a plain-English question into a defensible decision — see Sakan AI.",
   },
   {
-    id: "nl-data-access",
-    title: "NATURAL-LANGUAGE DATA ACCESS",
-    description: "Human-in-the-loop NL-to-SQL and conversational workflows that keep a person reviewing every generated query — see TalkToData.",
+    id: "regulated-ai-copilots",
+    title: "REGULATED-DOMAIN AI COPILOTS",
+    description: "Human-approval-gated agents for compliance and risk, with from-scratch models and red-team-tested safety — see ComplianceAgent.",
   },
   {
-    id: "analytics-bi",
-    title: "ANALYTICS & BI DASHBOARDS",
-    description: "Real-time, governed dashboards that turn streaming and structured data into decisions leadership can act on — see Lulu Sales Intelligence.",
+    id: "explainable-ml-cv",
+    title: "EXPLAINABLE ML & COMPUTER VISION",
+    description: "On-device computer vision and SHAP-attributed pricing that shows its work instead of a black-box number — see AutoValuate.",
   },
 ];
 
 export const journey: JourneyItem[] = [
+  {
+    id: "independent-ai-systems",
+    title: "Independent AI Systems Engineer",
+    institution: "Self-directed",
+    // NOTE: placeholder date range — confirm the real start date before shipping.
+    date: "2026—Present",
+    description: "Designed and built 4 independent, production-grade agentic AI systems end to end: FinCopilot (cited financial RAG copilot), Sakan AI (multi-agent Dubai real-estate deal intelligence), ComplianceAgent (AML/KYC investigation copilot with a from-scratch graph neural network) and AutoValuate Intelligence (on-device computer vision + explainable car valuation). Each ships with a live public demo, automated test suites (205, 85 and 80 tests respectively) and CI-gated evaluation metrics.",
+  },
   {
     id: "class-rep",
     title: "Class Representative",
@@ -200,16 +208,23 @@ export const capabilities: CapabilityGroup[] = [
       { name: "Time-Series Forecasting", level: "Academic Experience" },
       { name: "Data Augmentation", level: "Working Knowledge" },
       { name: "Hyperparameter Tuning", level: "Working Knowledge" },
+      { name: "Graph Neural Networks", level: "Working Knowledge" },
+      { name: "Computer Vision (YOLOv8, ONNX)", level: "Working Knowledge" },
     ],
   },
   {
     id: "nlp-genai",
-    title: "NLP and Generative AI",
-    description: "Language processing and conversational AI",
+    title: "Generative AI and Agentic Systems",
+    description: "Language processing, agentic pipelines and grounded RAG",
     skills: [
       { name: "Natural Language Processing", level: "Core" },
-      { name: "Generative AI", level: "Working Knowledge" },
-      { name: "Prompt Engineering", level: "Working Knowledge" },
+      { name: "Generative AI", level: "Core" },
+      { name: "Agentic RAG", level: "Working Knowledge" },
+      { name: "LangGraph", level: "Working Knowledge" },
+      { name: "Multi-Agent Orchestration", level: "Working Knowledge" },
+      { name: "Hybrid Retrieval (BM25 + Dense + Reranking)", level: "Working Knowledge" },
+      { name: "Self-RAG / Faithfulness Evaluation", level: "Working Knowledge" },
+      { name: "Prompt Engineering", level: "Core" },
       { name: "Conversational AI", level: "Academic Experience" },
       { name: "TF-IDF", level: "Core" },
       { name: "N-Gram Models", level: "Core" },
@@ -238,6 +253,8 @@ export const capabilities: CapabilityGroup[] = [
       { name: "Marketing Analytics", level: "Academic Experience" },
       { name: "Finance Analytics", level: "Academic Experience" },
       { name: "Business Decision Support", level: "Working Knowledge" },
+      { name: "XGBoost", level: "Working Knowledge" },
+      { name: "SHAP / Explainable ML", level: "Working Knowledge" },
     ],
   },
   {
@@ -251,6 +268,9 @@ export const capabilities: CapabilityGroup[] = [
       { name: "HTML", level: "Working Knowledge" },
       { name: "CSS", level: "Working Knowledge" },
       { name: "JavaScript", level: "Working Knowledge" },
+      { name: "TypeScript", level: "Working Knowledge" },
+      { name: "FastAPI", level: "Working Knowledge" },
+      { name: "Next.js", level: "Working Knowledge" },
       { name: "Streamlit", level: "Working Knowledge" },
       { name: "Tkinter", level: "Academic Experience" },
       { name: "Git", level: "Working Knowledge" },
@@ -258,6 +278,10 @@ export const capabilities: CapabilityGroup[] = [
       { name: "Jupyter Notebook", level: "Core" },
       { name: "Google Colab", level: "Core" },
       { name: "VS Code", level: "Core" },
+      { name: "RBAC / Multi-Tenancy", level: "Working Knowledge" },
+      { name: "WebSocket Streaming", level: "Working Knowledge" },
+      { name: "Stripe Billing Integration", level: "Working Knowledge" },
+      { name: "Security Hardening", level: "Working Knowledge" },
     ],
   },
   {

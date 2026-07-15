@@ -12,6 +12,7 @@ import EasterEgg from "./components/common/EasterEgg";
 import Assistant from "./components/assistant/Assistant";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import Preloader from "./components/common/Preloader";
+import SectionSkeleton from "./components/common/SectionSkeleton";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import HeroSection from "./components/hero/HeroSection";
@@ -85,26 +86,26 @@ const App = () => {
 
           <main id="main-content">
             <HeroSection />
+            <BentoSection />
             <TechnologyMarquee />
             <AboutSection />
-            <BentoSection />
             <WhatIDoSection />
             <JourneySection />
             <CapabilitiesSection />
-            <Suspense fallback={null}>
+            <ProjectsSection />
+            <Suspense fallback={<SectionSkeleton variant="compact" />}>
               <GitHubActivity />
             </Suspense>
-            <Suspense fallback={null}>
+            <Suspense fallback={<SectionSkeleton variant="tall" />}>
               <LiveDemo />
             </Suspense>
-            <ProjectsSection />
-            <Suspense fallback={null}>
+            <Suspense fallback={<SectionSkeleton variant="compact" />}>
               <RecognitionSection />
             </Suspense>
-            <Suspense fallback={null}>
+            <Suspense fallback={<SectionSkeleton variant="tall" />}>
               <TrustAndThinkingSection />
             </Suspense>
-            <Suspense fallback={null}>
+            <Suspense fallback={<SectionSkeleton variant="tall" />}>
               <ResumeSection />
             </Suspense>
             <ContactSection />

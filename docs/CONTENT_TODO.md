@@ -7,18 +7,26 @@ honestly as "not yet supplied" (screenshots → generated covers, testimonials
 honest placeholders with the real thing — and the ready-to-send request
 templates for the human-sourced ones.
 
+**2026-07-15 update:** the project lineup changed — TalkToData, SmartLoanBot,
+Flower Classifier and Electric Production Forecasting were removed (weak
+evidence, no live demo/repo) and replaced with 4 independent, production-grade
+flagships: **FinCopilot, Sakan AI, ComplianceAgent, AutoValuate Intelligence**
+— each already has real screenshots captured live from its deployed app. The
+items below are reconciled against the *current* project set.
+
 ## 1. Screenshots (real UI, WebP, ≥1600px wide)
 
-Missing for: **SmartLoanBot, WaselX, Flower Classifier, TalkToData, Electric
-Production**. Add to `public/projects/<id>/` and reference in
-`Project.images` in `src/data/portfolio.ts` — `ProjectCard`/`ProjectModal`
-automatically prefer real images over the generated `ProjectCover`.
+Missing for: **WaselX** (`images: []`, private team repo). All other projects
+— including the 4 new flagships — already have real screenshots.
+Add to `public/projects/<id>/` and reference in `Project.images` in
+`src/data/portfolio.ts` — `ProjectCard`/`ProjectModal` automatically prefer
+real images over the generated `ProjectCover`.
 
 ## 2. Demo videos / GIFs (≤15s)
 
-For the 4 flagships: FraudShield, MediFlow, Lulu Sales Intelligence,
-TalkToData. No `demoVideo` field exists yet — add one to the `Project` type
-when the first clip is ready, rather than speculatively now.
+For the 4 current flagships: FinCopilot, Sakan AI, ComplianceAgent,
+AutoValuate Intelligence. No `demoVideo` field exists yet — add one to the
+`Project` type when the first clip is ready, rather than speculatively now.
 
 ## 3. Metrics
 
@@ -29,19 +37,20 @@ already in `impact[]`/`limitations[]` as-is.
 
 ## 4. Project links
 
-Still missing a `liveUrl` or public repo for: SmartLoanBot, WaselX, Flower
-Classifier, TalkToData, Electric Production. Each already carries an honest
-`note` ("code available on request" / "private repository" / "in
-development"). Replace the note with a real `liveUrl`/`repositoryUrl` as
-soon as one exists.
+Still missing a `liveUrl`/public repo for: **WaselX** (team repo is private,
+"source available on request"). All other projects — including the 4 new
+flagships — carry both a real `repositoryUrl` and `liveUrl`.
 
-**Link-check result (2026-07-02):** all 8 existing GitHub/Colab/Kaggle
-links resolve (HTTP 200). MediFlow's Streamlit `liveUrl`
-(`mediflow-ai-rdmu-final-....streamlit.app`) redirects to Streamlit's
-"wake the app up" auth flow when the free-tier app has gone to sleep from
-inactivity — not broken, but a cold visitor can land on a sleep screen
-instead of the dashboard. Worth a visit every so often to keep it warm, or
-a short note near the link ("may take ~30s to wake up").
+**Link-check result (2026-07-02, pre-swap):** all 8 then-existing
+GitHub/Colab/Kaggle links resolved (HTTP 200). MediFlow's Streamlit
+`liveUrl` redirects to Streamlit's "wake the app up" auth flow when the
+free-tier app has gone to sleep from inactivity — not broken, but a cold
+visitor can land on a sleep screen instead of the dashboard.
+
+**2026-07-15:** the 4 new flagships (FinCopilot, Sakan AI, ComplianceAgent,
+AutoValuate) are all hosted on free-tier Vercel/Render — Render cold-starts
+after inactivity (documented in each project's own `limitations[]`). Worth
+a periodic visit to keep them warm before a recruiter clicks through.
 
 ## 5. Résumé
 
@@ -50,18 +59,25 @@ a short note near the link ("may take ~30s to wake up").
 fallback link). **Not yet done:** an ATS-plain-text variant — deferred by
 choice, resurface only if wanted.
 
-**New, higher-priority finding (2026-07-08 recruiter audit):** the actual
-résumé PDF (`Krishna_Mathur_Dubai_Executive_Resume.pdf`) does not mention
-any of the 4 flagship web projects (FraudShield, MediFlow, Lulu Sales
-Intelligence, TalkToData) and has zero quantified numbers in any bullet —
-while the website leads with these projects and MediFlow's real metrics
-(67% utilisation, 0.859 Jain's index). Since recruiters forward the PDF
-internally (not the portfolio link), this mismatch means the strongest
-work often never reaches a hiring manager. Action: add at least one bullet
-per flagship project to the résumé, each with one real number already
-documented on the site, then re-upload to the same
-`RESUME_DRIVE_FILE_ID` (`src/data/portfolio.ts:50`) so the existing link
-and inline preview keep working with no code change.
+**Higher-priority finding, now worse (2026-07-08 recruiter audit, project
+lineup changed 2026-07-15):** the actual résumé PDF
+(`Krishna_Mathur_Dubai_Executive_Resume.pdf`) predates the project swap
+entirely — it doesn't mention FraudShield/MediFlow/Lulu (the old flagships
+it was already missing) *or* the 4 new flagships (FinCopilot, Sakan AI,
+ComplianceAgent, AutoValuate) that now lead the site, and has zero
+quantified numbers in any bullet. Since recruiters forward the PDF
+internally (not the portfolio link), the strongest work on the site
+currently never reaches a hiring manager via the résumé.
+
+**Action — drafted bullet copy ready to paste in:**
+- *FinCopilot* — "Built an agentic RAG financial-research copilot (LangGraph, FastAPI, Next.js) with XBRL-grounded citations and a Self-RAG faithfulness gate; 205 backend tests, CI-gated evals, $0/month hosting."
+- *Sakan AI* — "Designed a 5-stage multi-agent real-estate deal-intelligence pipeline (LangGraph, FastAPI, Next.js) with live WebSocket reasoning traces, Stripe billing and Arabic localisation; 85 passing tests."
+- *ComplianceAgent* — "Built an AML/KYC investigation copilot with a from-scratch NumPy graph convolutional network for risk scoring and a mandatory human-approval gate; 80 tests (76% coverage), red-team suite 6/6 blocked."
+- *AutoValuate Intelligence* — "Shipped a damage-aware car-valuation app with an on-device YOLOv8/ONNX detector (0.732 mAP@0.5) and SHAP-explained XGBoost pricing; zero WCAG 2.1 AA violations."
+
+Add these (or a tightened version) to the résumé, then re-upload to the
+same `RESUME_DRIVE_FILE_ID` (`src/data/portfolio.ts:50`) so the existing
+link and inline preview keep working with no code change.
 
 ## 6. Testimonials / recommendations
 
@@ -128,7 +144,8 @@ a real, published entry:
 
 Current `/og/<id>.png` cards are branded, generated cards (not screenshots)
 — an honest interim, not a placeholder that needs a disclaimer. Swap to
-screenshot-based OG cards once real screenshots exist for a project (see §1).
+screenshot-based OG cards once real screenshots exist for a project (see
+§1) — now only outstanding for **WaselX**.
 
 ## 9. README preview image
 

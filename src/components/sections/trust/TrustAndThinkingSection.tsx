@@ -18,7 +18,7 @@ const TrustAndThinkingSection = () => {
   return (
     <section id="trust" className="relative border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
       <div className="mb-14 flex items-center gap-4">
-        <span className="kicker">(06B)</span>
+        <span className="kicker">(07)</span>
         <RevealText className="kicker">Trust &amp; Thinking</RevealText>
       </div>
 
