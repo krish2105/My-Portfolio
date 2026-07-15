@@ -12,7 +12,7 @@ describe("buildHiringSummary", () => {
 
   it("includes only real flagship projects that exist in portfolio.ts", () => {
     const summary = buildHiringSummary();
-    const knownFlagships = ["fraudshield", "mediflow", "lulu-sales", "talktodata"]
+    const knownFlagships = ["fincopilot", "sakan-ai", "compliance-agent", "autovaluate", "mediflow"]
       .map((id) => projects.find((p) => p.id === id))
       .filter(Boolean);
 

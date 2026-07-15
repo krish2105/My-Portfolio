@@ -3,7 +3,8 @@ export type ProjectStatus =
   | "Academic Team Project"
   | "AI Prototype"
   | "In Development"
-  | "Academic Lab Project";
+  | "Academic Lab Project"
+  | "Independent Project";
 
 export interface ProjectMetric {
   label: string;

@@ -11,9 +11,9 @@ describe("bestProjectForRole", () => {
     expect(bestProjectForRole("hospital operations", projects)?.id).toBe("mediflow");
   });
 
-  it("matches an NLP/GenAI role to a real NLP project", () => {
+  it("matches an NLP/GenAI role to a real GenAI project", () => {
     const result = bestProjectForRole("conversational NLP chatbot role", projects);
-    expect(["smartloanbot", "talktodata"]).toContain(result?.id);
+    expect(["fincopilot", "sakan-ai", "compliance-agent"]).toContain(result?.id);
   });
 
   it("falls back to a flagship project when nothing scores", () => {

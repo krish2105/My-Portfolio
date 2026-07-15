@@ -11,10 +11,10 @@ describe("specialCommandReply (Copilot structured commands)", () => {
   });
 
   it("returns interview questions derived from real project data", () => {
-    const reply = specialCommandReply("interview questions for TalkToData");
+    const reply = specialCommandReply("interview questions for AutoValuate");
     expect(reply).not.toBeNull();
-    expect(reply?.text).toContain("Questions an interviewer could ask about TalkToData");
-    expect(reply?.actions?.[0]).toMatchObject({ type: "project", target: "talktodata" });
+    expect(reply?.text).toContain("Questions an interviewer could ask about AutoValuate");
+    expect(reply?.actions?.[0]).toMatchObject({ type: "project", target: "autovaluate" });
   });
 
   it("returns a best-project-for-role reply with a real project action", () => {

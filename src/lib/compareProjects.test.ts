@@ -42,8 +42,20 @@ describe("compareProjects", () => {
   });
 
   it("honestly reports 'Not yet measured' when a project has no metrics", () => {
-    const a = projects.find((p) => p.id === "smartloanbot")!; // no metrics in real data
-    const b = projects.find((p) => p.id === "flower-classifier")!; // no metrics in real data
+    // Every real project now ships metrics, so this exercises the fallback
+    // formatting logic directly with a minimal synthetic fixture rather than
+    // asserting an absence in real data.
+    const base = {
+      title: "Test Project",
+      shortTitle: "Test",
+      category: "Test",
+      status: "Independent Project" as const,
+      description: "",
+      technologies: [],
+      images: [],
+    };
+    const a = { ...base, id: "no-metrics-a", number: "90" };
+    const b = { ...base, id: "no-metrics-b", number: "91" };
     const cmp = compareProjects(a, b);
     const row = cmp.rows.find((r) => r.label === "Key metric");
     expect(row?.a).toBe("Not yet measured");

@@ -1,9 +1,8 @@
 /**
- * A tiny, honestly-scoped rule-based NL→SQL matcher — the same technique
- * TalkToData's `currentFeatures` describes ("Rule-based natural-language
- * processing", "Database schema awareness"), not a transformer model. It
- * only recognises a handful of patterns against a fixed toy schema; anything
- * else returns `null` so the UI can say so honestly instead of guessing.
+ * A tiny, honestly-scoped rule-based NL→SQL matcher — pattern matching
+ * against a fixed toy schema, not a transformer model. It only recognises a
+ * handful of patterns; anything else returns `null` so the UI can say so
+ * honestly instead of guessing.
  */
 export interface NL2SQLRule {
   patterns: string[];

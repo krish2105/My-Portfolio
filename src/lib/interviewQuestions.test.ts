@@ -11,8 +11,9 @@ describe("buildInterviewQuestions", () => {
   });
 
   it("falls back to the approach when a project has no decisions", () => {
-    const flower = projects.find((p) => p.id === "flower-classifier")!;
-    const questions = buildInterviewQuestions(flower);
+    const waselx = projects.find((p) => p.id === "waselx")!;
+    expect(waselx.decisions).toBeUndefined();
+    const questions = buildInterviewQuestions(waselx);
     expect(questions.length).toBeGreaterThan(0);
   });
 
