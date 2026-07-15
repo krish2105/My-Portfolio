@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import { profile } from "../../data/portfolio";
 import SocialLinks from "../common/SocialLinks";
@@ -44,49 +45,51 @@ const MobileMenu = ({ navItems, activeId }: MobileMenuProps) => {
         <Menu size={28} />
       </button>
 
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-50 bg-[var(--bg)]/95 backdrop-blur-md flex flex-col justify-center"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation Menu"
-        >
-          <button
-            onClick={() => setIsOpen(false)}
-            className="absolute top-6 right-6 p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors focus-visible-ring"
-            aria-label="Close menu"
+      {isOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 bg-[var(--bg)]/95 backdrop-blur-md flex flex-col justify-center"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation Menu"
           >
-            <X size={32} />
-          </button>
-          
-          <div className="flex flex-col items-center gap-8">
-            <span className="text-xl font-bold tracking-widest text-[var(--text)] mb-4 uppercase font-display">
-              {profile.name}
-            </span>
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsOpen(false);
-                  setTimeout(() => scrollTo(`#${item.id}`, lenis), 50);
-                }}
-                className={`text-2xl font-medium tracking-wide transition-colors ${
-                  activeId === item.id ? "text-gradient" : "text-[var(--text-2)] hover:text-[var(--text)]"
-                } focus-visible-ring`}
-              >
-                {item.label}
-              </a>
-            ))}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-6 right-6 p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors focus-visible-ring"
+              aria-label="Close menu"
+            >
+              <X size={32} />
+            </button>
 
-            <div className="mt-6 flex flex-col items-center gap-6">
-              <ResumeButton variant="solid" label="Download Resume" />
-              <SocialLinks />
+            <div className="flex flex-col items-center gap-8">
+              <span className="text-xl font-bold tracking-widest text-[var(--text)] mb-4 uppercase font-display">
+                {profile.name}
+              </span>
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    setTimeout(() => scrollTo(`#${item.id}`, lenis), 50);
+                  }}
+                  className={`text-2xl font-medium tracking-wide transition-colors ${
+                    activeId === item.id ? "text-gradient" : "text-[var(--text-2)] hover:text-[var(--text)]"
+                  } focus-visible-ring`}
+                >
+                  {item.label}
+                </a>
+              ))}
+
+              <div className="mt-6 flex flex-col items-center gap-6">
+                <ResumeButton variant="solid" label="Download Resume" />
+                <SocialLinks />
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };
