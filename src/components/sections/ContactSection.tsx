@@ -8,7 +8,17 @@ import { RevealText, RevealWords, Rise } from "../common/Reveal";
 
 const EMAIL = "krishnamathur008@gmail.com";
 
-type FieldKey = "name" | "email" | "subject" | "message";
+type FieldKey = "name" | "email" | "subject" | "message" | "referral";
+
+/** Kept short and honest — this only ever feeds a local analytics event, never shown/shared. */
+const REFERRAL_OPTIONS = [
+  "LinkedIn",
+  "GitHub",
+  "A referral / word of mouth",
+  "Google / search",
+  "Directly (I had the link)",
+  "Something else",
+] as const;
 
 const FIELDS: {
   key: FieldKey;
@@ -17,10 +27,18 @@ const FIELDS: {
   required: boolean;
   type?: string;
   textarea?: boolean;
+  select?: boolean;
 }[] = [
   { key: "name", label: "Name", placeholder: "Your name", required: true },
   { key: "email", label: "Email", placeholder: "you@example.com", required: true, type: "email" },
   { key: "subject", label: "Subject", placeholder: "What's this about?", required: false },
+  {
+    key: "referral",
+    label: "How did you find me?",
+    placeholder: "Prefer not to say",
+    required: false,
+    select: true,
+  },
   { key: "message", label: "Message", placeholder: "Tell me about your project or idea…", required: true, textarea: true },
 ];
 
@@ -34,6 +52,7 @@ export const ContactTerminal = () => {
     email: "",
     subject: "",
     message: "",
+    referral: "",
   });
   const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "mailto">("idle");
@@ -68,7 +87,9 @@ export const ContactTerminal = () => {
     const mailto = `${socialLinks.email}?subject=${encodeURIComponent(
       formData.subject || "Contact from Portfolio"
     )}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      `Name: ${formData.name}\nEmail: ${formData.email}${
+        formData.referral ? `\nFound via: ${formData.referral}` : ""
+      }\n\nMessage:\n${formData.message}`
     )}`;
     window.location.href = mailto;
     setStatus("mailto");
@@ -90,8 +111,8 @@ export const ContactTerminal = () => {
       });
       if (res.ok) {
         setStatus("sent");
-        track("contact_submit_success");
-        setFormData({ name: "", email: "", subject: "", message: "" });
+        track("contact_submit_success", formData.referral ? { referral: formData.referral } : undefined);
+        setFormData({ name: "", email: "", subject: "", message: "", referral: "" });
         return;
       }
       // API reachable but not configured / errored → fall back to mailto.
@@ -189,6 +210,19 @@ const Field = ({
           rows={5}
           className={`${base} ${borderClass} resize-none`}
         />
+      ) : field.select ? (
+        <select
+          value={value}
+          onChange={(e) => onChange(field.key, e.target.value)}
+          className={`${base} ${borderClass} ${value ? "" : "text-[var(--text-3)]"}`}
+        >
+          <option value="">{field.placeholder}</option>
+          {REFERRAL_OPTIONS.map((opt) => (
+            <option key={opt} value={opt} className="text-[var(--text)]">
+              {opt}
+            </option>
+          ))}
+        </select>
       ) : (
         <input
           type={field.type ?? "text"}

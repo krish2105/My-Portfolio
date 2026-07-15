@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { configureLocalModels } from "../lib/transformersEnv";
+import { configureLocalModels, withRetry } from "../lib/transformersEnv";
 
 export type PipelineStatus = "idle" | "loading" | "ready" | "error";
 
@@ -34,7 +34,10 @@ export const useTransformersPipeline = (task: string, model: string) => {
       // and can fail outright on constrained networks. Without a callback it
       // takes the plain `response.arrayBuffer()` fast path instead — reliable,
       // at the cost of a numeric progress percentage.
-      pipeRef.current = await create(task, model);
+      // A transient blip (dropped connection, disk-cache write conflict)
+      // shouldn't permanently fail the feature — retry the ~90MB download
+      // a couple of times before surfacing the "error" state to the user.
+      pipeRef.current = await withRetry(() => create(task, model));
       setStatus("ready");
       return true;
     } catch (err) {

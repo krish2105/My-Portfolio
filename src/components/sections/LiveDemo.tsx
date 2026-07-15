@@ -1,10 +1,12 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
-import { Sparkles, ShieldCheck, Loader2, Database } from "lucide-react";
+import { Sparkles, ShieldCheck, Loader2, Database, Check, X as XIcon } from "lucide-react";
 import { useTransformersPipeline } from "../../hooks/useTransformersPipeline";
 import { RevealText, Rise } from "../common/Reveal";
 import { matchNL2SQL, NL2SQL_EXAMPLES, TOY_SCHEMA } from "../../lib/nl2sqlDemo";
+import { buildTradeoffPool, pickTradeoffQuestion, type TradeoffQuestion } from "../../lib/tradeoffSimulator";
+import { projects } from "../../data/portfolio";
 
 const MODEL = "Xenova/distilbert-base-uncased-finetuned-sst-2-english";
 
@@ -104,12 +106,118 @@ const NL2SQLLab = () => {
   );
 };
 
+/**
+ * Third honest lab: turns Krishna's real, shipped `decisions[]` (choice + why)
+ * from the 4 independent flagships into a multiple-choice quiz. Every option
+ * offered — correct or not — is a real decision lifted from real project
+ * data (see lib/tradeoffSimulator.ts); nothing is invented for the game.
+ */
+const TradeoffSimulatorLab = () => {
+  const pool = useMemo(() => buildTradeoffPool(projects), []);
+  const [asked, setAsked] = useState<string[]>([]);
+  const [question, setQuestion] = useState<TradeoffQuestion | null>(() => pickTradeoffQuestion(pool));
+  const [picked, setPicked] = useState<string | null>(null);
+  const [score, setScore] = useState({ correct: 0, total: 0 });
+
+  const next = () => {
+    const nextAsked = question ? [...asked, question.entry.id] : asked;
+    setAsked(nextAsked);
+    setQuestion(pickTradeoffQuestion(pool, nextAsked));
+    setPicked(null);
+  };
+
+  const choose = (option: string) => {
+    if (picked || !question) return;
+    setPicked(option);
+    const correct = option === question.entry.choice;
+    setScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }));
+    track("tradeoff_simulator_answer", { correct });
+  };
+
+  if (!question) return null;
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
+      <div>
+        <h2 className="font-display text-3xl font-black leading-[1.1] tracking-tight text-[var(--text)] md:text-5xl">
+          Which trade-off would <span className="text-gradient">you have made?</span>
+        </h2>
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-2)]">
+          Every option below is a real engineering decision Krishna actually made on one of his 4 independent
+          flagships — including the wrong answers, pulled from a different real decision. Guess which choice belongs
+          to this project, then see the real reasoning.
+        </p>
+        {score.total > 0 && (
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text-3)]">
+            Score: {score.correct}/{score.total}
+          </p>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-[var(--border-strong)] bg-[var(--panel)] p-5 md:p-6">
+        <p className="kicker mb-2">{question.entry.projectTitle} — which did he choose?</p>
+        <div className="flex flex-col gap-2.5">
+          {question.options.map((opt) => {
+            const isCorrect = opt === question.entry.choice;
+            const isPicked = opt === picked;
+            const revealed = picked !== null;
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => choose(opt)}
+                disabled={revealed}
+                className={`flex items-start gap-2.5 rounded-xl border p-3.5 text-left text-sm leading-relaxed transition-colors ${
+                  revealed && isCorrect
+                    ? "border-[#00FF94] bg-[#00FF94]/[0.08] text-[var(--text)]"
+                    : revealed && isPicked
+                      ? "border-[#ff6b6b] bg-[#ff6b6b]/[0.06] text-[var(--text-2)]"
+                      : "border-[var(--border)] text-[var(--text-2)] hover:border-[#00FF94]/40"
+                } ${revealed ? "cursor-default" : "cursor-pointer"}`}
+              >
+                {revealed && (isCorrect ? (
+                  <Check size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden />
+                ) : isPicked ? (
+                  <XIcon size={16} className="mt-0.5 shrink-0 text-[#ff6b6b]" aria-hidden />
+                ) : (
+                  <span className="mt-0.5 w-4 shrink-0" />
+                ))}
+                <span>{opt}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {picked && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--panel-2)] p-4"
+          >
+            <p className="text-[11px] uppercase tracking-wider text-[var(--accent)]">
+              {picked === question.entry.choice ? "Correct — " : "The real reasoning — "}why he chose this
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-2)]">{question.entry.why}</p>
+            <button
+              type="button"
+              onClick={next}
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#00FF94] px-4 py-2 text-xs font-bold text-[#050505] transition-transform hover:scale-[1.03]"
+            >
+              Next trade-off →
+            </button>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const LiveDemo = () => {
   const { status, run } = useTransformersPipeline("text-classification", MODEL);
   const [text, setText] = useState(EXAMPLES[0]);
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [busy, setBusy] = useState(false);
-  const [lab, setLab] = useState<"sentiment" | "nl2sql">("sentiment");
+  const [lab, setLab] = useState<"sentiment" | "nl2sql" | "tradeoffs">("sentiment");
 
   const analyze = async () => {
     if (!text.trim()) return;
@@ -158,12 +266,28 @@ const LiveDemo = () => {
           >
             NL→SQL (rule-based)
           </button>
+          <button
+            type="button"
+            onClick={() => setLab("tradeoffs")}
+            aria-pressed={lab === "tradeoffs"}
+            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              lab === "tradeoffs"
+                ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+            }`}
+          >
+            Trade-off simulator
+          </button>
         </div>
       </div>
 
       {lab === "nl2sql" ? (
         <Rise>
           <NL2SQLLab />
+        </Rise>
+      ) : lab === "tradeoffs" ? (
+        <Rise>
+          <TradeoffSimulatorLab />
         </Rise>
       ) : (
       <Rise>
@@ -230,7 +354,7 @@ const LiveDemo = () => {
 
             {status === "loading" && (
               <p className="mt-2 text-center text-[11px] text-[var(--text-3)]">
-                One-time ~25 MB download, then cached.
+                One-time ~90 MB download, then cached.
               </p>
             )}
 

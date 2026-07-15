@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
-import { usesGroups } from "../../data/uses";
+import { usesGroups, SITE_CASE_STUDY } from "../../data/uses";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -68,6 +68,34 @@ const UsesModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
             <h2 id="uses-title" className="mt-3 font-display text-3xl font-black tracking-tight text-[var(--text)] md:text-4xl">
               What this site is <span className="text-gradient">built with</span>
             </h2>
+
+            {/* This portfolio is a case study too */}
+            <div className="mt-7 rounded-xl border border-[#00FF94]/20 bg-[#00FF94]/[0.04] p-5">
+              <p className="kicker mb-2">This portfolio is a case study too</p>
+              <p className="text-sm leading-relaxed text-[var(--text-2)]">{SITE_CASE_STUDY.intro}</p>
+              <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--border)] sm:grid-cols-4">
+                {SITE_CASE_STUDY.metrics.map((m) => (
+                  <div key={m.label} className="flex flex-col gap-1 bg-[var(--panel)] p-3">
+                    <dt className="sr-only">{m.label}</dt>
+                    <dd className="font-display text-base font-bold text-[var(--accent)]">{m.value}</dd>
+                    <span aria-hidden="true" className="text-[10px] leading-snug text-[var(--text-3)]">
+                      {m.label}
+                    </span>
+                  </div>
+                ))}
+              </dl>
+              <ul className="mt-5 space-y-3">
+                {SITE_CASE_STUDY.decisions.map((d, i) => (
+                  <li key={i} className="rounded-lg border border-[var(--border)] bg-[var(--panel)] p-3.5">
+                    <p className="text-sm font-semibold text-[var(--text)]">{d.choice}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-[var(--text-3)]">
+                      <span className="font-mono uppercase tracking-wider text-[var(--accent)]">Why </span>
+                      {d.why}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {usesGroups.map((group) => (
               <div key={group.id} className="mt-7">

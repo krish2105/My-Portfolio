@@ -38,7 +38,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' blob: 'sha256-1wxBPOa8jqkUtpfQwMcX1xs5OTPWCsCb7PxT7YEb/Dw=' 'wasm-unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com https://vitals.vercel-insights.com https://va.vercel-scripts.com; worker-src 'self' blob:; frame-src https://drive.google.com; object-src 'none'; base-uri 'self'; manifest-src 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' blob: 'sha256-1wxBPOa8jqkUtpfQwMcX1xs5OTPWCsCb7PxT7YEb/Dw=' 'wasm-unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://fin-copilot-six.vercel.app https://sakan-agentic-ai.vercel.app https://frontend-three-pi-15.vercel.app https://auto-valuate-intelligence.vercel.app; worker-src 'self' blob:; frame-src https://drive.google.com; object-src 'none'; base-uri 'self'; manifest-src 'self'; frame-ancestors 'none'"
         },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },

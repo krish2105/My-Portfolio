@@ -5,8 +5,13 @@ import { FaGithub } from "react-icons/fa6";
 import type { Project } from "../../types/portfolio";
 import ProjectCover from "./ProjectCover";
 import SafeExternalLink from "../common/SafeExternalLink";
+import LiveStatusBadge from "./LiveStatusBadge";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useSound } from "../../lib/sound";
+
+/** Only the 4 independent flagships confirmed for live status pinging —
+ * their domains are the ones allowlisted in vercel.json's CSP connect-src. */
+const LIVE_STATUS_PROJECT_IDS = ["fincopilot", "sakan-ai", "compliance-agent", "autovaluate"];
 
 /**
  * A magnified preview of the project — a small "peek" beyond the always-
@@ -78,6 +83,7 @@ const HoverPreview = ({
  */
 const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => void }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [imgFailed, setImgFailed] = useState(false);
   const [titleHover, setTitleHover] = useState(false);
   const [longPress, setLongPress] = useState(false);
@@ -131,8 +137,15 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
         onPointerEnter={() => {
           setTitleHover(true);
           play("hover");
+          if (!reduced) videoRef.current?.play().catch(() => {});
         }}
-        onPointerLeave={() => setTitleHover(false)}
+        onPointerLeave={() => {
+          setTitleHover(false);
+          if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+          }
+        }}
         onTouchStart={startLongPress}
         onTouchEnd={endLongPress}
         onTouchCancel={endLongPress}
@@ -165,6 +178,20 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
           ) : (
             <ProjectCover project={project} />
           )}
+          {project.demoVideo && fine && !reduced && (
+            <video
+              ref={videoRef}
+              src={project.demoVideo}
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-hidden="true"
+              className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-300 ${
+                titleHover ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            />
+          )}
         </div>
         <span className="absolute right-5 top-4 font-display text-5xl font-black text-[var(--text)]/10 md:text-7xl">
           {project.number}
@@ -175,6 +202,11 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen?: () => voi
         {project.flagship && (
           <span className="absolute left-5 top-12 rounded-full border border-[var(--border-strong)] bg-[var(--bg)]/60 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-[var(--text-2)] backdrop-blur">
             Flagship
+          </span>
+        )}
+        {project.liveUrl && LIVE_STATUS_PROJECT_IDS.includes(project.id) && (
+          <span className="absolute right-5 bottom-4 z-[3]">
+            <LiveStatusBadge url={project.liveUrl} />
           </span>
         )}
       </div>

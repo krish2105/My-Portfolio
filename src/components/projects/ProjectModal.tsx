@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ExternalLink, NotebookPen } from "lucide-react";
+import { X, ExternalLink, NotebookPen, ChevronDown } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 import { track } from "@vercel/analytics";
 import type { Project } from "../../types/portfolio";
+import { useViewMode } from "../../lib/viewMode";
 import SafeExternalLink from "../common/SafeExternalLink";
 import ProjectTelemetry from "./ProjectTelemetry";
 import ArchitectureMap from "./ArchitectureMap";
@@ -15,6 +16,19 @@ const SectionBlock = ({ label, children }: { label: string; children: React.Reac
     <p className="kicker mb-3">{label}</p>
     {children}
   </div>
+);
+
+/** Native, accessible collapsible — no extra JS/ARIA plumbing needed. */
+const TechnicalDepth = ({ children }: { children: React.ReactNode }) => (
+  <details className="group mt-7 rounded-xl border border-[var(--border)] bg-[var(--panel)] open:pb-2">
+    <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-[var(--text)] marker:content-none [&::-webkit-details-marker]:hidden">
+      <span className="inline-flex items-center gap-2">
+        <ChevronDown size={15} className="transition-transform group-open:rotate-180" aria-hidden />
+        Show technical depth — problem, approach, architecture, trade-offs
+      </span>
+    </summary>
+    <div className="px-4">{children}</div>
+  </details>
 );
 
 const BulletList = ({ items }: { items: string[] }) => (
@@ -35,6 +49,12 @@ const BulletList = ({ items }: { items: string[] }) => (
 const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: () => void }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocus = useRef<HTMLElement | null>(null);
+  const { mode } = useViewMode();
+  // Technical readers want the engineering depth (problem → approach →
+  // system flow → trade-offs) up front; recruiter/business readers want
+  // outcomes first, with the same depth one click away — never hidden,
+  // just reordered/collapsed by default.
+  const technicalFirst = mode === "technical";
 
   useEffect(() => {
     if (!project) return;
@@ -160,51 +180,80 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
               </dl>
             )}
 
-            {project.problem && (
-              <SectionBlock label="The problem">
-                <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.problem}</p>
-              </SectionBlock>
-            )}
+            {(() => {
+              const technical = (project.problem || (project.approach?.length ?? 0) > 0 ||
+                (project.architecture?.length ?? 0) > 0 || (project.decisions?.length ?? 0) > 0) && (
+                <>
+                  {project.problem && (
+                    <SectionBlock label="The problem">
+                      <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.problem}</p>
+                    </SectionBlock>
+                  )}
+                  {project.approach && project.approach.length > 0 && (
+                    <SectionBlock label="Approach">
+                      <BulletList items={project.approach} />
+                    </SectionBlock>
+                  )}
+                  {project.architecture && project.architecture.length > 0 && (
+                    <SectionBlock label="System flow">
+                      <ArchitectureMap steps={project.architecture} />
+                    </SectionBlock>
+                  )}
+                  {project.decisions && project.decisions.length > 0 && (
+                    <SectionBlock label="Trade-offs & decisions">
+                      <ul className="space-y-4">
+                        {project.decisions.map((d, i) => (
+                          <li key={i} className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4">
+                            <p className="text-sm font-semibold text-[var(--text)]">{d.choice}</p>
+                            <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-2)]">
+                              <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--accent)]">
+                                Why{" "}
+                              </span>
+                              {d.why}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </SectionBlock>
+                  )}
+                </>
+              );
 
-            {project.approach && project.approach.length > 0 && (
-              <SectionBlock label="Approach">
-                <BulletList items={project.approach} />
-              </SectionBlock>
-            )}
+              const outcome = (project.role || (project.impact?.length ?? 0) > 0 || project.audience) && (
+                <>
+                  {project.role && (
+                    <SectionBlock label="What I built">
+                      <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.role}</p>
+                    </SectionBlock>
+                  )}
+                  {project.impact && project.impact.length > 0 && (
+                    <SectionBlock label="Impact">
+                      <BulletList items={project.impact} />
+                    </SectionBlock>
+                  )}
+                  {project.audience && (
+                    <SectionBlock label="Who this is for">
+                      <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.audience}</p>
+                    </SectionBlock>
+                  )}
+                </>
+              );
 
-            {project.architecture && project.architecture.length > 0 && (
-              <SectionBlock label="System flow">
-                <ArchitectureMap steps={project.architecture} />
-              </SectionBlock>
-            )}
-
-            {project.role && (
-              <SectionBlock label="What I built">
-                <p className="text-sm leading-relaxed text-[var(--text-2)] md:text-[15px]">{project.role}</p>
-              </SectionBlock>
-            )}
-
-            {project.impact && project.impact.length > 0 && (
-              <SectionBlock label="Impact">
-                <BulletList items={project.impact} />
-              </SectionBlock>
-            )}
-
-            {project.decisions && project.decisions.length > 0 && (
-              <SectionBlock label="Trade-offs & decisions">
-                <ul className="space-y-4">
-                  {project.decisions.map((d, i) => (
-                    <li key={i} className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4">
-                      <p className="text-sm font-semibold text-[var(--text)]">{d.choice}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-2)]">
-                        <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--accent)]">Why </span>
-                        {d.why}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </SectionBlock>
-            )}
+              // Technical readers get the engineering depth up front; recruiter/
+              // business readers get outcomes first, with the same depth one
+              // click away in a collapsible — never hidden, just reordered.
+              return technicalFirst ? (
+                <>
+                  {technical}
+                  {outcome}
+                </>
+              ) : (
+                <>
+                  {outcome}
+                  {technical && <TechnicalDepth>{technical}</TechnicalDepth>}
+                </>
+              );
+            })()}
 
             {project.limitations && project.limitations.length > 0 && (
               <SectionBlock label="Limitations — what I'd flag honestly">

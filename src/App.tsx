@@ -34,6 +34,9 @@ const LiveDemo = lazy(() => import("./components/sections/LiveDemo"));
 const RecognitionSection = lazy(() => import("./components/sections/RecognitionSection"));
 const TrustAndThinkingSection = lazy(() => import("./components/sections/trust/TrustAndThinkingSection"));
 const ResumeSection = lazy(() => import("./components/sections/ResumeSection"));
+// Unlisted personal-use view (?mode=interview) — never needed by a real
+// visitor, so it must never cost anything in the main bundle.
+const InterviewPrepView = lazy(() => import("./components/InterviewPrepView"));
 
 const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
 
@@ -64,6 +67,16 @@ const App = () => {
     window.addEventListener("popstate", sync);
     return () => window.removeEventListener("popstate", sync);
   }, []);
+
+  // Unlisted personal prep sheet — checked once, not a route change a real
+  // visitor would ever trigger, so no popstate sync needed like /uses above.
+  if (new URLSearchParams(window.location.search).get("mode") === "interview") {
+    return (
+      <Suspense fallback={null}>
+        <InterviewPrepView />
+      </Suspense>
+    );
+  }
 
   return (
     <ErrorBoundary fallback={<div className="p-8 text-white">Something went wrong. Please refresh the page.</div>}>

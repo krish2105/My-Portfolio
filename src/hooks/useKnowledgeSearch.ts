@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { buildKnowledgeBase, type KBChunk } from "../data/knowledgeBase";
-import { configureLocalModels } from "../lib/transformersEnv";
+import { configureLocalModels, withRetry } from "../lib/transformersEnv";
 
 /**
  * Client-side RAG: embeds the portfolio's real content (via transformers.js,
@@ -72,7 +72,9 @@ export const useKnowledgeSearch = () => {
         // and can fail outright on constrained networks. Without a callback it
         // takes the plain `response.arrayBuffer()` fast path instead — reliable,
         // at the cost of a numeric progress percentage (see setProgress below).
-        pipeRef.current = await create("feature-extraction", MODEL);
+        // A transient blip shouldn't permanently fail the feature — retry
+        // the model download a couple of times before surfacing "error".
+        pipeRef.current = await withRetry(() => create("feature-extraction", MODEL));
       }
 
       const output = await pipeRef.current(

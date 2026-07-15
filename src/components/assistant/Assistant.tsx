@@ -7,6 +7,7 @@ import {
   ASSISTANT_SUGGESTIONS_BY_MODE,
   ASSISTANT_GREETING,
   ASSISTANT_FALLBACK,
+  ASSISTANT_FALLBACK_AR,
   type AssistantAction,
 } from "../../data/assistant";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
@@ -21,6 +22,10 @@ const SEMANTIC_THRESHOLD = 0.35;
 
 const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
 
+/** Arabic script range — used to route a query to the small, honest Arabic
+ * intent subset instead of the (English-only) keyword patterns. */
+const containsArabic = (s: string) => /[؀-ۿ]/.test(s);
+
 /** Score each intent by how many of its patterns appear in the query; best wins. */
 const match = (query: string) => {
   const q = normalize(query);
@@ -28,6 +33,18 @@ const match = (query: string) => {
   for (const intent of ASSISTANT_INTENTS) {
     let score = 0;
     for (const p of intent.patterns) if (q.includes(p)) score += p.length;
+    if (score > 0 && (!best || score > best.score)) best = { score, intent };
+  }
+  return best?.intent ?? null;
+};
+
+/** Same scoring, over the small Arabic-covered intent subset only. */
+const matchArabic = (query: string) => {
+  let best: { score: number; intent: (typeof ASSISTANT_INTENTS)[number] } | null = null;
+  for (const intent of ASSISTANT_INTENTS) {
+    if (!intent.ar) continue;
+    let score = 0;
+    for (const p of intent.ar.patterns) if (query.includes(p)) score += p.length;
     if (score > 0 && (!best || score > best.score)) best = { score, intent };
   }
   return best?.intent ?? null;
@@ -93,12 +110,34 @@ const Assistant = () => {
     return intent ? { role: "bot", text: intent.answer, actions: intent.actions } : { role: "bot", text: ASSISTANT_FALLBACK };
   };
 
+  /** Small, honest Arabic path: only the intents that carry an `ar` variant
+   * are covered — everything else gets an honest "try English" fallback
+   * rather than a mistranslated or fabricated answer. */
+  const arabicReply = (q: string): Msg => {
+    const intent = matchArabic(q);
+    return intent?.ar
+      ? { role: "bot", text: intent.ar.answer, actions: intent.ar.actions }
+      : { role: "bot", text: ASSISTANT_FALLBACK_AR };
+  };
+
   const send = async (text: string) => {
     const q = text.trim();
     if (!q) return;
     setDraft("");
     setMessages((m) => [...m, { role: "user", text: q }]);
     setThinking(true);
+
+    // Arabic queries skip special commands/semantic search entirely — both
+    // are English-pattern/English-corpus only, so neither would produce a
+    // meaningful match anyway.
+    if (containsArabic(q)) {
+      const delay = reduced ? 0 : 480;
+      setTimeout(() => {
+        setThinking(false);
+        setMessages((m) => [...m, arabicReply(q)]);
+      }, delay);
+      return;
+    }
 
     let reply: Msg | null = specialCommandReply(q);
 

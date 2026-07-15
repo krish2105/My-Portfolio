@@ -1,9 +1,10 @@
 import { memo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff } from "lucide-react";
+import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff, ClipboardList } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { journey, capabilities, recognition, socialLinks, projects, RESUME_DRIVE_FILE_ID } from "../../data/portfolio";
 import { buildHiringSummary } from "../../lib/hiringSummary";
+import { matchJobDescription, type JDMatchResult } from "../../lib/jdMatcher";
 import { RevealText, Rise } from "../common/Reveal";
 import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
 
@@ -104,6 +105,8 @@ const DownloadCard = () => {
           <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-2)] md:text-base">
             Education, experience, projects and technical skills — ready for
             download, or copy a hiring summary straight to your clipboard.
+            Or grab the one-page AI Systems Sheet — a single branded page
+            summarising the 4 flagship builds, built for forwarding internally.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -144,6 +147,16 @@ const DownloadCard = () => {
                 {previewOpen ? "Hide preview" : "Preview resume"}
               </button>
             )}
+            <a
+              href="/ai-systems-sheet.pdf"
+              download="Krishna-Mathur-AI-Systems-Sheet.pdf"
+              data-cursor="Download"
+              onClick={() => track("ai_systems_sheet_downloaded")}
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+            >
+              <Download size={16} />
+              AI Systems Sheet (1-page)
+            </a>
             {socialLinks.linkedin && (
               <a
                 href={socialLinks.linkedin}
@@ -195,6 +208,78 @@ const DownloadCard = () => {
             </div>
           )}
         </div>
+      </div>
+    </Rise>
+  );
+};
+
+/** Paste-a-job-description matcher: a deterministic keyword-overlap score
+ * against real capabilities data (see lib/jdMatcher.ts) — same "no
+ * fabrication" approach as the Copilot's bestProjectForRole command,
+ * exposed here too since not every visitor thinks to try the Copilot. */
+const JDMatcherCard = () => {
+  const [jd, setJd] = useState("");
+  const [result, setResult] = useState<JDMatchResult | null>(null);
+
+  const check = () => {
+    if (!jd.trim()) return;
+    const r = matchJobDescription(jd, capabilities, projects);
+    setResult(r);
+    track("jd_matcher_run", { score: r.score });
+  };
+
+  return (
+    <Rise delay={0.08}>
+      <div className="rounded-xl border border-white/[0.06] bg-[var(--panel)]/60 p-6 backdrop-blur-sm md:p-7">
+        <div className="mb-3 flex items-center gap-3">
+          <ClipboardList size={18} className="text-[var(--accent)]" />
+          <h3 className="kicker">Paste a job description</h3>
+        </div>
+        <p className="mb-4 text-sm leading-relaxed text-[var(--text-2)]">
+          A quick, honest skill-overlap check — not a guarantee. Paste a JD and see which real skills match and the
+          strongest project to point to.
+        </p>
+        <textarea
+          value={jd}
+          onChange={(e) => setJd(e.target.value)}
+          rows={4}
+          placeholder="Paste a job description here…"
+          className="w-full resize-none rounded-lg border border-white/[0.08] bg-[var(--panel-2)] px-3.5 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-3)] focus:border-[#00FF94]/50 focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={check}
+          disabled={!jd.trim()}
+          className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#00FF94] px-5 py-2.5 text-sm font-bold text-[#050505] transition-transform hover:scale-[1.02] disabled:opacity-50"
+        >
+          Check match
+        </button>
+
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--panel-2)] p-4"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-display text-lg font-black text-[var(--accent)]">{result.score}% overlap</span>
+              <span className="text-xs text-[var(--text-3)]">
+                {result.matchedSkills.length}/{result.totalSkillsChecked} skills mentioned
+              </span>
+            </div>
+            {result.matchedSkills.length > 0 && (
+              <p className="mt-2 text-xs leading-relaxed text-[var(--text-3)]">
+                Matched: {result.matchedSkills.slice(0, 10).join(", ")}
+                {result.matchedSkills.length > 10 ? "…" : ""}
+              </p>
+            )}
+            {result.bestProject && (
+              <p className="mt-2 text-sm text-[var(--text-2)]">
+                Strongest project to point to: <span className="font-semibold text-[var(--text)]">{result.bestProject.shortTitle}</span>
+              </p>
+            )}
+          </motion.div>
+        )}
       </div>
     </Rise>
   );
@@ -378,6 +463,9 @@ const ResumeSection = () => {
               </div>
             </div>
           </Rise>
+
+          {/* Paste-a-job-description matcher */}
+          <JDMatcherCard />
 
           {/* Download CTA */}
           <DownloadCard />

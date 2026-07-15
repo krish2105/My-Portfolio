@@ -24,9 +24,12 @@ real images over the generated `ProjectCover`.
 
 ## 2. Demo videos / GIFs (≤15s)
 
-For the 4 current flagships: FinCopilot, Sakan AI, ComplianceAgent,
-AutoValuate Intelligence. No `demoVideo` field exists yet — add one to the
-`Project` type when the first clip is ready, rather than speculatively now.
+**Done (2026-07-15):** `Project.demoVideo` added and populated for all 4
+flagships — short, real, muted looping clips captured directly from each
+live app (real interactions: FinCopilot's ticker dashboard, Sakan AI's deal
+question box, ComplianceAgent's case queue, AutoValuate's onboarding tour).
+Shown on `ProjectCard` hover (fine-pointer devices only, respects
+prefers-reduced-motion). Re-record if any app's UI changes materially.
 
 ## 3. Metrics
 

@@ -28,6 +28,8 @@ vi.mock("../data/knowledgeBase", () => ({
 
 vi.mock("../lib/transformersEnv", () => ({
   configureLocalModels: vi.fn(async () => undefined),
+  // Passthrough (no actual retrying) — retry behavior itself isn't this test's concern.
+  withRetry: async (fn: () => unknown) => fn(),
 }));
 
 vi.mock("@huggingface/transformers", () => ({

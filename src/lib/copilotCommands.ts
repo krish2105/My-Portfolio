@@ -1,9 +1,10 @@
 import type { AssistantAction } from "../data/assistant";
 import type { ViewMode } from "./viewMode";
-import { projects } from "../data/portfolio";
+import { projects, capabilities } from "../data/portfolio";
 import { compareProjects, parseComparisonQuery, findProjectByName } from "./compareProjects";
 import { bestProjectForRole } from "./bestProjectForRole";
 import { buildInterviewQuestions } from "./interviewQuestions";
+import { matchJobDescription } from "./jdMatcher";
 
 export interface Msg {
   role: "user" | "bot";
@@ -70,6 +71,24 @@ export const specialCommandReply = (query: string): Msg | null => {
         actions: [{ label: "Open case study", type: "project", target: project.id }],
       };
     }
+  }
+
+  // Paste a full job description: "match job description: <text>" / "job description: <text>" / "jd: <text>".
+  const jdMatch = q.match(/^(?:match\s+)?(?:job description|jd)\s*[:-]\s*(.{20,})/is);
+  if (jdMatch) {
+    const jd = jdMatch[1].trim();
+    const result = matchJobDescription(jd, capabilities, projects);
+    const skillsLine =
+      result.matchedSkills.length > 0
+        ? `Matched skills: ${result.matchedSkills.slice(0, 8).join(", ")}${result.matchedSkills.length > 8 ? "…" : ""}`
+        : "No direct skill-name overlap found — the JD may use different terminology than the site's skill list.";
+    return {
+      role: "bot",
+      text: `Skill-coverage score: ${result.score}% (${result.matchedSkills.length}/${result.totalSkillsChecked} listed skills mentioned).\n${skillsLine}${
+        result.bestProject ? `\n\nStrongest project to point to: ${result.bestProject.shortTitle} — ${result.bestProject.valueProp ?? result.bestProject.description}` : ""
+      }`,
+      actions: result.bestProject ? [{ label: "Open case study", type: "project", target: result.bestProject.id }] : undefined,
+    };
   }
 
   return null;

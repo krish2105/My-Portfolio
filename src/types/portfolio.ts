@@ -29,6 +29,8 @@ export interface Project {
   /** High-level domains for the projects filter (e.g. "AI/ML", "Deep Learning", "GenAI", "Data"). */
   tags?: string[];
   images: string[];
+  /** Short muted looping clip (mp4, real captured interaction) shown on card hover, in addition to `images`. */
+  demoVideo?: string;
   repositoryUrl?: string;
   liveUrl?: string;
   caseStudyUrl?: string;

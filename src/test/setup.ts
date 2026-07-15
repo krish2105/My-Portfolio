@@ -35,6 +35,13 @@ if (typeof window.ResizeObserver === "undefined") {
   window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 }
 
+// jsdom doesn't implement Element.scrollTo — anything that scrolls a
+// container programmatically (e.g. Assistant's message list) needs this
+// stubbed or it throws on mount.
+if (typeof Element.prototype.scrollTo === "undefined") {
+  Element.prototype.scrollTo = () => {};
+}
+
 // jsdom doesn't implement matchMedia — every hook/component that checks
 // prefers-reduced-motion / pointer capability needs this stubbed.
 if (!window.matchMedia) {

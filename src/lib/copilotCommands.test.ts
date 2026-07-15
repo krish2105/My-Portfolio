@@ -28,4 +28,17 @@ describe("specialCommandReply (Copilot structured commands)", () => {
     expect(specialCommandReply("What has Krishna built?")).toBeNull();
     expect(specialCommandReply("Is he available for work?")).toBeNull();
   });
+
+  it("returns a skill-coverage score and best-project pointer for a pasted job description", () => {
+    const reply = specialCommandReply(
+      "job description: We need an engineer with Python, Machine Learning, LangGraph and Generative AI experience for an agentic AI role."
+    );
+    expect(reply).not.toBeNull();
+    expect(reply?.text).toMatch(/skill-coverage score: \d+%/i);
+    expect(reply?.actions?.[0]).toMatchObject({ type: "project" });
+  });
+
+  it("does not treat a short 'job description:' fragment as a real JD paste", () => {
+    expect(specialCommandReply("job description: short")).toBeNull();
+  });
 });
