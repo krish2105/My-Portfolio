@@ -203,7 +203,11 @@ const Assistant = () => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.4, duration: 0.4 }}
-        className="fixed bottom-5 right-5 z-[115] inline-flex items-center gap-2 rounded-full border border-[#00FF94]/40 bg-[var(--panel)]/90 px-4 py-3 text-sm font-semibold text-[var(--text)] shadow-[0_10px_40px_-8px_rgba(0,0,0,0.8)] backdrop-blur transition-colors hover:border-[#00FF94] md:bottom-7 md:right-7"
+        style={{ ["--sib" as string]: "env(safe-area-inset-bottom)", ["--sir" as string]: "env(safe-area-inset-right)" }}
+        // Custom properties + arbitrary-value utilities (not inline style
+        // directly on bottom/right) so the responsive md: offsets still win
+        // at that breakpoint — see ScrollProgress.tsx for why.
+        className="fixed bottom-[max(1.25rem,var(--sib))] right-[max(1.25rem,var(--sir))] z-[115] inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00FF94]/40 bg-[var(--panel)]/90 px-4 py-3 text-sm font-semibold text-[var(--text)] shadow-[0_10px_40px_-8px_rgba(0,0,0,0.8)] backdrop-blur transition-colors hover:border-[#00FF94] md:bottom-[max(1.75rem,var(--sib))] md:right-[max(1.75rem,var(--sir))]"
       >
         <Sparkles size={16} className="text-[var(--accent)]" aria-hidden />
         <span className="hidden sm:inline">Ask AI</span>
@@ -220,7 +224,8 @@ const Assistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-20 right-3 z-[116] flex h-[60vh] max-h-[560px] w-[calc(100vw-1.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-[var(--border-strong)] bg-[var(--panel-2)]/97 shadow-[0_40px_120px_-24px_rgba(0,0,0,0.9)] ring-1 ring-[#00FF94]/10 backdrop-blur-md md:bottom-24 md:right-7"
+            style={{ ["--sir" as string]: "env(safe-area-inset-right)" }}
+            className="fixed bottom-20 right-[max(0.75rem,var(--sir))] z-[116] flex h-[60vh] max-h-[560px] w-[calc(100vw-1.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-[var(--border-strong)] bg-[var(--panel-2)]/97 shadow-[0_40px_120px_-24px_rgba(0,0,0,0.9)] ring-1 ring-[#00FF94]/10 backdrop-blur-md md:bottom-24 md:right-[max(1.75rem,var(--sir))]"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">

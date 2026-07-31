@@ -47,20 +47,42 @@ export default defineConfig({
     css: false,
   },
   build: {
+    modulePreload: {
+      // Defence in depth alongside removing manualChunks below: Vite's
+      // default modulePreload injects a <link rel="modulepreload"> for
+      // every chunk statically reachable from a dynamic import(), which
+      // would defeat the point of the R3F hero and transformers.js/ONNX
+      // chunks being conditionally loaded (useWebGLSupport gate, explicit
+      // "Try it"/"Analyse sentiment" clicks) if either ever ends up in that
+      // reachable set again.
+      resolveDependencies: (_filename, deps) =>
+        deps.filter((d) => !d.includes("NeuralGraphR3F") && !d.includes("transformers")),
+    },
     rollupOptions: {
       output: {
-        // Safety net, not the primary splitting mechanism: the R3F hero and
-        // transformers.js are already deferred via lazy()/dynamic import()
-        // (see HeroBackdrop.tsx, transformersEnv.ts). This just guarantees
-        // those two heavy vendor trees can never get silently re-inlined
-        // into the main chunk if a future import accidentally pulls them in
-        // eagerly elsewhere.
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-          if (id.includes("three") || id.includes("@react-three")) return "r3f-vendor";
-          if (id.includes("@huggingface/transformers")) return "transformers-vendor";
-          return undefined;
-        },
+        // Rollup's default (true) hoists transitive static imports of a
+        // dynamic import() target into whichever chunk references it, to
+        // save a round-trip once that dynamic import actually resolves —
+        // wrong here, since the whole point is to NOT fetch these chunks
+        // until the gate/click fires.
+        hoistTransitiveImports: false,
+        // NOTE: deliberately NOT using manualChunks to force "three"/
+        // "@react-three"/"@huggingface/transformers" into named vendor
+        // chunks (r3f-vendor/transformers-vendor), despite that looking
+        // like the obvious way to guarantee they can never get inlined into
+        // the main chunk. Measured, real bug: doing so made Rollup emit a
+        // *static* `import ... from "./r3f-vendor-*.js"` at the top of the
+        // main entry chunk — visible directly in dist output and confirmed
+        // via a live network trace — so every visitor's browser fetched
+        // ~890 KB + ~553 KB on page load regardless of device/clicks,
+        // silently defeating the lazy-loading this repo otherwise goes out
+        // of its way to guarantee. Removing manualChunks and letting
+        // Rollup's automatic splitting handle it (it already does, since
+        // both are exclusively reached via lazy()/dynamic import()) made
+        // that static import disappear entirely — confirmed via the same
+        // trace. See docs/QA_REPORT.md's Phase C entry (2026-07-31) for the
+        // before/after numbers. If reintroducing manualChunks here, re-run
+        // that network trace before trusting it again.
       },
     },
   },
@@ -94,12 +116,16 @@ export default defineConfig({
       workbox: {
         // Don't precache the heavy lazy 3D / ML chunks or big media; runtime-cache instead.
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
-        // r3f-vendor/transformers-vendor are the manualChunks names (see
-        // build.rollupOptions.output.manualChunks above) that now carry the
-        // actual heavy three.js/transformers.js code — NeuralGraphR3F*.js
-        // itself shrank to just component logic once the vendor code moved
-        // into its own chunk, so it no longer needs excluding.
-        globIgnores: ["**/r3f-vendor*.js", "**/transformers-vendor*.js", "**/ort*.js"],
+        // Matches Rollup's automatic (not manualChunks — see the removal
+        // note above) output names for the R3F hero and transformers.js:
+        // NeuralGraphR3F-*.js now carries the actual three.js/@react-three
+        // code (its only consumer), and transformers.web-*.js /
+        // transformers-*.js cover @huggingface/transformers' own auto-split
+        // chunk naming. Re-check these patterns against a real `npm run
+        // build` output if this ever silently stops excluding them (the
+        // precache entry count/size in the build log is the tell — see
+        // docs/QA_REPORT.md's Phase C entry for the real numbers).
+        globIgnores: ["**/NeuralGraphR3F*.js", "**/transformers*.js", "**/ort*.js"],
         maximumFileSizeToCacheInBytes: 2_500_000,
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [

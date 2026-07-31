@@ -29,11 +29,20 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+      // Safe-area inset lives on this outer fixed element, separate from the
+      // visual py-3/py-6 padding below — so an iPhone notch (portrait) or
+      // the Dynamic Island/rounded corners (landscape) never sit under the
+      // nav content, without disturbing the scrolled/unscrolled padding math.
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
       className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled ? "border-b border-[var(--border)] bg-[var(--bg)]/70 py-3 backdrop-blur-xl" : "bg-transparent py-6"
+        scrolled ? "border-b border-[var(--border)] bg-[var(--bg)]/70 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-[8vw]">
+      <div
+        className={`mx-auto flex max-w-[1600px] items-center justify-between pl-[max(1.5rem,env(safe-area-inset-left))] pr-[max(1.5rem,env(safe-area-inset-right))] transition-[padding] duration-300 md:px-[8vw] ${
+          scrolled ? "py-3" : "py-6"
+        }`}
+      >
         <a href="#home" onClick={go("home")} className="font-display text-lg font-black tracking-tighter text-[var(--text)] focus-visible-ring" aria-label="Home">
           KM<span className="text-[var(--accent)]">.</span>
         </a>

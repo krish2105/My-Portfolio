@@ -55,7 +55,12 @@ const MobileMenu = ({ navItems, activeId }: MobileMenuProps) => {
           >
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-6 right-6 p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors focus-visible-ring"
+              // Positioned with safe-area insets, not a flat top-6/right-6 —
+              // this is a full-screen fixed overlay, so it must clear a
+              // notch (portrait) or the rounded/notched edge (landscape)
+              // rather than sitting flush against the physical screen edge.
+              style={{ top: "max(1.5rem, env(safe-area-inset-top))", right: "max(1.5rem, env(safe-area-inset-right))" }}
+              className="absolute p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors focus-visible-ring"
               aria-label="Close menu"
             >
               <X size={32} />

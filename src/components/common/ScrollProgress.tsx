@@ -31,8 +31,19 @@ const ScrollProgress = () => {
       initial={false}
       animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.8 }}
       transition={{ duration: 0.3 }}
-      style={{ pointerEvents: visible ? "auto" : "none" }}
-      className="fixed bottom-5 left-5 z-[60] grid h-11 w-11 place-items-center rounded-full border border-[var(--border)] bg-[var(--panel)]/90 text-[var(--accent)] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] backdrop-blur transition-colors hover:border-[#00FF94] md:bottom-7 md:left-7"
+      style={{
+        pointerEvents: visible ? "auto" : "none",
+        // Custom properties only (not the final bottom/left) so the
+        // responsive md:bottom-*/left-* utilities below still win at that
+        // breakpoint — an inline `style.bottom` would always beat them
+        // regardless of media query, since inline style outranks any class.
+        ["--sib" as string]: "env(safe-area-inset-bottom)",
+        ["--sil" as string]: "env(safe-area-inset-left)",
+      }}
+      // Fixed corner FAB — offset from the physical bottom/left edge by the
+      // iOS home-indicator/rounded-corner safe area, not just a flat 1.25rem/
+      // 1.75rem, so it's never rendered under it.
+      className="fixed bottom-[max(1.25rem,var(--sib))] left-[max(1.25rem,var(--sil))] z-[60] grid h-11 w-11 place-items-center rounded-full border border-[var(--border)] bg-[var(--panel)]/90 text-[var(--accent)] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] backdrop-blur transition-colors hover:border-[#00FF94] md:bottom-[max(1.75rem,var(--sib))] md:left-[max(1.75rem,var(--sil))]"
     >
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 -rotate-90">
         <circle

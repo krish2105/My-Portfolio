@@ -133,7 +133,7 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
             <button
               onClick={onClose}
               aria-label="Close case study"
-              className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-[var(--border)] text-[var(--text-2)] transition-colors hover:border-[#00FF94]/50 hover:text-[var(--accent)]"
+              className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-[var(--border)] text-[var(--text-2)] transition-colors hover:border-[#00FF94]/50 hover:text-[var(--accent)]"
             >
               <X size={18} aria-hidden />
             </button>

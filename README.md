@@ -25,7 +25,7 @@ The hero renders an interactive WebGL "neural constellation"; project cards open
 - 📊 **Case-study modals** — every project opens an accessible dialog (focus-trap, ESC, scroll-lock) with Problem · Approach · What I built · Impact · real metrics · screenshot gallery.
 - 🎨 **Cohesive design system** — single neon accent, one signature easing, custom cursor, film-grain texture, masked text reveals (Motion).
 - 🧩 **Data-driven content** — every section reads from `src/data/portfolio.ts`. No copy is hard-coded in components.
-- 📱 **Fully responsive** with a dedicated mobile menu and a desktop horizontal project gallery that falls back to a vertical stack on mobile.
+- 📱 **Fully responsive** with a dedicated mobile menu. The desktop project gallery is a pinned, scroll-driven horizontal track; on mobile it becomes its own native swipe gallery (CSS scroll-snap, no gesture library) rather than a vertical stack, so the same "kinetic" feel carries over to touch.
 - ♿ **Accessible** — semantic HTML, skip link, global keyboard focus rings, WCAG-AA text contrast, `aria-label`s, reduced-motion support, error boundary.
 - 📨 **Working contact form** — posts to a Vercel serverless function that sends via **Resend**, with a honeypot + timing spam guard and a `mailto:` fallback.
 - 🚀 **SEO-ready** — meta + Open Graph + Twitter tags, canonical URL, `robots.txt`, `sitemap.xml`, and JSON-LD `Person`/`WebSite` structured data.
