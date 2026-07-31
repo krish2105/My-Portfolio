@@ -11,12 +11,16 @@ const NeuralGraphR3F = lazy(() => import("./NeuralGraphR3F"));
  *  • Capable device (WebGL, fine pointer, no reduced-motion) → lazy R3F neural graph.
  *  • Otherwise → the lightweight Canvas 2D neuron field (NameNeurons).
  * The WebGL scene is unmounted once the hero leaves the viewport so it does no
- * GPU work while the user reads the rest of the page.
+ * GPU work while the user reads the rest of the page. A real WebGL context
+ * loss mid-session (GPU reset, Safari/iOS reclaiming memory — distinct from
+ * "no WebGL at all") also permanently falls back to NameNeurons, since that's
+ * an async DOM event a React ErrorBoundary can't catch on its own.
  */
 const HeroBackdrop = () => {
   const webgl = useWebGLSupport();
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  const [contextLost, setContextLost] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -30,10 +34,10 @@ const HeroBackdrop = () => {
 
   return (
     <div ref={ref} className="absolute inset-0">
-      {webgl && inView ? (
+      {webgl && inView && !contextLost ? (
         <ErrorBoundary fallback={<NameNeurons />}>
           <Suspense fallback={<NameNeurons />}>
-            <NeuralGraphR3F />
+            <NeuralGraphR3F onContextLost={() => setContextLost(true)} />
           </Suspense>
         </ErrorBoundary>
       ) : (

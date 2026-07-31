@@ -184,12 +184,31 @@ function NeuralField() {
   );
 }
 
-const NeuralGraphR3F = () => (
+interface NeuralGraphR3FProps {
+  /** Fired on a real WebGL context loss (GPU driver reset, too many contexts,
+   * Safari/iOS reclaiming memory) — a distinct failure mode from "no WebGL at
+   * all" (handled by useWebGLSupport) and NOT caught by a React ErrorBoundary,
+   * since it's an async DOM event, not a thrown render-time error. The parent
+   * swaps to the Canvas 2D fallback when this fires. */
+  onContextLost?: () => void;
+}
+
+const NeuralGraphR3F = ({ onContextLost }: NeuralGraphR3FProps) => (
   <Canvas
     dpr={[1, 1.6]}
     camera={{ position: [0, 0, 11], fov: 60 }}
     gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     style={{ position: "absolute", inset: 0 }}
+    onCreated={({ gl }) => {
+      gl.domElement.addEventListener(
+        "webglcontextlost",
+        (e) => {
+          e.preventDefault();
+          onContextLost?.();
+        },
+        { once: true },
+      );
+    }}
   >
     <NeuralField />
   </Canvas>
