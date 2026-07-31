@@ -64,22 +64,31 @@ verification discipline.
   real domain (e.g. `krishnamathur.dev`) is added — see Section 11 of the
   master plan.
 - **Content gaps.** Full list + request templates in
-  `docs/CONTENT_TODO.md`: 5 missing project screenshots, 4 demo videos,
-  résumé ATS/plain-text variant + inline preview, all testimonials/writing
-  (currently honest placeholders, by design).
+  `docs/CONTENT_TODO.md`: 1 missing project screenshot (WaselX), résumé
+  ATS/plain-text variant, all testimonials/writing (currently honest
+  placeholders, by design — the single biggest remaining trust gap).
+- **ClaimGuard AI.** Confirmed by Krishna to be a real, separate project
+  (distinct from ComplianceAgent) — held out of this pass pending live
+  URL/repo/metrics; add to `portfolio.ts` and it flows into the résumé
+  automatically on the next `npm run resume:build`.
 - **Cross-browser/Slow-4G manual pass.** Not independently verified in this
   environment (Chromium-only preview available) — see `docs/QA_REPORT.md`
   for exactly what *was* checked. Needs a real pass on Safari (desktop +
   iOS), Firefox, and a throttled connection before calling launch fully
-  QA'd.
-- **Mobile Lighthouse gate.** Currently `warn`-only (see `docs/QA_REPORT.md`
-  for why) — revisit once `lighthouserc.mobile.json` has run in CI a
-  handful of times and the numbers are stable enough to gate on.
-- **Bundle size.** R3F hero (~882 KB) + transformers.js (~550 KB) + ONNX
-  WASM (~23 MB) chunks remain large but lazy-loaded; further reduction
-  would require an actual code-splitting project, not a config change —
-  out of scope for this pass, flagged as the main lever if the desktop
-  Lighthouse gate needs to go higher later.
+  QA'd. Two specific 2026-07-31 fixes also need real-device confirmation:
+  the R3F hero's WebGL context-loss fallback, and iOS safe-area insets on
+  an actual notched device.
+- **Mobile Lighthouse gate — DONE (2026-07-15), re-measured (2026-07-31).**
+  `error ≥0.50`, actually enforced. A real eager-fetch bug found this pass
+  (Rollup's `manualChunks` was forcing a static import of the R3F/ML
+  vendor chunks into the main bundle — see `docs/QA_REPORT.md`) moved the
+  median from 0.52 to 0.62 across 3 fresh runs once fixed.
+- **Git LFS migration for `public/models`/`public/ort` — prepared,
+  not pushed.** This session's sandbox couldn't reach GitHub's LFS
+  object-storage endpoint to push the actual objects. Exact commands to
+  finish it are in `docs/QA_REPORT.md`'s 2026-07-31 entry — needs Krishna
+  (or a session with real LFS push access) plus enabling "Git LFS Support"
+  in Vercel Project Settings → Git afterward.
 
 ## Rollback
 

@@ -190,9 +190,9 @@ Other touch points:
 
 ### Personalization TODO
 - [ ] Add real Instagram/Twitter/website links in `src/data/portfolio.ts` (currently hidden — `""` — since the old placeholders 404'd).
-- [ ] **Rename the Vercel subdomain to match the code.** The codebase now points at `krishnamathur-ai.vercel.app` (corrected spelling) everywhere — canonical/OG/JSON-LD in `index.html`, `scripts/generate-project-pages.ts`, `sitemap.xml`, `robots.txt`. Rename the Vercel project's subdomain (Project Settings → Domains) to match, or point a real custom domain at it instead.
-- [ ] **5 of 8 projects have no screenshots** (`smartloanbot`, `waselx`, `flower-classifier`, `talktodata`, `electric-production` in `src/data/portfolio.ts` all ship `images: []`). Each now has an honest "code/notebook available on request" note in place of a dead link — add a real screenshot or architecture diagram per project when available.
-- [ ] Real testimonials, LinkedIn recommendations, mentor/faculty feedback and writing/articles — see `docs/CONTENT_TODO.md` (added in Phase 3 of the AI Command Center plan) for ready-to-send request templates.
+- [ ] **WaselX has no screenshot** (private team repo, `images: []`) — the only project still missing one; it has an honest "source available on request" note in place of a dead link.
+- [ ] **ClaimGuard AI** — a real, separate project confirmed by Krishna — needs its live URL/repo/metrics added to `portfolio.ts` as a 9th case study; it'll flow into the résumé automatically on the next `npm run resume:build`.
+- [ ] Real testimonials, LinkedIn recommendations, mentor/faculty feedback and writing/articles — see `docs/CONTENT_TODO.md` for ready-to-send request templates. The single biggest remaining trust gap.
 
 ## 13. Performance & Accessibility Notes
 
