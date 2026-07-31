@@ -9,7 +9,8 @@
     "postbuild": "tsx scripts/generate-project-pages.ts",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "resume:build": "tsx scripts/generate-resume.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
@@ -30,6 +31,7 @@
     "@axe-core/cli": "^4.12.1",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -43,6 +45,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "pdf-lib": "^1.17.1",
     "tsx": "^4.22.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",

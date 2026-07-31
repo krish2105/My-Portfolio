@@ -9,12 +9,9 @@ interface ResumeButtonProps {
 }
 
 /**
- * Downloads the resume immediately from Google Drive.
- *
- * The href points at Drive's `uc?export=download&id=…` endpoint, which responds
- * with `Content-Disposition: attachment`, so the browser downloads the PDF on
- * click instead of opening a preview. Returns null until a real Drive id is set
- * in `src/data/portfolio.ts` (RESUME_DRIVE_FILE_ID).
+ * Downloads the self-hosted résumé PDF (public/resume/Krishna_Mathur_Resume.pdf,
+ * regenerated via `npm run resume:build` — see scripts/generate-resume.ts).
+ * The `download` attribute forces a save instead of an in-browser preview.
  */
 const ResumeButton = ({ variant = "solid", className = "", label = "Download Resume" }: ResumeButtonProps) => {
   if (!socialLinks.resume) return null;

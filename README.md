@@ -30,7 +30,7 @@ The hero renders an interactive WebGL "neural constellation"; project cards open
 - 📨 **Working contact form** — posts to a Vercel serverless function that sends via **Resend**, with a honeypot + timing spam guard and a `mailto:` fallback.
 - 🚀 **SEO-ready** — meta + Open Graph + Twitter tags, canonical URL, `robots.txt`, `sitemap.xml`, and JSON-LD `Person`/`WebSite` structured data.
 - 🏎️ **Performance-first** — WebP imagery (≈92% smaller than source PNGs), code-split 3D, cache headers, and Vercel Speed Insights.
-- 📄 **One-click resume download** via a Google Drive direct-download link.
+- 📄 **One-click resume download** — self-hosted PDF, regenerated from the same project data via `npm run resume:build` (see §12).
 
 ## 5. Tech Stack
 
@@ -115,6 +115,8 @@ The dev server starts at **http://localhost:5173**.
 | `npm run build` | Type-check (`tsc -b`) and build for production into `dist/` |
 | `npm run preview` | Serve the production build locally (http://localhost:4173) |
 | `npm run lint` | Run ESLint |
+| `npm run test` | Run the Vitest/RTL suite |
+| `npm run resume:build` | Regenerate `public/resume/Krishna_Mathur_Resume.pdf` from `scripts/resume-content.ts` + `src/data/portfolio.ts` |
 
 ## 9. Build for Production
 
@@ -178,8 +180,8 @@ Almost everything is editable from **`src/data/portfolio.ts`**:
 
 - `profile` — name, titles, location, about statements.
 - `socialLinks` — GitHub, LinkedIn, email, etc. Set a value to `""` to hide that link.
-- `RESUME_DRIVE_FILE_ID` — your Google Drive file ID (the part between `/d/` and `/view`). Powers the "Download Resume" button as a forced download.
 - `services`, `journey`, `capabilities`, `projects`, `recognition` — section content.
+- **Résumé** — self-hosted at `public/resume/Krishna_Mathur_Resume.pdf`, generated from `scripts/resume-content.ts` + this file's `projects`/`profile`/`recognition`. Edit that content file (or the project data) and run `npm run resume:build` to regenerate — never hand-edit the PDF.
 
 Other touch points:
 - **Profile image:** replace `public/avatar.png`.

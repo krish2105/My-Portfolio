@@ -47,6 +47,9 @@ verification discipline.
 - [ ] `npm run test` green (64 tests as of this pass)
 - [ ] `npm run build` succeeds, including the `postbuild` static-page
       generator (`Generated 8/8 static case-study pages.`)
+- [ ] If any project in `portfolio.ts` changed (added, removed, or edited
+      metrics/links), re-run `npm run resume:build` and confirm the new
+      `public/resume/Krishna_Mathur_Resume.pdf` reflects it.
 - [ ] `grep -ri portolio .` (excluding `node_modules`/`dist`) returns nothing
 - [ ] Spot-check the deployed site in a real browser: dark + light theme,
       375px mobile, and `prefers-reduced-motion` — no console errors

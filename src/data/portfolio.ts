@@ -37,22 +37,16 @@ export const profile: Profile = {
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- *  RESUME — Google Drive direct download
+ *  RESUME — self-hosted PDF, regenerated from source content
  * ─────────────────────────────────────────────────────────────────────────────
- *  1. Upload your resume PDF to Google Drive.
- *  2. Right-click → Share → "Anyone with the link" (Viewer).
- *  3. Copy the share link. It looks like:
- *       https://drive.google.com/file/d/1AbCDeFgHiJkLmNoPqRsTuVwXyZ/view?usp=sharing
- *  4. Paste ONLY the id part (the value between /d/ and /view) below.
- *  The site turns it into a forced-download link automatically, so clicking
- *  "Download Resume" downloads the file immediately instead of opening a viewer.
+ *  The résumé lives at public/resume/Krishna_Mathur_Resume.pdf and is built
+ *  from scripts/resume-content.ts + this file's `projects` (see
+ *  scripts/generate-resume.ts). Never hand-edit the PDF directly — update
+ *  the content source and run `npm run resume:build` instead, so the résumé
+ *  can't silently drift out of sync with the site again (see
+ *  docs/LAUNCH_CHECKLIST.md's "Before every deploy" list).
  */
-export const RESUME_DRIVE_FILE_ID: string = "1upvjDh5j7JxcwLfmwb-MPkB3urDhzfuw";
-
-const resumeDownloadUrl =
-  RESUME_DRIVE_FILE_ID && RESUME_DRIVE_FILE_ID !== "REPLACE_WITH_YOUR_DRIVE_FILE_ID"
-    ? `https://drive.google.com/uc?export=download&id=${RESUME_DRIVE_FILE_ID}`
-    : "";
+const resumeDownloadUrl = "/resume/Krishna_Mathur_Resume.pdf";
 
 /** Full international format (no spaces/dashes) — single source for both
  * the tel: and wa.me links below, so they can never drift apart. */

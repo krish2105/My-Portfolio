@@ -2,7 +2,7 @@ import { memo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff, ClipboardList } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { journey, capabilities, recognition, socialLinks, projects, RESUME_DRIVE_FILE_ID } from "../../data/portfolio";
+import { journey, capabilities, recognition, socialLinks, projects } from "../../data/portfolio";
 import { buildHiringSummary } from "../../lib/hiringSummary";
 import { matchJobDescription, type JDMatchResult } from "../../lib/jdMatcher";
 import { RevealText, Rise } from "../common/Reveal";
@@ -59,9 +59,8 @@ const DownloadCard = () => {
   const hasResume = !!socialLinks.resume;
   const [copied, setCopied] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const canPreview =
-    hasResume && !!RESUME_DRIVE_FILE_ID && RESUME_DRIVE_FILE_ID !== "REPLACE_WITH_YOUR_DRIVE_FILE_ID";
-  const previewUrl = `https://drive.google.com/file/d/${RESUME_DRIVE_FILE_ID}/preview`;
+  const canPreview = hasResume;
+  const previewUrl = `${socialLinks.resume}#view=FitH`;
 
   const copySummary = async () => {
     const summary = buildHiringSummary();
