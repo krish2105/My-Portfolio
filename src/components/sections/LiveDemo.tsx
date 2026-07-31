@@ -218,6 +218,12 @@ const LiveDemo = () => {
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [lab, setLab] = useState<"sentiment" | "nl2sql" | "tradeoffs">("sentiment");
+  // Collapsed by default: a recruiter skimming for two minutes rarely types
+  // into an in-browser demo, and these three labs are the site's heaviest
+  // interactive section (the transformer model itself already only loads on
+  // "Analyse sentiment", but the labs' own JS/motion/state still mounts and
+  // runs the moment this section scrolls into view unless gated here too).
+  const [revealed, setRevealed] = useState(false);
 
   const analyze = async () => {
     if (!text.trim()) return;
@@ -241,47 +247,77 @@ const LiveDemo = () => {
           <span className="kicker">/ Live</span>
           <RevealText className="kicker">Try the AI</RevealText>
         </div>
-        <div className="flex gap-2" role="group" aria-label="Choose a live demo">
-          <button
-            type="button"
-            onClick={() => setLab("sentiment")}
-            aria-pressed={lab === "sentiment"}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-              lab === "sentiment"
-                ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
-                : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
-            }`}
-          >
-            Sentiment model
-          </button>
-          <button
-            type="button"
-            onClick={() => setLab("nl2sql")}
-            aria-pressed={lab === "nl2sql"}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-              lab === "nl2sql"
-                ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
-                : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
-            }`}
-          >
-            NL→SQL (rule-based)
-          </button>
-          <button
-            type="button"
-            onClick={() => setLab("tradeoffs")}
-            aria-pressed={lab === "tradeoffs"}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-              lab === "tradeoffs"
-                ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
-                : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
-            }`}
-          >
-            Trade-off simulator
-          </button>
-        </div>
+        {revealed && (
+          <div className="flex gap-2" role="group" aria-label="Choose a live demo">
+            <button
+              type="button"
+              onClick={() => setLab("sentiment")}
+              aria-pressed={lab === "sentiment"}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                lab === "sentiment"
+                  ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+              }`}
+            >
+              Sentiment model
+            </button>
+            <button
+              type="button"
+              onClick={() => setLab("nl2sql")}
+              aria-pressed={lab === "nl2sql"}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                lab === "nl2sql"
+                  ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+              }`}
+            >
+              NL→SQL (rule-based)
+            </button>
+            <button
+              type="button"
+              onClick={() => setLab("tradeoffs")}
+              aria-pressed={lab === "tradeoffs"}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                lab === "tradeoffs"
+                  ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+              }`}
+            >
+              Trade-off simulator
+            </button>
+          </div>
+        )}
       </div>
 
-      {lab === "nl2sql" ? (
+      {!revealed && (
+        <Rise>
+          <div className="flex flex-col items-start gap-5 rounded-2xl border border-[var(--border-strong)] bg-[var(--panel)] p-7 md:flex-row md:items-center md:justify-between md:p-8">
+            <div>
+              <h2 className="font-display text-2xl font-black leading-[1.1] tracking-tight text-[var(--text)] md:text-3xl">
+                Three honest, in-browser labs — <span className="text-gradient">a real ML model, rule-based NL→SQL, and a trade-off quiz.</span>
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--text-2)] md:text-base">
+                Optional and self-contained — nothing here loads until you ask for it. The sentiment model is a
+                one-time ~90 MB in-browser download; the other two labs are lightweight and instant.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                track("live_demo_revealed");
+                setRevealed(true);
+              }}
+              data-cursor="Try it"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#00FF94] px-6 py-3.5 font-bold text-[#050505] transition-transform hover:scale-[1.02]"
+            >
+              <Sparkles size={16} aria-hidden />
+              Try it
+            </button>
+          </div>
+        </Rise>
+      )}
+
+      {revealed && (lab === "nl2sql" ? (
         <Rise>
           <NL2SQLLab />
         </Rise>
@@ -395,7 +431,7 @@ const LiveDemo = () => {
           </div>
         </div>
       </Rise>
-      )}
+      ))}
     </section>
   );
 };

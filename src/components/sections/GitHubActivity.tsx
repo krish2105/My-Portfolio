@@ -2,21 +2,8 @@ import { memo } from "react";
 import { FaGithub } from "react-icons/fa6";
 import { Star, GitFork, Users, Code2 } from "lucide-react";
 import { useGitHubStats } from "../../hooks/useGitHubStats";
+import { GH_USERNAME, relativeTime } from "../../lib/github";
 import { RevealText, Rise } from "../common/Reveal";
-
-const GH_USERNAME = "krish2105";
-
-/** Coarse "3 days ago"-style relative time — no dependency needed for this. */
-const relativeTime = (iso: string): string => {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (days <= 0) return "today";
-  if (days === 1) return "yesterday";
-  if (days < 30) return `${days}d ago`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(months / 12)}y ago`;
-};
 
 const Stat = ({
   icon: Icon,

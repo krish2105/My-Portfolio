@@ -8,6 +8,10 @@ export interface GitHubStats {
   topLanguages: string[];
   profileUrl: string;
   lastPush: { repo: string; url: string; at: string } | null;
+  /** Every fetched repo's last-push timestamp, keyed by lowercased repo name —
+   * lets other components (e.g. a per-project "last updated" signal) reuse
+   * this same already-fetched data instead of making their own API call. */
+  repoPushDates: Record<string, string>;
 }
 
 interface GitHubRepo {
@@ -77,6 +81,11 @@ export const useGitHubStats = (username: string) => {
           (a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime()
         )[0];
 
+        const repoPushDates: Record<string, string> = {};
+        repos.forEach((r) => {
+          repoPushDates[r.name.toLowerCase()] = r.pushed_at;
+        });
+
         const data: GitHubStats = {
           username,
           publicRepos: user.public_repos ?? repos.length,
@@ -87,6 +96,7 @@ export const useGitHubStats = (username: string) => {
           lastPush: mostRecentlyPushed
             ? { repo: mostRecentlyPushed.name, url: mostRecentlyPushed.html_url, at: mostRecentlyPushed.pushed_at }
             : null,
+          repoPushDates,
         };
         if (!alive) return;
         setStats(data);

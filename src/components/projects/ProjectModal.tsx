@@ -5,6 +5,8 @@ import { FaGithub } from "react-icons/fa6";
 import { track } from "@vercel/analytics";
 import type { Project } from "../../types/portfolio";
 import { useViewMode } from "../../lib/viewMode";
+import { useGitHubStats } from "../../hooks/useGitHubStats";
+import { GH_USERNAME, relativeTime, repoNameFromKrish2105Url } from "../../lib/github";
 import SafeExternalLink from "../common/SafeExternalLink";
 import ProjectTelemetry from "./ProjectTelemetry";
 import ArchitectureMap from "./ArchitectureMap";
@@ -50,6 +52,15 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocus = useRef<HTMLElement | null>(null);
   const { mode } = useViewMode();
+  // Reuses the same GitHub API call GitHubActivity already makes (session-
+  // cached, 6h TTL) to show a real per-project "last updated" signal —
+  // closes the "is this still current" trust gap without a new API call.
+  // Only resolves for repos under the krish2105 account; a project hosted
+  // elsewhere (e.g. a teammate's repo) has no data to match, so it simply
+  // shows nothing rather than a guessed date.
+  const { stats: ghStats } = useGitHubStats(GH_USERNAME);
+  const repoName = repoNameFromKrish2105Url(project?.repositoryUrl);
+  const lastUpdated = repoName ? ghStats?.repoPushDates[repoName] : undefined;
   // Technical readers want the engineering depth (problem → approach →
   // system flow → trade-offs) up front; recruiter/business readers want
   // outcomes first, with the same depth one click away — never hidden,
@@ -321,6 +332,13 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
                   </SafeExternalLink>
                 )}
               </div>
+            )}
+
+            {lastUpdated && (
+              <p className="mt-4 flex items-center gap-2 font-mono text-[11px] text-[var(--text-3)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden />
+                Last updated on GitHub: {relativeTime(lastUpdated)}
+              </p>
             )}
 
             {project.note && <p className="mt-6 text-xs italic leading-relaxed text-[var(--text-3)]">{project.note}</p>}
