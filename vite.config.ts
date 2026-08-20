@@ -127,7 +127,12 @@ export default defineConfig({
         // docs/QA_REPORT.md's Phase C entry for the real numbers).
         globIgnores: ["**/NeuralGraphR3F*.js", "**/transformers*.js", "**/ort*.js"],
         maximumFileSizeToCacheInBytes: 2_500_000,
-        navigateFallbackDenylist: [/^\/api\//],
+        // Real static files (PDFs), not SPA routes — the navigateFallback
+        // otherwise substitutes the cached app-shell HTML for any
+        // navigation-mode request (including an <iframe> embed), which
+        // carries the homepage's frame-ancestors 'none' CSP and blocks
+        // the résumé preview iframe with ERR_BLOCKED_BY_RESPONSE.
+        navigateFallbackDenylist: [/^\/api\//, /^\/resume\//, /^\/ai-systems-sheet\.pdf$/],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith("/projects/") || url.pathname.endsWith(".webp"),
