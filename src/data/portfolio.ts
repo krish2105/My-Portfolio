@@ -773,7 +773,7 @@ export const projects: Project[] = [
     category: "Data Engineering · Real-Time Analytics · BI",
     status: "Academic Team Project",
     description:
-      "An enterprise-grade, real-time sales-analytics platform for a large UAE retailer, featuring live streaming data, AI-powered insights, role-based access control and cross-store operations management — built on a Next.js frontend with a FastAPI, PostgreSQL and Redis backend.",
+      "An enterprise-grade, real-time sales-analytics platform for a large UAE retailer, featuring live streaming data, AI-powered insights, role-based access control and cross-store operations management — built on a Next.js frontend with a FastAPI, PostgreSQL and Redis backend. Analyses a 913,000-row transaction dataset; validated independently by faculty, with a UAE hypermarket stakeholder requesting a walkthrough.",
     features: [
       "Real-time sales streaming and dashboards",
       "AI-powered insights and anomaly detection",
@@ -799,8 +799,10 @@ export const projects: Project[] = [
       "Real-time, multi-store visibility across 10 stores in 3 regions.",
       "Role-based governance over sensitive financial data.",
       "Enterprise architecture: Next.js + FastAPI + PostgreSQL + Redis, Docker-orchestrated.",
+      "Faculty validated the platform independently; a UAE hypermarket stakeholder requested a walkthrough.",
     ],
     metrics: [
+      { label: "Dataset", value: "913K rows" },
       { label: "Coverage", value: "10 stores · 3 regions" },
       { label: "Frontend", value: "Next.js + TS" },
       { label: "Data layer", value: "PostgreSQL + Redis" },
@@ -880,6 +882,38 @@ export const projects: Project[] = [
     limitations: [
       "Academic exercise on a modelled delivery network, not a live logistics operation.",
       "Team repository is private — source available on request.",
+    ],
+    flagship: false,
+  },
+  {
+    id: "stockwise-ai",
+    number: "09",
+    title: "StockWise AI — Retail Demand Forecasting",
+    shortTitle: "StockWise AI",
+    category: "Deep Learning · Retail · Time-Series Forecasting",
+    status: "Academic Lab Project",
+    description:
+      "An LSTM demand-forecasting model for retail inventory planning, built to reduce stockouts and overstock by predicting near-term demand from historical sales data.",
+    technologies: ["Python", "TensorFlow", "LSTM", "Pandas", "NumPy"],
+    tags: ["Deep Learning", "AI/ML"],
+    images: [],
+    note: "Independent — SP Jain coursework.",
+    problem:
+      "Retail inventory planning trades stockouts against overstock; static reorder rules don't adapt to changing demand patterns.",
+    approach: [
+      "Trained an LSTM model on historical sales data to forecast near-term demand.",
+      "Evaluated forecast accuracy on held-out sales data using MAPE and R².",
+    ],
+    role: "Built independently as SP Jain coursework.",
+    impact: ["Reached 4.7% MAPE and an R² of 0.86 on held-out sales data, verified independently."],
+    metrics: [
+      { label: "MAPE", value: "4.7%" },
+      { label: "R²", value: "0.86" },
+    ],
+    valueProp: "LSTM demand forecasting that cuts stockouts and overstock in inventory planning.",
+    audience: "Retail inventory planning and operations teams.",
+    limitations: [
+      "Academic coursework project evaluated on historical/held-out sales data, not deployed against a live inventory system.",
     ],
     flagship: false,
   },

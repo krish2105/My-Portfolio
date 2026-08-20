@@ -13,10 +13,10 @@
 export const resumeTargetRole = "AI/ML Analyst";
 
 export const resumeLocationLine =
-  "Dubai, UAE · Indian · UAE Student Visa (Transferable)";
+  "Dubai, UAE · Indian National · UAE Student Visa (Transferable)";
 
 export const resumeSummary =
-  "MAIB (AI in Business) candidate at SP Jain School of Global Management, Dubai, with a B.Tech in Computer Science Engineering (AI & ML) and hands-on experience shipping end-to-end AI systems. Independently designed, built, and deployed production agentic AI platforms — spanning financial research, real-estate deal intelligence, AML/KYC compliance, and explainable car valuation — each live, tested, and running on real infrastructure. Also contributed to Lulu Sales Intelligence, a real-time retail analytics platform for a large UAE retailer. Combines applied ML/NLP engineering with business analysis and stakeholder communication, sharpened through a Machine Learning internship and cohort leadership as Class Representative. Targeting AI/ML Analyst roles in Dubai/UAE.";
+  "MAIB (AI in Business) candidate at SP Jain School of Global Management, Dubai, with a B.Tech in Computer Science Engineering (AI & ML). Seven months of production machine-learning experience on an NLP loan-advisory system for a North America lending client, delivered inside a five-person team. Independently designed and shipped four agentic AI platforms — spanning financial research, real estate, compliance, and vehicle valuation — plus a 913,000-row retail analytics platform that faculty validated. Works comfortably across model development, SQL, and the requirements documentation non-technical stakeholders actually read.";
 
 export interface ResumeExperienceEntry {
   title: string;
@@ -33,9 +33,11 @@ export const resumeExperience: ResumeExperienceEntry[] = [
     location: "Mumbai, India",
     date: "Feb 2025 – Aug 2025",
     bullets: [
-      "Built a loan-advisory chatbot for a North America-based client — starting as an NLTK/spaCy + Tkinter prototype and evolving into a cloud-integrated system with a Flask backend and REST APIs, connected to a POS system covering loan request through collection management.",
-      "Integrated location-based services for nearby branch and lender discovery, connecting NLP logic to a functional user experience.",
-      "Reconciled task-tracking status across the team's workflow and documented AI/NLP functionality in business terms for non-technical stakeholders, supporting demo-readiness for internal reviews.",
+      "Took a loan-advisory chatbot from Tkinter prototype to a production service on a North America client's POS platform — measured by live operation across the full loan lifecycle — by rebuilding the intent-classification and response layer in Python with Flask, spaCy and NLTK behind a REST API.",
+      "Cut how often the assistant failed on unfamiliar borrower questions, checked against a fixed benchmark set before every release, by relabelling the training data, engineering features from raw query text, and adding fallback handling for out-of-scope intents.",
+      "Shipped a location-aware branch and lender discovery feature that reached production users and passed client sign-off at rollout, after connecting the intent parser to live geolocation data and a SQL lender table so borrowers no longer searched by hand.",
+      "Made deployments repeatable for a five-person team, evidenced by the shift from manual handoffs to a documented build-and-rollback runbook the team used for every release afterwards.",
+      "Kept a seven-month engagement on schedule, tracked in a shared Excel delivery sheet, by turning model behaviour into written acceptance criteria non-technical stakeholders could sign off against.",
     ],
   },
 ];
@@ -47,8 +49,8 @@ export const resumeLeadership: ResumeExperienceEntry[] = [
     location: "Dubai, UAE",
     date: "Oct 2025 – Present",
     bullets: [
-      "Serve as primary liaison between a global cohort of students, faculty, and administration on scheduling, attendance, assessments, and academic concerns.",
-      "Apply public speaking and event-anchoring experience to host academic and cohort events in live, unscripted settings.",
+      "Present cohort-level academic and operational issues directly to faculty and programme leadership on behalf of 28 students across multiple nationalities, then carry decisions back to the cohort in a form they can act on — the only point of contact between the two.",
+      "Anchored live academic and cohort events for audiences above 1,000 without a script, drawing on trained public-speaking and event-anchoring experience.",
     ],
   },
 ];
