@@ -132,6 +132,8 @@ export const journey: JourneyItem[] = [
     institution: "Learners University College (LUC), Dubai",
     date: "2026—Present",
     description: "Developing applied AI solutions, machine learning workflows, and generative AI features to support intelligent edtech systems and operations at Learners University College in Dubai.",
+    logo: "/logos/luc-mark.svg",
+    logoAlt: "Learners University College",
   },
   {
     id: "independent-ai-systems",
@@ -140,6 +142,8 @@ export const journey: JourneyItem[] = [
     // NOTE: placeholder date range — confirm the real start date before shipping.
     date: "2026—Present",
     description: "Designed and built 4 independent, production-grade agentic AI systems end to end: FinCopilot (cited financial RAG copilot), Sakan AI (multi-agent Dubai real-estate deal intelligence), ComplianceAgent (AML/KYC investigation copilot with a from-scratch graph neural network) and AutoValuate Intelligence (on-device computer vision + explainable car valuation). Each ships with a live public demo, automated test suites (205, 85 and 80 tests respectively) and CI-gated evaluation metrics.",
+    logo: "/logos/cursor.svg",
+    logoAlt: "Independent AI Systems",
   },
   {
     id: "class-rep",
@@ -147,6 +151,8 @@ export const journey: JourneyItem[] = [
     institution: "Master of AI in Business cohort",
     date: "October 2025—Present",
     description: "Supported communication, coordination and collaborative academic activities within the Master of AI in Business cohort.",
+    logo: "/logos/spjain.png",
+    logoAlt: "SP Jain School of Global Management",
   },
   {
     id: "masters",
@@ -154,6 +160,8 @@ export const journey: JourneyItem[] = [
     institution: "SP Jain School of Global Management, Dubai",
     date: "September 2025—Present",
     description: "Developing expertise at the intersection of artificial intelligence, business analytics, databases, marketing, corporate finance, operations, decision-making and intelligent software development.",
+    logo: "/logos/spjain.png",
+    logoAlt: "SP Jain School of Global Management",
   },
   {
     id: "internship",
@@ -161,6 +169,8 @@ export const journey: JourneyItem[] = [
     institution: "Intelliza Solutions Pvt. Ltd.",
     date: "February 2025—June 2025",
     description: "Worked on an AI-powered loan advisory chatbot that combined conversational workflows, natural-language processing, loan guidance and location-based assistance. Built during an internship at Intelliza Solutions Pvt. Ltd.; confidential client details are not disclosed.",
+    logo: "/logos/intelliza.svg",
+    logoAlt: "Intelliza Solutions",
   },
   {
     id: "btech",
@@ -168,6 +178,8 @@ export const journey: JourneyItem[] = [
     institution: "Manipal University Jaipur",
     date: "2021—2025",
     description: "Built a strong foundation in programming, artificial intelligence, machine learning, deep learning, natural language processing, computer vision, data structures, algorithms, databases and software development through academic study and practical projects.",
+    logo: "/logos/manipal.svg",
+    logoAlt: "Manipal University Jaipur",
   },
 ];
 

@@ -14,19 +14,25 @@ const TimelineCard = ({
   subtitle,
   date,
   icon: Icon,
+  logo,
   index,
 }: {
   title: string;
   subtitle: string;
   date: string;
   icon: typeof Briefcase;
+  logo?: string;
   index: number;
 }) => (
   <Rise delay={index * 0.06}>
-    <div className="group relative flex gap-5 rounded-xl border border-white/[0.06] bg-[var(--panel)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:border-[#00FF94]/25 hover:bg-[var(--panel)] md:p-6">
-      {/* Icon */}
-      <div className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-white/[0.08] bg-[var(--panel-2)] text-[var(--accent)] transition-all duration-300 group-hover:border-[#00FF94]/30 group-hover:shadow-[0_0_16px_rgba(0,255,148,0.15)]">
-        <Icon size={18} />
+    <div className="group relative flex gap-5 rounded-xl border border-[var(--border)] bg-[var(--panel)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:border-[#00FF94]/30 hover:bg-[var(--panel)] md:p-6">
+      {/* Icon or Logo */}
+      <div className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--panel-2)] p-1.5 text-[var(--accent)] transition-all duration-300 group-hover:border-[#00FF94]/40 group-hover:shadow-[0_0_16px_rgba(0,255,148,0.2)]">
+        {logo ? (
+          <img src={logo} alt={subtitle} className="h-full w-full object-contain" />
+        ) : (
+          <Icon size={18} />
+        )}
       </div>
       <div className="min-w-0">
         <span className="mb-1 block font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--accent)]/70">
@@ -438,6 +444,7 @@ const ResumeSection = () => {
             subtitle: lucEntry.institution,
             date: lucEntry.date,
             icon: Briefcase,
+            logo: "/logos/luc-mark.svg",
           },
         ]
       : []),
@@ -448,6 +455,7 @@ const ResumeSection = () => {
             subtitle: mastersEntry.institution,
             date: mastersEntry.date,
             icon: GraduationCap,
+            logo: "/logos/spjain.png",
           },
         ]
       : []),
@@ -458,6 +466,7 @@ const ResumeSection = () => {
             subtitle: mlInternEntry.institution,
             date: mlInternEntry.date,
             icon: Briefcase,
+            logo: "/logos/intelliza.svg",
           },
         ]
       : []),
@@ -468,6 +477,7 @@ const ResumeSection = () => {
             subtitle: btechEntry.institution,
             date: btechEntry.date,
             icon: GraduationCap,
+            logo: "/logos/manipal.svg",
           },
         ]
       : []),

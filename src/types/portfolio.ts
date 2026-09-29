@@ -72,6 +72,8 @@ export interface JourneyItem {
   institution: string;
   date: string;
   description?: string;
+  logo?: string;
+  logoAlt?: string;
 }
 
 export interface RecognitionItem {

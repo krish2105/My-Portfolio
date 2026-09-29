@@ -26,9 +26,21 @@ const JourneyEntry = ({
   const x = useTransform(progress, [start, end], [-24, 0]);
 
   return (
-    <motion.div style={{ opacity, x }} className="relative">
+    <motion.div style={{ opacity, x }} className="group relative">
       <span className="absolute -left-8 top-2 grid h-3 w-3 -translate-x-1/2 place-items-center rounded-full bg-[#00FF94] shadow-[0_0_16px_rgba(0,255,148,0.7)] md:-left-12" />
-      <span className="kicker">{item.date}</span>
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="kicker">{item.date}</span>
+        {item.logo && (
+          <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--panel)]/90 px-2.5 py-1 backdrop-blur-md transition-all duration-300 group-hover:border-[var(--accent)] group-hover:shadow-[0_0_16px_rgba(0,255,148,0.18)]">
+            <img
+              src={item.logo}
+              alt={item.logoAlt || item.institution}
+              className="h-5 max-w-[110px] object-contain"
+              loading="lazy"
+            />
+          </div>
+        )}
+      </div>
       <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-4xl">
         {item.title}
       </h3>
