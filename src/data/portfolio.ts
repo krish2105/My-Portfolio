@@ -127,6 +127,13 @@ export const services: ServiceItem[] = [
 
 export const journey: JourneyItem[] = [
   {
+    id: "luc-ai-intern",
+    title: "AI Intern",
+    institution: "Learners University College (LUC), Dubai",
+    date: "2026—Present",
+    description: "Developing applied AI solutions, machine learning workflows, and generative AI features to support intelligent edtech systems and operations at Learners University College in Dubai.",
+  },
+  {
     id: "independent-ai-systems",
     title: "Independent AI Systems Engineer",
     institution: "Self-directed",

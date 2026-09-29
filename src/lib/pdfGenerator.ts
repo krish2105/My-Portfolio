@@ -305,13 +305,30 @@ export async function generateTailoredResumePdf(roleId: TargetRoleId): Promise<U
   y -= 2;
   drawSectionTitle("Professional Experience");
   
-  // Job Title line
-  page.drawText("Machine Learning Intern  —  Intelliza Solutions Pvt. Ltd.", {
+  // Job Title line — Latest: Learners University College
+  page.drawText("AI Intern  —  Learners University College (LUC)", {
     x: left,
     y,
     size: 9.5,
     font: fontBold,
     color: cBlack,
+  });
+  const lucDateStr = "2026 – Present  |  Dubai, UAE";
+  page.drawText(lucDateStr, {
+    x: right - fontRegular.widthOfTextAtSize(lucDateStr, 8),
+    y,
+    size: 8,
+    font: fontRegular,
+    color: cMuted,
+  });
+  y -= 11;
+
+  page.drawText("Machine Learning Intern  —  Intelliza Solutions Pvt. Ltd.", {
+    x: left,
+    y,
+    size: 8.5,
+    font: fontBold,
+    color: cDark,
   });
   const dateStr = "Feb 2025 – Aug 2025  |  Mumbai, India";
   page.drawText(dateStr, {
@@ -321,7 +338,7 @@ export async function generateTailoredResumePdf(roleId: TargetRoleId): Promise<U
     font: fontRegular,
     color: cMuted,
   });
-  y -= 12;
+  y -= 11;
 
   for (const b of config.experienceHighlights) {
     page.drawText("*", {

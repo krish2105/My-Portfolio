@@ -79,7 +79,7 @@ export const ASSISTANT_INTENTS: AssistantIntent[] = [
     id: "experience",
     patterns: ["experience", "intern", "internship", "job", "career", "journey", "worked"],
     answer:
-      "Most recently, he's designed and built 4 independent, production-grade agentic AI systems end to end (live demos, real test suites, CI-gated evals). Before that: a Machine Learning internship at Intelliza Solutions (AI loan-advisory chatbot), and he's currently Class Representative in his Master of AI in Business cohort.",
+      "Most recently, he is an AI Intern at Learners University College (LUC) in Dubai, and has built 4 independent, production-grade agentic AI systems end to end (live demos, real test suites, CI-gated evals). Previously, he was a Machine Learning Intern at Intelliza Solutions (AI loan-advisory chatbot) and is Class Representative in his Master of AI in Business cohort at SP Jain.",
     actions: [{ label: "See the journey", type: "scroll", target: "journey" }],
   },
   {

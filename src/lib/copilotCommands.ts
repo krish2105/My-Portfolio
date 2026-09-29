@@ -97,7 +97,7 @@ export const specialCommandReply = (query: string): Msg | null => {
           "Built 4 independent production flagships (FinCopilot, Sakan AI, ComplianceAgent, AutoValuate).",
           "Engineered multi-agent LangGraph pipelines with live WebSocket reasoning traces.",
           "Implemented from-scratch GNNs and Self-RAG faithfulness validation gates.",
-          "Class Representative & 2x Merit Recognition at SP Jain and Manipal University.",
+          "AI Intern at Learners University College (LUC) in Dubai & Class Representative at SP Jain.",
         ],
         topProjects: [
           { id: "fincopilot", name: "FinCopilot" },

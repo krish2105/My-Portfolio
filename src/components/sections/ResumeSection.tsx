@@ -425,27 +425,54 @@ const ResumeSection = () => {
   }, [flagshipProjects, targetRole]);
 
   // Timeline entries — education & experience interleaved
+  const lucEntry = journey.find((j) => j.id === "luc-ai-intern");
+  const mastersEntry = journey.find((j) => j.id === "masters");
+  const mlInternEntry = journey.find((j) => j.id === "internship");
+  const btechEntry = journey.find((j) => j.id === "btech");
+
   const timelineEntries = [
+    ...(lucEntry
+      ? [
+          {
+            title: lucEntry.title,
+            subtitle: lucEntry.institution,
+            date: lucEntry.date,
+            icon: Briefcase,
+          },
+        ]
+      : []),
+    ...(mastersEntry
+      ? [
+          {
+            title: mastersEntry.title,
+            subtitle: mastersEntry.institution,
+            date: mastersEntry.date,
+            icon: GraduationCap,
+          },
+        ]
+      : []),
+    ...(mlInternEntry
+      ? [
+          {
+            title: mlInternEntry.title,
+            subtitle: mlInternEntry.institution,
+            date: mlInternEntry.date,
+            icon: Briefcase,
+          },
+        ]
+      : []),
+    ...(btechEntry
+      ? [
+          {
+            title: btechEntry.title,
+            subtitle: btechEntry.institution,
+            date: btechEntry.date,
+            icon: GraduationCap,
+          },
+        ]
+      : []),
     {
-      title: journey[1].title,           // Masters
-      subtitle: journey[1].institution,
-      date: journey[1].date,
-      icon: GraduationCap,
-    },
-    {
-      title: journey[2].title,           // ML Intern
-      subtitle: journey[2].institution,
-      date: journey[2].date,
-      icon: Briefcase,
-    },
-    {
-      title: journey[3].title,           // B.Tech
-      subtitle: journey[3].institution,
-      date: journey[3].date,
-      icon: GraduationCap,
-    },
-    {
-      title: recognition[0].title,       // Award
+      title: recognition[0].title, // Award
       subtitle: recognition[0].context.split(".")[0] + ".",
       date: recognition[0].year,
       icon: Award,

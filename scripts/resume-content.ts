@@ -28,6 +28,16 @@ export interface ResumeExperienceEntry {
 
 export const resumeExperience: ResumeExperienceEntry[] = [
   {
+    title: "AI Intern",
+    org: "Learners University College (LUC)",
+    location: "Dubai, UAE",
+    date: "2026 – Present",
+    bullets: [
+      "Contributing to applied artificial intelligence systems, evaluating LLM integrations, and streamlining automated educational workflows.",
+      "Developing machine learning workflows and generative AI capabilities to support digital education platforms in Dubai.",
+    ],
+  },
+  {
     title: "Machine Learning Intern",
     org: "Intelliza Solutions Pvt. Ltd.",
     location: "Mumbai, India",

@@ -251,11 +251,12 @@
 
 .pc-avatar-content .avatar {
   /* Enlarge so the subject fills the frame and the face reads clearly */
-  width: 108%;
+  width: 124%;
   position: absolute;
   left: 50%;
-  /* Perfectly frame real photo from chest up with natural headroom */
-  bottom: -4%;
+  /* Pull the image down so the waist-and-below is clipped off the bottom,
+     framing the photo from roughly the waist up */
+  bottom: -14%;
   transform-origin: 50% 100%;
   transform: translateX(calc(-50% + (var(--pointer-from-left) - 0.5) * 6px)) translateZ(0)
     scaleY(calc(1 + (var(--pointer-from-top) - 0.5) * 0.02)) scaleX(calc(1 + (var(--pointer-from-left) - 0.5) * 0.01));

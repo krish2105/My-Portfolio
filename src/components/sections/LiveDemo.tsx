@@ -239,7 +239,7 @@ const LiveDemo = () => {
       const posWords = ["impressive", "fast", "great", "excellent", "clean", "good", "thoughtful", "love", "amazing", "well-engineered", "best", "super", "solid", "positive", "helpful", "smart"];
       const negWords = ["failing", "confusing", "bad", "slow", "error", "broken", "terrible", "worst", "bug", "hate", "issue", "crash", "negative", "poor", "hard"];
       let posCount = posWords.filter((w) => lower.includes(w)).length;
-      let negCount = negWords.filter((w) => lower.includes(w)).length;
+      const negCount = negWords.filter((w) => lower.includes(w)).length;
       if (posCount === 0 && negCount === 0) posCount = 1;
       const isPos = posCount >= negCount;
       const confidence = Math.min(0.98, Math.max(0.65, 0.72 + Math.abs(posCount - negCount) * 0.09));
