@@ -16,6 +16,7 @@ import { useKnowledgeSearch } from "../../hooks/useKnowledgeSearch";
 import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
 import { projects } from "../../data/portfolio";
 import { specialCommandReply, MODE_TAG_BIAS, type Msg } from "../../lib/copilotCommands";
+import { GenerativePayloadView } from "./GenerativePayloadView";
 
 /** A match is only trusted if it clears this cosine-similarity bar; otherwise fall back to keyword matching. */
 const SEMANTIC_THRESHOLD = 0.35;
@@ -290,6 +291,16 @@ const Assistant = () => {
                     }`}
                   >
                     <p className="whitespace-pre-line">{m.text}</p>
+                    {m.payload && (
+                      <GenerativePayloadView
+                        payload={m.payload}
+                        onOpenProject={(id) => {
+                          setOpen(false);
+                          window.history.pushState({}, "", `/work/${id}`);
+                          window.dispatchEvent(new PopStateEvent("popstate"));
+                        }}
+                      />
+                    )}
                     {m.semantic && (
                       <p className="mt-1.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent)]">
                         <Zap size={10} aria-hidden /> Semantic match — in-browser embedding search

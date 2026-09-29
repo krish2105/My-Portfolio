@@ -1,12 +1,13 @@
 import { memo, useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
-import { Sparkles, ShieldCheck, Loader2, Database, Check, X as XIcon } from "lucide-react";
+import { Sparkles, ShieldCheck, Loader2, Database, Check, X as XIcon, Cpu } from "lucide-react";
 import { useTransformersPipeline } from "../../hooks/useTransformersPipeline";
 import { RevealText, Rise } from "../common/Reveal";
 import { matchNL2SQL, NL2SQL_EXAMPLES, TOY_SCHEMA } from "../../lib/nl2sqlDemo";
 import { buildTradeoffPool, pickTradeoffQuestion, type TradeoffQuestion } from "../../lib/tradeoffSimulator";
 import { projects } from "../../data/portfolio";
+import HallucinationGateLab from "./HallucinationGateLab";
 
 const MODEL = "Xenova/distilbert-base-uncased-finetuned-sst-2-english";
 
@@ -213,11 +214,11 @@ const TradeoffSimulatorLab = () => {
 };
 
 const LiveDemo = () => {
-  const { status, run } = useTransformersPipeline("text-classification", MODEL);
+  const { status, run, telemetry, device } = useTransformersPipeline("text-classification", MODEL);
   const [text, setText] = useState(EXAMPLES[0]);
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [busy, setBusy] = useState(false);
-  const [lab, setLab] = useState<"sentiment" | "nl2sql" | "tradeoffs">("sentiment");
+  const [lab, setLab] = useState<"sentiment" | "nl2sql" | "tradeoffs" | "guardrails">("sentiment");
   // Collapsed by default: a recruiter skimming for two minutes rarely types
   // into an in-browser demo, and these three labs are the site's heaviest
   // interactive section (the transformer model itself already only loads on
@@ -248,7 +249,7 @@ const LiveDemo = () => {
           <RevealText className="kicker">Try the AI</RevealText>
         </div>
         {revealed && (
-          <div className="flex gap-2" role="group" aria-label="Choose a live demo">
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Choose a live demo">
             <button
               type="button"
               onClick={() => setLab("sentiment")}
@@ -259,7 +260,19 @@ const LiveDemo = () => {
                   : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
               }`}
             >
-              Sentiment model
+              Sentiment model (WebGPU)
+            </button>
+            <button
+              type="button"
+              onClick={() => setLab("guardrails")}
+              aria-pressed={lab === "guardrails"}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                lab === "guardrails"
+                  ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+              }`}
+            >
+              Self-RAG Guardrails
             </button>
             <button
               type="button"
@@ -317,7 +330,11 @@ const LiveDemo = () => {
         </Rise>
       )}
 
-      {revealed && (lab === "nl2sql" ? (
+      {revealed && (lab === "guardrails" ? (
+        <Rise>
+          <HallucinationGateLab />
+        </Rise>
+      ) : lab === "nl2sql" ? (
         <Rise>
           <NL2SQLLab />
         </Rise>
@@ -336,10 +353,16 @@ const LiveDemo = () => {
               Type anything below and a sentiment model classifies it on-device — no server, no API.
               It downloads once (first run) and then runs entirely on your machine.
             </p>
-            <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text-3)]">
-              <ShieldCheck size={14} className="text-[var(--accent)]" aria-hidden />
-              Runs in your browser — your text never leaves your device.
-            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--text-3)]">
+                <ShieldCheck size={14} className="text-[var(--accent)]" aria-hidden />
+                Runs locally on device
+              </p>
+              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[#00FF94]/5 px-3 py-1.5 font-mono text-xs text-[var(--accent)]">
+                <Cpu size={14} aria-hidden />
+                Acceleration: {device.toUpperCase()}
+              </p>
+            </div>
             <div className="mt-5 flex flex-wrap gap-2">
               {EXAMPLES.map((ex) => (
                 <button
@@ -425,6 +448,39 @@ const LiveDemo = () => {
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                     className={`h-full rounded-full ${positive ? "bg-[#00FF94]" : "bg-[#ff6b6b]"}`}
                   />
+                </div>
+              </motion.div>
+            )}
+
+            {telemetry && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--panel-2)]/80 p-3 font-mono text-xs"
+              >
+                <div className="flex items-center justify-between border-b border-[var(--border)] pb-2 text-[11px] text-[var(--text-3)]">
+                  <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[var(--accent)]">
+                    <Cpu size={12} aria-hidden /> Hardware Telemetry HUD
+                  </span>
+                  <span className="rounded bg-[var(--border)] px-1.5 py-0.5 text-[10px] text-[var(--text-2)] uppercase">
+                    {telemetry.device.toUpperCase()} • {telemetry.quantization.toUpperCase()}
+                  </span>
+                </div>
+                <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <span className="block text-[10px] text-[var(--text-3)] uppercase tracking-wide">Inference</span>
+                    <span className="font-semibold text-[var(--text)]">{telemetry.latencyMs.toFixed(1)}ms</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-[var(--text-3)] uppercase tracking-wide">Throughput</span>
+                    <span className="font-semibold text-[var(--text)]">
+                      {telemetry.throughput ? `${telemetry.throughput.toFixed(1)} t/s` : "Ultra-low"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-[var(--text-3)] uppercase tracking-wide">Model RAM</span>
+                    <span className="font-semibold text-[var(--text)]">~{telemetry.memoryEstimateMb ?? 45}MB</span>
+                  </div>
                 </div>
               </motion.div>
             )}

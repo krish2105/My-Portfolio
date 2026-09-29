@@ -1,13 +1,16 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { Network } from "lucide-react";
+import { Network, LayoutGrid, Compass } from "lucide-react";
 import { projects } from "../../data/portfolio";
 import type { Project } from "../../types/portfolio";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useWebGLSupport } from "../../hooks/useWebGLSupport";
 import ProjectCard from "../projects/ProjectCard";
 import ProjectModal from "../projects/ProjectModal";
 import ProjectSystemMap from "../projects/ProjectSystemMap";
 import { RevealText } from "../common/Reveal";
+
+const ProjectsSpatial3D = lazy(() => import("../projects/ProjectsSpatial3D"));
 
 const FILTERS = ["All", "AI/ML", "Deep Learning", "GenAI", "Data"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -23,6 +26,48 @@ const Header = () => (
     </h2>
   </div>
 );
+
+const ViewToggle = ({
+  mode,
+  setMode,
+  canUse3D,
+}: {
+  mode: "gallery" | "mission-control";
+  setMode: (m: "gallery" | "mission-control") => void;
+  canUse3D: boolean;
+}) => {
+  if (!canUse3D) return null;
+  return (
+    <div className="mt-4 flex items-center gap-2 px-6 md:px-[8vw]">
+      <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--panel)] p-1">
+        <button
+          type="button"
+          onClick={() => setMode("gallery")}
+          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
+            mode === "gallery"
+              ? "border border-[#00FF94]/30 bg-[#00FF94]/15 text-[var(--accent)]"
+              : "text-[var(--text-3)] hover:text-[var(--text)]"
+          }`}
+        >
+          <LayoutGrid size={12} aria-hidden />
+          <span>Interactive Grid</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("mission-control")}
+          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
+            mode === "mission-control"
+              ? "border border-[#00FF94]/30 bg-[#00FF94]/15 text-[var(--accent)]"
+              : "text-[var(--text-3)] hover:text-[var(--text)]"
+          }`}
+        >
+          <Compass size={12} aria-hidden />
+          <span>3D Mission Control</span>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 /**
  * Standalone toggle + panel for the Project System Map. Deliberately kept
@@ -86,11 +131,17 @@ const HorizontalGallery = ({
   onOpen,
   filter,
   setFilter,
+  spatialMode,
+  setSpatialMode,
+  canUse3D,
 }: {
   items: Project[];
   onOpen: (p: Project) => void;
   filter: Filter;
   setFilter: (f: Filter) => void;
+  spatialMode: "gallery" | "mission-control";
+  setSpatialMode: (m: "gallery" | "mission-control") => void;
+  canUse3D: boolean;
 }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -114,7 +165,10 @@ const HorizontalGallery = ({
     <div ref={wrapRef} style={{ height: `${distance + window.innerHeight}px` }} className="relative">
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         <div className="py-8">
-          <Header />
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <Header />
+            <ViewToggle mode={spatialMode} setMode={setSpatialMode} canUse3D={canUse3D} />
+          </div>
           <FilterBar filter={filter} setFilter={setFilter} />
         </div>
         <motion.div
@@ -211,8 +265,10 @@ const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools f
 
 const ProjectsSection = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const webglSupported = useWebGLSupport();
   const [selected, setSelected] = useState<Project | null>(null);
   const [filter, setFilter] = useState<Filter>("All");
+  const [spatialMode, setSpatialMode] = useState<"gallery" | "mission-control">("gallery");
 
   const filtered = useMemo(
     () => (filter === "All" ? projects : projects.filter((p) => p.tags?.includes(filter))),
@@ -247,11 +303,32 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects" className="relative border-t border-[var(--border)] py-20">
-      {isDesktop ? (
-        <HorizontalGallery items={filtered} onOpen={openProject} filter={filter} setFilter={setFilter} />
+      {spatialMode === "mission-control" && webglSupported ? (
+        <div className="px-6 md:px-[8vw]">
+          <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <Header />
+            <ViewToggle mode={spatialMode} setMode={setSpatialMode} canUse3D={webglSupported} />
+          </div>
+          <Suspense fallback={<div className="h-[650px] w-full animate-pulse rounded-2xl bg-[var(--panel-2)]" />}>
+            <ProjectsSpatial3D projects={projects} onOpen={openProject} />
+          </Suspense>
+        </div>
+      ) : isDesktop ? (
+        <HorizontalGallery
+          items={filtered}
+          onOpen={openProject}
+          filter={filter}
+          setFilter={setFilter}
+          spatialMode={spatialMode}
+          setSpatialMode={setSpatialMode}
+          canUse3D={webglSupported}
+        />
       ) : (
         <>
-          <Header />
+          <div className="flex flex-col gap-2">
+            <Header />
+            <ViewToggle mode={spatialMode} setMode={setSpatialMode} canUse3D={webglSupported} />
+          </div>
           <FilterBar filter={filter} setFilter={setFilter} />
           <SwipeGallery items={filtered} onOpen={openProject} />
         </>
