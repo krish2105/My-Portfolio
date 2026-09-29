@@ -152,7 +152,7 @@ export const HallucinationGateLab = () => {
           }`}
         >
           <div className="mb-2 flex items-center justify-between">
-            <span className="flex items-center gap-1 font-mono text-xs font-semibold text-[#00FF94]">
+            <span className="flex items-center gap-1 font-mono text-xs font-semibold text-[var(--accent)]">
               <ShieldCheck size={14} /> Self-RAG Verified Response
             </span>
             {guardrailActive && (
@@ -167,7 +167,7 @@ export const HallucinationGateLab = () => {
           </p>
 
           <div className="mt-3 rounded-lg border border-[#00FF94]/20 bg-[#00FF94]/5 p-2.5">
-            <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-[#00FF94]">
+            <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-[var(--accent)]">
               <Check size={11} /> Provenance Verified Citations:
             </span>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -212,7 +212,7 @@ export const HallucinationGateLab = () => {
             <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-red-400">
               <AlertTriangle size={11} /> Detected Hallucination Pattern:
             </span>
-            <p className="mt-1 text-xs text-red-300/90 leading-snug">
+            <p className="mt-1 text-xs text-red-600 dark:text-red-300 leading-snug">
               {selectedScenario.rawOutput.hallucinationSnippet}
             </p>
           </div>

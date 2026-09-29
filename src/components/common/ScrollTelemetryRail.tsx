@@ -78,16 +78,16 @@ export const ScrollTelemetryRail = () => {
       className="fixed right-5 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-center gap-3 select-none"
     >
       {/* Telemetry pill */}
-      <div className="rounded-full border border-white/[0.08] bg-[var(--panel)]/80 backdrop-blur-md px-2 py-1 font-mono text-[10px] text-[var(--text-3)] flex items-center gap-1 shadow-lg">
+      <div className="rounded-full border border-[var(--border)] bg-[var(--panel)]/80 backdrop-blur-md px-2 py-1 font-mono text-[10px] text-[var(--text-3)] flex items-center gap-1 shadow-lg">
         <Activity size={10} className="text-[var(--accent)] animate-pulse" />
         <span className="font-semibold text-[var(--accent)]">{fps}</span>
         <span className="opacity-50">FPS</span>
       </div>
 
       {/* Progress track */}
-      <div className="relative w-1.5 h-36 rounded-full bg-white/[0.06] overflow-hidden my-1">
+      <div className="relative w-1.5 h-36 rounded-full bg-[var(--border)] overflow-hidden my-1">
         <div
-          className="w-full bg-[#00FF94] rounded-full transition-all duration-150"
+          className="w-full bg-[var(--accent)] rounded-full transition-all duration-150"
           style={{ height: `${scrollProgress}%` }}
         />
       </div>
@@ -109,8 +109,8 @@ export const ScrollTelemetryRail = () => {
             aria-label={`Jump to section ${sec.label}`}
             className={`h-1.5 rounded-full transition-all duration-300 ${
               activeSection === sec.label
-                ? "w-4 bg-[#00FF94] shadow-[0_0_8px_rgba(0,255,148,0.5)]"
-                : "w-1.5 bg-white/[0.12] hover:bg-white/[0.4]"
+                ? "w-4 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
+                : "w-1.5 bg-[var(--border-strong)] hover:bg-[var(--text-3)]"
             }`}
           />
         ))}

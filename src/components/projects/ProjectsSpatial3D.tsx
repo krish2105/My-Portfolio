@@ -5,7 +5,7 @@ import type { Project } from "../../types/portfolio";
 import { ChevronLeft, ChevronRight, RotateCcw, Sparkles } from "lucide-react";
 import { useTheme } from "../../lib/theme";
 
-/** Generates a canvas texture for a project HUD card in 3D */
+/** Generates a high-fidelity canvas texture for a project card in 3D */
 function createCardTexture(project: Project, isHovered: boolean, theme: string): THREE.CanvasTexture {
   const w = 512;
   const h = 320;
@@ -15,59 +15,73 @@ function createCardTexture(project: Project, isHovered: boolean, theme: string):
   const ctx = c.getContext("2d")!;
 
   const isDark = theme !== "light";
-  const bg = isDark ? "rgba(10, 10, 15, 0.94)" : "rgba(245, 247, 250, 0.94)";
+  const bg = isDark ? "rgba(10, 14, 22, 0.94)" : "rgba(255, 255, 255, 0.98)";
   const border = isHovered
-    ? "#00ff94"
+    ? (isDark ? "#00ff94" : "#007a48")
     : isDark
-    ? "rgba(215, 226, 234, 0.2)"
-    : "rgba(12, 18, 24, 0.2)";
+    ? "rgba(215, 226, 234, 0.22)"
+    : "rgba(12, 18, 24, 0.16)";
   const textColor = isDark ? "#edf5fa" : "#0c1218";
-  const metaColor = isDark ? "#a0adba" : "#46535f";
+  const metaColor = isDark ? "#94a3b8" : "#46535f";
   const accent = isDark ? "#00ff94" : "#007a48";
+
+  // In light mode, draw a soft crisp shadow for architectural depth
+  if (!isDark) {
+    ctx.shadowColor = "rgba(12, 18, 24, 0.14)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
+  }
 
   // Rounded card background
   ctx.save();
   ctx.beginPath();
   const radius = 24;
-  ctx.roundRect(8, 8, w - 16, h - 16, radius);
+  ctx.roundRect(10, 10, w - 20, h - 20, radius);
   ctx.fillStyle = bg;
   ctx.fill();
+  ctx.shadowColor = "transparent";
   ctx.lineWidth = isHovered ? 4 : 2;
   ctx.strokeStyle = border;
   ctx.stroke();
   ctx.restore();
 
-  // Subtle header line
-  ctx.fillStyle = isHovered ? "rgba(0, 255, 148, 0.15)" : "transparent";
-  ctx.fillRect(8, 8, w - 16, 44);
+  // Header accent strip on hover
+  if (isHovered) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(10, 10, w - 20, 48, [radius, radius, 0, 0]);
+    ctx.fillStyle = isDark ? "rgba(0, 255, 148, 0.15)" : "rgba(0, 122, 72, 0.1)";
+    ctx.fill();
+    ctx.restore();
+  }
 
   // Kicker & Number
   ctx.font = "bold 18px 'JetBrains Mono', monospace";
   ctx.fillStyle = accent;
-  ctx.fillText(project.number, 28, 38);
+  ctx.fillText(project.number, 28, 42);
 
   ctx.font = "14px 'JetBrains Mono', monospace";
   ctx.fillStyle = metaColor;
-  ctx.fillText(project.status.toUpperCase(), 75, 38);
+  ctx.fillText(project.status.toUpperCase(), 75, 42);
 
   // Status dot
   ctx.beginPath();
-  ctx.arc(w - 36, 32, 6, 0, Math.PI * 2);
+  ctx.arc(w - 36, 36, 6, 0, Math.PI * 2);
   ctx.fillStyle = accent;
   ctx.fill();
 
   // Title
-  ctx.font = "900 32px 'Kanit', sans-serif";
+  ctx.font = "900 30px 'Kanit', sans-serif";
   ctx.fillStyle = textColor;
-  ctx.fillText(project.shortTitle, 28, 96);
+  ctx.fillText(project.shortTitle, 28, 98);
 
   // Category
-  ctx.font = "bold 15px 'Inter', sans-serif";
+  ctx.font = "bold 14px 'Inter', sans-serif";
   ctx.fillStyle = accent;
   ctx.fillText(project.category, 28, 126);
 
   // Description snippet (multiline)
-  ctx.font = "14px 'Inter', sans-serif";
+  ctx.font = "13px 'Inter', sans-serif";
   ctx.fillStyle = metaColor;
   const words = project.description.split(" ");
   let line = "";
@@ -85,6 +99,14 @@ function createCardTexture(project: Project, isHovered: boolean, theme: string):
   }
   if (line && y <= 210) ctx.fillText(line, 28, y);
 
+  // Subtle separator line
+  ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(28, 246);
+  ctx.lineTo(w - 28, 246);
+  ctx.stroke();
+
   // Tech Chips footer
   ctx.font = "12px 'JetBrains Mono', monospace";
   const chips = (project.technologies || []).slice(0, 3).join("  •  ");
@@ -93,9 +115,9 @@ function createCardTexture(project: Project, isHovered: boolean, theme: string):
 
   // View prompt
   if (isHovered) {
-    ctx.font = "bold 13px 'JetBrains Mono', monospace";
+    ctx.font = "bold 12px 'JetBrains Mono', monospace";
     ctx.fillStyle = accent;
-    ctx.fillText("CLICK TO OPEN CASE STUDY ↗", w - 240, 280);
+    ctx.fillText("OPEN CASE STUDY ↗", w - 210, 280);
   }
 
   const tex = new THREE.CanvasTexture(c);
@@ -103,7 +125,7 @@ function createCardTexture(project: Project, isHovered: boolean, theme: string):
   return tex;
 }
 
-/** Individual 3D Holographic Card in Space */
+/** Individual 3D Holographic Card with billboard orientation and depth fading */
 function HolographicCard({
   project,
   index,
@@ -118,6 +140,7 @@ function HolographicCard({
   theme: string;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null);
   const [hovered, setHovered] = useState(false);
 
   const angle = (index / total) * Math.PI * 2;
@@ -128,12 +151,24 @@ function HolographicCard({
 
   const texture = useMemo(() => createCardTexture(project, hovered, theme), [project, hovered, theme]);
 
-  useFrame(() => {
+  useFrame(({ camera }) => {
     if (!meshRef.current) return;
-    // Face the center with slight upward orientation
-    meshRef.current.lookAt(0, posY * 0.5, 0);
-    // Invert rotation so card faces camera in the orbit ring
-    meshRef.current.rotateY(Math.PI);
+    // Always face camera directly so text is never backwards or inverted
+    meshRef.current.lookAt(camera.position);
+
+    // Dynamic depth fading based on distance from camera
+    const worldPos = new THREE.Vector3();
+    meshRef.current.getWorldPosition(worldPos);
+    // camera is at z = 9.2; cards orbit around origin z=0 with radius 6.2
+    // worldPos.z ranges from approx -6.2 (furthest back) to +6.2 (closest front)
+    const normalizedDepth = (worldPos.z + 6.2) / 12.4; // 0 to 1
+    const targetOpacity = hovered
+      ? 1.0
+      : Math.max(0.5, Math.min(1.0, 0.45 + normalizedDepth * 0.55));
+
+    if (matRef.current) {
+      matRef.current.opacity = targetOpacity;
+    }
   });
 
   return (
@@ -157,19 +192,25 @@ function HolographicCard({
     >
       <planeGeometry args={[2.8, 1.75]} />
       <meshBasicMaterial
+        ref={matRef}
         map={texture}
         transparent
         opacity={hovered ? 1 : 0.9}
-        side={THREE.DoubleSide}
+        side={THREE.FrontSide}
       />
     </mesh>
   );
 }
 
 /** Core Rotating Reactor at the center of the ring */
-function ReactorCore() {
+function ReactorCore({ theme }: { theme: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const wireRef = useRef<THREE.Mesh>(null);
+  const isDark = theme !== "light";
+
+  const coreColor = isDark ? "#00ff94" : "#007a48";
+  const sphereColor = isDark ? "#6bffc0" : "#005230";
+  const lightColor = isDark ? "#00ff94" : "#00935a";
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -187,14 +228,24 @@ function ReactorCore() {
       {/* Inner glowing icosahedron */}
       <mesh ref={meshRef}>
         <icosahedronGeometry args={[0.9, 1]} />
-        <meshBasicMaterial color="#00ff94" wireframe transparent opacity={0.35} />
+        <meshBasicMaterial
+          color={coreColor}
+          wireframe
+          transparent
+          opacity={isDark ? 0.35 : 0.45}
+        />
       </mesh>
       {/* Outer wireframe sphere */}
       <mesh ref={wireRef}>
         <sphereGeometry args={[1.4, 16, 16]} />
-        <meshBasicMaterial color="#6bffc0" wireframe transparent opacity={0.15} />
+        <meshBasicMaterial
+          color={sphereColor}
+          wireframe
+          transparent
+          opacity={isDark ? 0.15 : 0.22}
+        />
       </mesh>
-      <pointLight color="#00ff94" intensity={3} distance={10} />
+      <pointLight color={lightColor} intensity={isDark ? 3 : 2} distance={10} />
     </group>
   );
 }
@@ -231,7 +282,7 @@ function OrbitScene({
 
   return (
     <group ref={groupRef}>
-      <ReactorCore />
+      <ReactorCore theme={theme} />
       {projects.map((project, i) => (
         <HolographicCard
           key={project.id}
@@ -254,6 +305,7 @@ export const ProjectsSpatial3D = ({
   onOpen: (p: Project) => void;
 }) => {
   const { theme } = useTheme();
+  const isDark = theme !== "light";
   const [rotationY, setRotationY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef(0);
@@ -274,7 +326,16 @@ export const ProjectsSpatial3D = ({
 
   return (
     <div
-      className="relative h-[650px] w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[#050505]"
+      className={`relative h-[650px] w-full overflow-hidden rounded-2xl border transition-colors duration-300 ${
+        isDark
+          ? "border-[var(--border)] bg-[#07090e]"
+          : "border-[var(--border-strong)] bg-gradient-to-b from-[#f8fafc] via-[#edf2f7] to-[#e2e8f0] shadow-inner"
+      }`}
+      style={{
+        backgroundImage: isDark
+          ? "radial-gradient(circle at 50% 50%, rgba(0, 255, 148, 0.05), transparent 70%), linear-gradient(180deg, #07090e 0%, #05070a 100%)"
+          : "radial-gradient(circle at 50% 50%, rgba(0, 122, 72, 0.06), transparent 70%), linear-gradient(180deg, #fbfcfe 0%, #eef2f6 50%, #e2e8f0 100%)"
+      }}
       onPointerDown={(e) => {
         setIsDragging(true);
         dragStartX.current = e.clientX;
@@ -304,7 +365,13 @@ export const ProjectsSpatial3D = ({
 
       {/* Top Telemetry overlay */}
       <div className="pointer-events-none absolute left-6 top-6 flex items-center gap-2">
-        <span className="flex items-center gap-1.5 rounded-full border border-[#00FF94]/30 bg-[#00FF94]/10 px-3 py-1 font-mono text-xs text-[var(--accent)]">
+        <span
+          className={`flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-semibold ${
+            isDark
+              ? "border-[#00FF94]/30 bg-[#00FF94]/10 text-[var(--accent)]"
+              : "border-[#007a48]/30 bg-[#007a48]/10 text-[#007a48]"
+          }`}
+        >
           <Sparkles size={12} className="animate-spin" aria-hidden /> 3D MISSION CONTROL
         </span>
         <span className="hidden font-mono text-xs text-[var(--text-3)] md:inline">
@@ -313,7 +380,13 @@ export const ProjectsSpatial3D = ({
       </div>
 
       {/* Interactive Controls Overlay */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-[var(--border)] bg-[var(--panel)]/90 px-4 py-2 shadow-2xl backdrop-blur-md">
+      <div
+        className={`absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border px-4 py-2 backdrop-blur-md transition-colors ${
+          isDark
+            ? "border-[var(--border)] bg-[var(--panel)]/90 text-[var(--text-3)] shadow-2xl"
+            : "border-[var(--border-strong)] bg-white/95 text-[var(--text)] shadow-xl"
+        }`}
+      >
         <button
           type="button"
           onClick={rotateLeft}
@@ -323,7 +396,7 @@ export const ProjectsSpatial3D = ({
           <ChevronLeft size={16} />
         </button>
 
-        <span className="font-mono text-xs text-[var(--text-3)]">
+        <span className="font-mono text-xs text-[var(--text-2)]">
           Drag or Arrow Keys to Orbit · Click Card to Inspect
         </span>
 

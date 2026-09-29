@@ -77,7 +77,7 @@ const RadarChart = ({ domains, title, roleTitle, summary }: { domains: RadarDoma
                 })
                 .join(" ")}
               fill="none"
-              stroke="rgba(255,255,255,0.08)"
+              stroke="var(--border)"
               strokeWidth="1"
             />
           ))}
@@ -94,7 +94,7 @@ const RadarChart = ({ domains, title, roleTitle, summary }: { domains: RadarDoma
                 y1={center}
                 x2={x}
                 y2={y}
-                stroke="rgba(255,255,255,0.12)"
+                stroke="var(--border)"
                 strokeDasharray="2,2"
               />
             );
@@ -103,8 +103,9 @@ const RadarChart = ({ domains, title, roleTitle, summary }: { domains: RadarDoma
           {/* Data Polygon */}
           <polygon
             points={polygonPoints}
-            fill="rgba(0, 255, 148, 0.22)"
-            stroke="#00FF94"
+            fill="var(--accent)"
+            fillOpacity={0.22}
+            stroke="var(--accent)"
             strokeWidth="2"
             className="transition-all duration-700"
           />
@@ -116,8 +117,8 @@ const RadarChart = ({ domains, title, roleTitle, summary }: { domains: RadarDoma
               cx={p.x}
               cy={p.y}
               r="3.5"
-              fill="#00FF94"
-              stroke="#050505"
+              fill="var(--accent)"
+              stroke="var(--panel)"
               strokeWidth="1.5"
             />
           ))}

@@ -89,7 +89,7 @@ export const PipelineSandbox = () => {
   return (
     <div className="rounded-2xl border border-[var(--border-strong)] bg-[var(--panel)] p-6 md:p-8">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
         <div>
           <div className="flex items-center gap-2">
             <Cpu size={18} className="text-[var(--accent)]" />
@@ -116,7 +116,7 @@ export const PipelineSandbox = () => {
       {/* Interactive Node Graph */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-5 gap-3">
         {/* Stage 1: Embeddings */}
-        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 0 ? "border-[#00FF94] bg-[#00FF94]/10 shadow-[0_0_20px_rgba(0,255,148,0.25)]" : "border-white/[0.08] bg-[var(--panel-2)]"}`}>
+        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 0 ? "border-[var(--accent)] bg-[var(--accent)]/10 shadow-[0_0_20px_rgba(0,180,100,0.15)]" : "border-[var(--border)] bg-[var(--panel-2)]"}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] flex items-center gap-1">
               <Zap size={11} /> 1. Embeddings
@@ -126,7 +126,7 @@ export const PipelineSandbox = () => {
           <select
             value={selected.embedding}
             onChange={(e) => setSelected({ ...selected, embedding: e.target.value })}
-            className="w-full bg-[var(--panel)] border border-white/[0.1] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[#00FF94] focus:outline-none"
+            className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[var(--accent)] focus:outline-none"
           >
             {STAGES.embedding.map((o) => (
               <option key={o.id} value={o.id}>{o.name}</option>
@@ -136,7 +136,7 @@ export const PipelineSandbox = () => {
         </div>
 
         {/* Stage 2: Vector DB */}
-        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 1 ? "border-[#00FF94] bg-[#00FF94]/10 shadow-[0_0_20px_rgba(0,255,148,0.25)]" : "border-white/[0.08] bg-[var(--panel-2)]"}`}>
+        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 1 ? "border-[var(--accent)] bg-[var(--accent)]/10 shadow-[0_0_20px_rgba(0,180,100,0.15)]" : "border-[var(--border)] bg-[var(--panel-2)]"}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] flex items-center gap-1">
               <Database size={11} /> 2. Vector Index
@@ -146,7 +146,7 @@ export const PipelineSandbox = () => {
           <select
             value={selected.vectorDb}
             onChange={(e) => setSelected({ ...selected, vectorDb: e.target.value })}
-            className="w-full bg-[var(--panel)] border border-white/[0.1] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[#00FF94] focus:outline-none"
+            className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[var(--accent)] focus:outline-none"
           >
             {STAGES.vectorDb.map((o) => (
               <option key={o.id} value={o.id}>{o.name}</option>
@@ -156,7 +156,7 @@ export const PipelineSandbox = () => {
         </div>
 
         {/* Stage 3: Reranker */}
-        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 2 ? "border-[#00FF94] bg-[#00FF94]/10 shadow-[0_0_20px_rgba(0,255,148,0.25)]" : "border-white/[0.08] bg-[var(--panel-2)]"}`}>
+        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 2 ? "border-[var(--accent)] bg-[var(--accent)]/10 shadow-[0_0_20px_rgba(0,180,100,0.15)]" : "border-[var(--border)] bg-[var(--panel-2)]"}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] flex items-center gap-1">
               <Cpu size={11} /> 3. Reranker
@@ -166,7 +166,7 @@ export const PipelineSandbox = () => {
           <select
             value={selected.reranker}
             onChange={(e) => setSelected({ ...selected, reranker: e.target.value })}
-            className="w-full bg-[var(--panel)] border border-white/[0.1] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[#00FF94] focus:outline-none"
+            className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[var(--accent)] focus:outline-none"
           >
             {STAGES.reranker.map((o) => (
               <option key={o.id} value={o.id}>{o.name}</option>
@@ -176,7 +176,7 @@ export const PipelineSandbox = () => {
         </div>
 
         {/* Stage 4: LLM Reasoning */}
-        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 3 ? "border-[#00FF94] bg-[#00FF94]/10 shadow-[0_0_20px_rgba(0,255,148,0.25)]" : "border-white/[0.08] bg-[var(--panel-2)]"}`}>
+        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 3 ? "border-[var(--accent)] bg-[var(--accent)]/10 shadow-[0_0_20px_rgba(0,180,100,0.15)]" : "border-[var(--border)] bg-[var(--panel-2)]"}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] flex items-center gap-1">
               <Sparkles size={11} /> 4. LLM Generation
@@ -186,7 +186,7 @@ export const PipelineSandbox = () => {
           <select
             value={selected.llm}
             onChange={(e) => setSelected({ ...selected, llm: e.target.value })}
-            className="w-full bg-[var(--panel)] border border-white/[0.1] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[#00FF94] focus:outline-none"
+            className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[var(--accent)] focus:outline-none"
           >
             {STAGES.llm.map((o) => (
               <option key={o.id} value={o.id}>{o.name}</option>
@@ -196,7 +196,7 @@ export const PipelineSandbox = () => {
         </div>
 
         {/* Stage 5: Guardrail Gate */}
-        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 4 ? "border-[#00FF94] bg-[#00FF94]/10 shadow-[0_0_20px_rgba(0,255,148,0.25)]" : "border-white/[0.08] bg-[var(--panel-2)]"}`}>
+        <div className={`p-4 rounded-xl border transition-all ${activeStageIdx === 4 ? "border-[var(--accent)] bg-[var(--accent)]/10 shadow-[0_0_20px_rgba(0,180,100,0.15)]" : "border-[var(--border)] bg-[var(--panel-2)]"}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] flex items-center gap-1">
               <ShieldCheck size={11} /> 5. Verification Gate
@@ -206,7 +206,7 @@ export const PipelineSandbox = () => {
           <select
             value={selected.guardrail}
             onChange={(e) => setSelected({ ...selected, guardrail: e.target.value })}
-            className="w-full bg-[var(--panel)] border border-white/[0.1] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[#00FF94] focus:outline-none"
+            className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-lg p-2 text-xs text-[var(--text)] font-mono focus:border-[var(--accent)] focus:outline-none"
           >
             {STAGES.guardrail.map((o) => (
               <option key={o.id} value={o.id}>{o.name}</option>
@@ -217,11 +217,11 @@ export const PipelineSandbox = () => {
       </div>
 
       {/* Live Telemetry Scorecard */}
-      <div className="mt-6 rounded-xl border border-white/[0.08] bg-[var(--panel-2)]/60 p-4">
+      <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--panel-2)]/60 p-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
             <span className="block font-mono text-[10px] uppercase text-[var(--text-3)] tracking-wider">End-to-End Latency</span>
-            <span className={`font-mono text-lg font-bold ${totalLatency < 350 ? "text-[#00FF94]" : "text-amber-400"}`}>
+            <span className={`font-mono text-lg font-bold ${totalLatency < 350 ? "text-[var(--accent)]" : "text-amber-500"}`}>
               {totalLatency}ms
             </span>
             <span className="block text-[10px] text-[var(--text-3)]">{totalLatency < 200 ? "⚡ Ultra-Fast" : totalLatency < 400 ? "✓ Production SLA" : "⚠️ High Latency"}</span>
@@ -229,7 +229,7 @@ export const PipelineSandbox = () => {
 
           <div>
             <span className="block font-mono text-[10px] uppercase text-[var(--text-3)] tracking-wider">Faithfulness / Grounding</span>
-            <span className={`font-mono text-lg font-bold ${faithfulness >= 0.90 ? "text-[#00FF94]" : "text-amber-400"}`}>
+            <span className={`font-mono text-lg font-bold ${faithfulness >= 0.90 ? "text-[var(--accent)]" : "text-amber-500"}`}>
               {(faithfulness * 100).toFixed(0)}%
             </span>
             <span className="block text-[10px] text-[var(--text-3)]">{faithfulness >= 0.90 ? "Verified Citations" : "Hallucination Risk"}</span>
@@ -247,11 +247,11 @@ export const PipelineSandbox = () => {
             <span className="block font-mono text-[10px] uppercase text-[var(--text-3)] tracking-wider">Compliance Status</span>
             <div className="mt-1 flex items-center justify-center gap-1 font-mono text-xs font-bold">
               {isProductionCompliant ? (
-                <span className="text-[#00FF94] flex items-center gap-1">
+                <span className="text-[var(--accent)] flex items-center gap-1">
                   <CheckCircle2 size={13} /> Production Ready
                 </span>
               ) : (
-                <span className="text-amber-400 flex items-center gap-1">
+                <span className="text-amber-500 flex items-center gap-1">
                   <AlertOctagon size={13} /> Review SLA
                 </span>
               )}

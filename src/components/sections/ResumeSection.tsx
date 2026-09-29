@@ -211,7 +211,7 @@ const DownloadCard = ({
                   if (next) track("resume_preview_opened", { role: targetRole });
                 }}
                 data-cursor={previewOpen ? "Close" : "Preview"}
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
               >
                 {previewOpen ? <EyeOff size={16} /> : <Eye size={16} />}
                 {previewOpen ? "Hide preview" : "Preview tailored PDF"}
@@ -222,7 +222,7 @@ const DownloadCard = ({
               download="Krishna-Mathur-AI-Systems-Sheet.pdf"
               data-cursor="Download"
               onClick={() => track("ai_systems_sheet_downloaded")}
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
             >
               <Download size={16} />
               AI Systems Sheet (1-page)
@@ -233,7 +233,7 @@ const DownloadCard = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 data-cursor="View"
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
               >
                 <ExternalLink size={16} />
                 LinkedIn
@@ -243,7 +243,7 @@ const DownloadCard = ({
               type="button"
               onClick={copySummary}
               data-cursor="Copy"
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
             >
               {copied ? <Check size={16} className="text-[var(--accent)]" /> : <Copy size={16} />}
               {copied ? "Copied" : "Copy hiring summary"}
@@ -254,7 +254,7 @@ const DownloadCard = ({
           </div>
 
           {canPreview && previewOpen && (
-            <div className="mt-6 overflow-hidden rounded-xl border border-white/[0.08] bg-black/20">
+            <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel-2)]">
               {generating ? (
                 <div className="flex h-48 items-center justify-center font-mono text-sm text-[var(--accent)]">
                   Synthesizing tailored PDF in browser…
@@ -269,7 +269,7 @@ const DownloadCard = ({
                   allow="autoplay"
                 />
               )}
-              <div className="flex items-center justify-between border-t border-white/[0.08] px-4 py-2">
+              <div className="flex items-center justify-between border-t border-[var(--border)] px-4 py-2">
                 <span className="text-xs text-[var(--text-3)]">
                   Live compiled in-browser with pdf-lib
                 </span>

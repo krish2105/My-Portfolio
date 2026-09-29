@@ -323,7 +323,7 @@ export const CyberTerminal = () => {
           soundFx.playClick();
         }}
         aria-label="Open Cyber Terminal CLI"
-        className="fixed bottom-6 left-6 z-40 hidden md:flex items-center gap-2 rounded-full border border-white/[0.12] bg-[var(--panel)]/90 px-3.5 py-2 font-mono text-xs font-semibold text-[var(--text-2)] shadow-2xl backdrop-blur-md transition-all hover:border-[#00FF94]/50 hover:text-[var(--accent)] hover:shadow-[0_0_20px_rgba(0,255,148,0.2)]"
+        className="fixed bottom-6 left-6 z-40 hidden md:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)]/90 px-3.5 py-2 font-mono text-xs font-semibold text-[var(--text-2)] shadow-2xl backdrop-blur-md transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_20px_rgba(0,180,100,0.15)]"
       >
         <TerminalIcon size={14} className="text-[var(--accent)]" />
         <span>Terminal <span className="opacity-50 text-[10px]">[`]</span></span>
