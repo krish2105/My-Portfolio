@@ -35,7 +35,7 @@ export const configureLocalModels = async () => {
   if (configured) return;
   const { env } = await import("@huggingface/transformers");
   env.allowLocalModels = true;
-  env.allowRemoteModels = false;
+  env.allowRemoteModels = true;
   env.localModelPath = "/models/";
   // The onnxruntime-web WASM runtime otherwise fetches from a hardcoded
   // jsDelivr CDN URL at runtime (not the Vite-bundled copy) — self-host it

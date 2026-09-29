@@ -323,7 +323,7 @@ export const CyberTerminal = () => {
           soundFx.playClick();
         }}
         aria-label="Open Cyber Terminal CLI"
-        className="fixed bottom-6 left-6 z-40 hidden md:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)]/90 px-3.5 py-2 font-mono text-xs font-semibold text-[var(--text-2)] shadow-2xl backdrop-blur-md transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_20px_rgba(0,180,100,0.15)]"
+        className="fixed bottom-6 left-20 z-40 hidden md:flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)]/90 px-3.5 py-2 font-mono text-xs font-semibold text-[var(--text-2)] shadow-2xl backdrop-blur-md transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_20px_rgba(0,180,100,0.15)]"
       >
         <TerminalIcon size={14} className="text-[var(--accent)]" />
         <span>Terminal <span className="opacity-50 text-[10px]">[`]</span></span>
@@ -335,10 +335,10 @@ export const CyberTerminal = () => {
           role="dialog"
           aria-label="Developer Cyber Terminal"
           aria-modal="true"
-          className={`fixed z-50 transition-all duration-200 ${
+          className={`fixed z-[120] transition-all duration-200 ${
             isMaximized
               ? "inset-4 md:inset-8"
-              : "bottom-6 left-6 right-6 md:left-12 md:right-auto md:w-[680px] h-[480px]"
+              : "bottom-6 left-6 right-6 md:left-20 md:right-auto md:w-[680px] h-[480px]"
           } flex flex-col rounded-2xl border border-[#00FF94]/30 bg-[#07090c]/95 shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-xl font-mono overflow-hidden`}
         >
           {/* Scanline CRT overlay */}
@@ -377,7 +377,7 @@ export const CyberTerminal = () => {
           </div>
 
           {/* Terminal Console Logs */}
-          <div className="relative flex-1 overflow-y-auto p-4 space-y-3 font-mono text-xs select-text">
+          <div data-lenis-prevent className="relative flex-1 overflow-y-auto p-4 space-y-3 font-mono text-xs select-text">
             {logs.map((log) => (
               <div key={log.id} className="space-y-1">
                 <div className="flex items-center gap-2 text-[var(--text-3)]">
