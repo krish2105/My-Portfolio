@@ -865,7 +865,7 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "NetworkX", "Dijkstra’s Algorithm", "Bellman-Ford Algorithm", "Minimum Spanning Tree", "Graph Theory", "Data Structures", "Route Visualisation"],
     tags: ["Data"],
-    images: [],
+    images: ["/projects/waselx/01_dashboard.jpg"],
     metrics: [
       { label: "Network modelled", value: "15 nodes / 24 roads" },
       { label: "Algorithms & data structures", value: "16" },
@@ -903,7 +903,7 @@ export const projects: Project[] = [
       "An LSTM demand-forecasting model for retail inventory planning, built to reduce stockouts and overstock by predicting near-term demand from historical sales data.",
     technologies: ["Python", "TensorFlow", "LSTM", "Pandas", "NumPy"],
     tags: ["Deep Learning", "AI/ML"],
-    images: [],
+    images: ["/projects/stockwise/01_dashboard.jpg"],
     note: "Independent — SP Jain coursework.",
     problem:
       "Retail inventory planning trades stockouts against overstock; static reorder rules don't adapt to changing demand patterns.",
