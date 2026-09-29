@@ -25,11 +25,12 @@ dist-ssr
 
 # Local env (secrets) — keep .env.example tracked
 .env
-.env.*.local
+.env.*
+!.env.example
 
 # Never commit archives or large generated images
 *.zip
 Gemini_Generated_Image_*.png
 .lighthouseci/
 .vercel
-.env*
+

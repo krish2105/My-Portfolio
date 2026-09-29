@@ -79,6 +79,8 @@ export interface JourneyItem {
   skills?: string[];
   highlights?: string[];
   url?: string;
+  urlPreview?: string;
+  verifiedDomain?: string;
 }
 
 export interface RecognitionItem {

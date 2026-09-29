@@ -1,6 +1,6 @@
-import { memo, useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { ExternalLink, MapPin, Building2 } from "lucide-react";
+import { memo, useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { ExternalLink, MapPin, Building2, ShieldCheck, Globe } from "lucide-react";
 import { journey } from "../../data/portfolio";
 import type { JourneyItem } from "../../types/portfolio";
 import { RevealText } from "../common/Reveal";
@@ -18,6 +18,8 @@ const JourneyEntry = ({
   item: JourneyItem;
   index: number;
 }) => {
+  const [showPreview, setShowPreview] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
@@ -144,22 +146,61 @@ const JourneyEntry = ({
               )}
             </div>
 
-            {/* Official Portal Link */}
+            {/* Official Portal Link with Interactive Live Hover Preview */}
             {item.url && (
-              <div className="mt-5 border-t border-[var(--border)]/70 pt-3.5 flex items-center justify-between gap-2">
+              <div className="relative mt-5 border-t border-[var(--border)]/70 pt-3.5 flex items-center justify-between gap-2">
                 <span className="truncate font-mono text-[11px] text-[var(--text-3)] max-w-[190px]">
-                  {item.url.replace(/^https?:\/\/(www\.)?/, "")}
+                  {item.verifiedDomain || item.url.replace(/^https?:\/\/(www\.)?/, "")}
                 </span>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit official portal of ${item.institution}`}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] transition-all duration-300 hover:border-[#00FF94] hover:bg-[#00FF94]/10 hover:text-[var(--accent)]"
+
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowPreview(true)}
+                  onMouseLeave={() => setShowPreview(false)}
+                  onFocus={() => setShowPreview(true)}
+                  onBlur={() => setShowPreview(false)}
                 >
-                  <span>Portal</span>
-                  <ExternalLink size={12} />
-                </a>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit official portal of ${item.institution}`}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] transition-all duration-300 hover:border-[#00FF94] hover:bg-[#00FF94]/10 hover:text-[var(--accent)]"
+                  >
+                    <span>Portal</span>
+                    <ExternalLink size={12} aria-hidden />
+                  </a>
+
+                  <AnimatePresence>
+                    {showPreview && item.urlPreview && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        role="tooltip"
+                        className="pointer-events-none absolute bottom-full right-0 mb-2.5 z-30 w-72 rounded-xl border border-[#00FF94]/30 bg-[#0b0f15]/95 p-3.5 shadow-2xl backdrop-blur-xl ring-1 ring-black/60"
+                      >
+                        <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-[#00FF94]">
+                            <ShieldCheck size={13} className="text-[#00FF94]" aria-hidden />
+                            Verified Destination
+                          </span>
+                          <span className="font-mono text-[10px] text-[var(--text-3)]">
+                            {item.verifiedDomain || "Official"}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-xs leading-relaxed text-[var(--text-2)] font-sans">
+                          {item.urlPreview}
+                        </p>
+                        <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-mono text-[var(--text-3)]">
+                          <Globe size={11} className="text-[var(--accent)]" aria-hidden />
+                          <span className="truncate">{item.url}</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             )}
           </div>

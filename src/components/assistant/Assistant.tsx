@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { track } from "@vercel/analytics";
-import { Sparkles, X, ArrowUp, Zap, Loader2 } from "lucide-react";
+import { Sparkles, X, ArrowUp, Zap, Loader2, Key } from "lucide-react";
 import {
   ASSISTANT_INTENTS,
   ASSISTANT_SUGGESTIONS_BY_MODE,
@@ -17,6 +17,11 @@ import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
 import { projects } from "../../data/portfolio";
 import { specialCommandReply, MODE_TAG_BIAS, type Msg } from "../../lib/copilotCommands";
 import { GenerativePayloadView } from "./GenerativePayloadView";
+import {
+  generateGeminiResponse,
+  isGeminiConfigured,
+  setGeminiApiKey,
+} from "../../lib/geminiService";
 
 /** A match is only trusted if it clears this cosine-similarity bar; otherwise fall back to keyword matching. */
 const SEMANTIC_THRESHOLD = 0.35;
@@ -65,6 +70,9 @@ const Assistant = () => {
   const scrollBoxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState("");
+  const [geminiActive, setGeminiActive] = useState(isGeminiConfigured());
+  const [showKeyPrompt, setShowKeyPrompt] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState("");
 
   const toggleSmart = async () => {
     if (smartStatus === "ready" || smartStatus === "loading") return;
@@ -141,6 +149,22 @@ const Assistant = () => {
     }
 
     let reply: Msg | null = specialCommandReply(q);
+
+    // If no special structured command, attempt live Google Gemini generative inference
+    if (!reply && isGeminiConfigured()) {
+      try {
+        const geminiText = await generateGeminiResponse(q, mode);
+        if (geminiText) {
+          reply = {
+            role: "bot",
+            text: geminiText,
+            gemini: true,
+          };
+        }
+      } catch (err) {
+        console.warn("[Portfolio Assistant] Gemini generation error, falling back to local index:", err);
+      }
+    }
 
     if (!reply && smartStatus === "ready") {
       const results = await search(q, 3);
@@ -243,6 +267,27 @@ const Assistant = () => {
               </div>
               <div className="flex items-center gap-1.5">
                 <button
+                  onClick={() => setShowKeyPrompt((prev) => !prev)}
+                  aria-label={geminiActive ? "Gemini 1.5 Flash Connected" : "Configure Gemini API Key"}
+                  title={
+                    geminiActive
+                      ? "Gemini 1.5 Flash Connected — click to manage key"
+                      : "Configure Gemini API Key for live generative responses"
+                  }
+                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    geminiActive
+                      ? "border-[#00FF94]/50 bg-[#00FF94]/10 text-[var(--accent)]"
+                      : "border-[var(--border)] text-[var(--text-3)] hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+                  }`}
+                >
+                  {geminiActive ? (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#00FF94] animate-pulse" />
+                  ) : (
+                    <Key size={12} aria-hidden />
+                  )}
+                  <span>{geminiActive ? "Gemini" : "API"}</span>
+                </button>
+                <button
                   onClick={toggleSmart}
                   disabled={smartStatus === "loading"}
                   aria-pressed={smartStatus === "ready"}
@@ -267,7 +312,7 @@ const Assistant = () => {
                   ) : (
                     <Zap size={12} aria-hidden />
                   )}
-                  {smartStatus === "loading" ? "Loading…" : smartStatus === "ready" ? "Smart: On" : "Smart answers"}
+                  {smartStatus === "loading" ? "Loading…" : smartStatus === "ready" ? "Smart: On" : "Smart"}
                 </button>
                 <button
                   onClick={() => setOpen(false)}
@@ -278,6 +323,66 @@ const Assistant = () => {
                 </button>
               </div>
             </div>
+
+            {/* Gemini API Key Configuration Drawer */}
+            <AnimatePresence>
+              {showKeyPrompt && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden border-b border-[var(--border)] bg-[var(--panel)]/98 px-4 py-3 text-xs"
+                >
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 font-semibold text-[var(--text)]">
+                      <Sparkles size={13} className="text-[var(--accent)]" />
+                      Gemini 1.5 Flash Live Integration
+                    </span>
+                    <button
+                      onClick={() => setShowKeyPrompt(false)}
+                      className="text-[var(--text-3)] hover:text-[var(--text)]"
+                      aria-label="Close API settings"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                  <p className="mb-2 text-[11px] leading-relaxed text-[var(--text-2)]">
+                    Enables real-time generative responses for open-ended queries. (Configurable via{" "}
+                    <code className="rounded bg-[var(--surface-muted)] px-1 py-0.5 text-[var(--accent)]">
+                      VITE_GEMINI_API_KEY
+                    </code>{" "}
+                    or direct key).
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="password"
+                      value={apiKeyInput}
+                      onChange={(e) => setApiKeyInput(e.target.value)}
+                      placeholder={geminiActive ? "Key configured (enter new to update)" : "AIzaSy..."}
+                      className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--panel-2)] px-2.5 py-1.5 text-xs text-[var(--text)] placeholder:text-[var(--text-3)] focus:border-[#00FF94]/50 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (apiKeyInput.trim()) {
+                          setGeminiApiKey(apiKeyInput.trim());
+                          setGeminiActive(true);
+                          setApiKeyInput("");
+                          setShowKeyPrompt(false);
+                        } else if (geminiActive) {
+                          setGeminiApiKey("");
+                          setGeminiActive(false);
+                          setShowKeyPrompt(false);
+                        }
+                      }}
+                      className="rounded-lg bg-[#00FF94] px-3 py-1.5 font-semibold text-[#050505] transition-opacity hover:opacity-90"
+                    >
+                      {apiKeyInput.trim() ? "Save" : geminiActive ? "Clear" : "Done"}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Messages */}
             <div ref={scrollBoxRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
@@ -300,6 +405,11 @@ const Assistant = () => {
                           window.dispatchEvent(new PopStateEvent("popstate"));
                         }}
                       />
+                    )}
+                    {m.gemini && (
+                      <p className="mt-1.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent)]">
+                        <Sparkles size={10} aria-hidden /> Powered by Google Gemini 1.5 Flash
+                      </p>
                     )}
                     {m.semantic && (
                       <p className="mt-1.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent)]">

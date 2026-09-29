@@ -13,6 +13,8 @@ export interface Msg {
   actions?: AssistantAction[];
   /** True when this answer came from the semantic (RAG) search path, not the keyword matcher. */
   semantic?: boolean;
+  /** True when this answer was generated directly via Gemini Generative AI. */
+  gemini?: boolean;
   /** Optional interactive Generative UI payload (radar chart, comparison matrix, brief). */
   payload?: GenerativePayload;
 }
