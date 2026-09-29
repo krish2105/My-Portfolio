@@ -253,19 +253,19 @@ const Assistant = () => {
             className="fixed bottom-20 right-[max(0.75rem,var(--sir))] z-[116] flex h-[60vh] max-h-[560px] w-[calc(100vw-1.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-[var(--border-strong)] bg-[var(--panel-2)]/97 shadow-[0_40px_120px_-24px_rgba(0,0,0,0.9)] ring-1 ring-[#00FF94]/10 backdrop-blur-md md:bottom-24 md:right-[max(1.75rem,var(--sir))]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
-              <div className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-[#00FF94]/15 text-[var(--accent)]">
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-3 sm:px-4 py-2.5 sm:py-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#00FF94]/15 text-[var(--accent)]">
                   <Sparkles size={14} aria-hidden />
                 </span>
-                <div className="leading-tight">
-                  <p className="text-sm font-bold text-[var(--text)]">Portfolio Copilot</p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-3)]">
-                    {modeLabel} view · change in navbar
+                <div className="leading-tight min-w-0">
+                  <p className="truncate text-xs sm:text-sm font-bold text-[var(--text)]">Portfolio Copilot</p>
+                  <p className="truncate font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-[var(--text-3)]">
+                    {modeLabel} view · navbar
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                 <button
                   onClick={() => setShowKeyPrompt((prev) => !prev)}
                   aria-label={geminiActive ? "Gemini 1.5 Flash Connected" : "Configure Gemini API Key"}

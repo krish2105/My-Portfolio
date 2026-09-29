@@ -179,7 +179,7 @@ const JourneyEntry = ({
                         exit={{ opacity: 0, y: 4, scale: 0.95 }}
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         role="tooltip"
-                        className="pointer-events-none absolute bottom-full right-0 mb-2.5 z-30 w-72 rounded-xl border border-[#00FF94]/30 bg-[#0b0f15]/95 p-3.5 shadow-2xl backdrop-blur-xl ring-1 ring-black/60"
+                        className="pointer-events-none absolute bottom-full right-0 mb-2.5 z-30 w-[calc(100vw-4.5rem)] max-w-[280px] sm:w-72 rounded-xl border border-[#00FF94]/30 bg-[#0b0f15]/95 p-3.5 shadow-2xl backdrop-blur-xl ring-1 ring-black/60"
                       >
                         <div className="flex items-center justify-between pb-2 border-b border-white/10">
                           <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-[#00FF94]">
