@@ -8,6 +8,8 @@ import { matchNL2SQL, NL2SQL_EXAMPLES, TOY_SCHEMA } from "../../lib/nl2sqlDemo";
 import { buildTradeoffPool, pickTradeoffQuestion, type TradeoffQuestion } from "../../lib/tradeoffSimulator";
 import { projects } from "../../data/portfolio";
 import HallucinationGateLab from "./HallucinationGateLab";
+import PipelineSandbox from "./PipelineSandbox";
+import { soundFx } from "../../lib/soundFx";
 
 const MODEL = "Xenova/distilbert-base-uncased-finetuned-sst-2-english";
 
@@ -218,12 +220,10 @@ const LiveDemo = () => {
   const [text, setText] = useState(EXAMPLES[0]);
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [busy, setBusy] = useState(false);
-  const [lab, setLab] = useState<"sentiment" | "nl2sql" | "tradeoffs" | "guardrails">("sentiment");
+  const [lab, setLab] = useState<"sentiment" | "guardrails" | "pipeline" | "nl2sql" | "tradeoffs">("sentiment");
   // Collapsed by default: a recruiter skimming for two minutes rarely types
-  // into an in-browser demo, and these three labs are the site's heaviest
-  // interactive section (the transformer model itself already only loads on
-  // "Analyse sentiment", but the labs' own JS/motion/state still mounts and
-  // runs the moment this section scrolls into view unless gated here too).
+  // into an in-browser demo, and these labs are the site's heaviest
+  // interactive section.
   const [revealed, setRevealed] = useState(false);
 
   const analyze = async () => {
@@ -252,7 +252,7 @@ const LiveDemo = () => {
           <div className="flex flex-wrap gap-2" role="group" aria-label="Choose a live demo">
             <button
               type="button"
-              onClick={() => setLab("sentiment")}
+              onClick={() => { setLab("sentiment"); soundFx.playClick(); }}
               aria-pressed={lab === "sentiment"}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 lab === "sentiment"
@@ -264,7 +264,7 @@ const LiveDemo = () => {
             </button>
             <button
               type="button"
-              onClick={() => setLab("guardrails")}
+              onClick={() => { setLab("guardrails"); soundFx.playClick(); }}
               aria-pressed={lab === "guardrails"}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 lab === "guardrails"
@@ -276,7 +276,19 @@ const LiveDemo = () => {
             </button>
             <button
               type="button"
-              onClick={() => setLab("nl2sql")}
+              onClick={() => { setLab("pipeline"); soundFx.playClick(); }}
+              aria-pressed={lab === "pipeline"}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                lab === "pipeline"
+                  ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text)]"
+              }`}
+            >
+              Pipeline Sandbox (RAG)
+            </button>
+            <button
+              type="button"
+              onClick={() => { setLab("nl2sql"); soundFx.playClick(); }}
               aria-pressed={lab === "nl2sql"}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 lab === "nl2sql"
@@ -288,7 +300,7 @@ const LiveDemo = () => {
             </button>
             <button
               type="button"
-              onClick={() => setLab("tradeoffs")}
+              onClick={() => { setLab("tradeoffs"); soundFx.playClick(); }}
               aria-pressed={lab === "tradeoffs"}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 lab === "tradeoffs"
@@ -307,17 +319,18 @@ const LiveDemo = () => {
           <div className="flex flex-col items-start gap-5 rounded-2xl border border-[var(--border-strong)] bg-[var(--panel)] p-7 md:flex-row md:items-center md:justify-between md:p-8">
             <div>
               <h2 className="font-display text-2xl font-black leading-[1.1] tracking-tight text-[var(--text)] md:text-3xl">
-                Three honest, in-browser labs — <span className="text-gradient">a real ML model, rule-based NL→SQL, and a trade-off quiz.</span>
+                Four interactive in-browser labs — <span className="text-gradient">ML models, RAG sandbox, Self-RAG guardrails, and NL→SQL.</span>
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--text-2)] md:text-base">
-                Optional and self-contained — nothing here loads until you ask for it. The sentiment model is a
-                one-time ~90 MB in-browser download; the other two labs are lightweight and instant.
+                Optional and self-contained — nothing here loads until you ask for it. The sentiment model is an
+                on-device ~90 MB download; the RAG sandbox, Self-RAG gate, and NL→SQL labs are lightweight and instant.
               </p>
             </div>
             <button
               type="button"
               onClick={() => {
                 track("live_demo_revealed");
+                soundFx.playChime();
                 setRevealed(true);
               }}
               data-cursor="Try it"
@@ -330,7 +343,11 @@ const LiveDemo = () => {
         </Rise>
       )}
 
-      {revealed && (lab === "guardrails" ? (
+      {revealed && (lab === "pipeline" ? (
+        <Rise>
+          <PipelineSandbox />
+        </Rise>
+      ) : lab === "guardrails" ? (
         <Rise>
           <HallucinationGateLab />
         </Rise>
