@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Set the theme before paint to avoid a flash (FOUC).
+      try {
+        var t = localStorage.getItem("theme") || "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="Krishna Mathur builds practical AI, ML and GenAI systems — fraud detection, resource optimisation, NL-to-SQL and analytics dashboards — that turn messy data into decisions. Master of AI in Business, Dubai." />
+    <link rel="canonical" href="https://krishnamathur-ai.vercel.app/" />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Krishna Mathur — AI Developer building decision tools from data, language & workflows" />
+    <meta property="og:description" content="AI developer building decision tools from messy data, language and business workflows. Master of AI in Business, Dubai." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://krishnamathur-ai.vercel.app/" />
+    <meta property="og:image" content="https://krishnamathur-ai.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Krishna Mathur — AI Developer building decision tools from data, language & workflows" />
+    <meta name="twitter:description" content="AI developer building decision tools from messy data, language and business workflows. Master of AI in Business, Dubai." />
+    <meta name="twitter:image" content="https://krishnamathur-ai.vercel.app/og-image.png" />
+    
+    <!-- Self-hosted fonts (no third-party request, better privacy + CLS). -->
+    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/kanit-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link href="/fonts/fonts.css" rel="stylesheet" />
+    
+    <title>Krishna Mathur — AI Developer building decision tools from data, language & workflows</title>
+
+    <!-- Structured data: Person + WebSite (helps Google / AI search understand the site) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "name": "Krishna Mathur",
+            "jobTitle": "AI Developer, Data Analyst & GenAI Builder",
+            "url": "https://krishnamathur-ai.vercel.app/",
+            "image": "https://krishnamathur-ai.vercel.app/og-image.png",
+            "email": "mailto:krishnamathur008@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Dubai",
+              "addressCountry": "AE"
+            },
+            "alumniOf": [
+              { "@type": "CollegeOrUniversity", "name": "SP Jain School of Global Management, Dubai" },
+              { "@type": "CollegeOrUniversity", "name": "Manipal University Jaipur" }
+            ],
+            "knowsAbout": [
+              "Artificial Intelligence",
+              "Machine Learning",
+              "Deep Learning",
+              "Natural Language Processing",
+              "Generative AI",
+              "Data Analytics",
+              "Business Intelligence"
+            ],
+            "sameAs": [
+              "https://github.com/krish2105",
+              "https://www.linkedin.com/in/krishnamathurmay/",
+              "https://www.kaggle.com/krishna21052003"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "name": "Krishna Mathur — Portfolio",
+            "url": "https://krishnamathur-ai.vercel.app/"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

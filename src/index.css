@@ -1,0 +1,440 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #050505;
+  --bg-2: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #161616;
+  /* Themed surface tokens used across components (dark defaults). */
+  --panel: #0a0a0a;
+  --panel-2: #0c0c0f;
+  --ghost-dim: #0f0f0f;
+  --text: #edf5fa;
+  --text-2: #a0adba;
+  --text-3: #7e8c9a;
+
+  /* Single high-contrast accent — neon green */
+  --accent: #00ff94;
+  --accent-dim: #00b368;
+  --accent-bright: #6bffc0;
+  --border: rgba(215, 226, 234, 0.12);
+  --border-strong: rgba(215, 226, 234, 0.26);
+
+  --font-display: "Kanit", "Arial Black", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+  /* Kinetic display face — a true variable font (wght 100-900) used for the
+     hero name, whose weight is driven live by scroll velocity / cursor
+     proximity (HeroSection.tsx). Falls back to the static display face. */
+  --font-kinetic: "Archivo Variable", var(--font-display);
+
+  /* Signature easing used across the whole site */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Light theme ("Lab light") ─────────────────────────────────────────
+   A soft, premium light palette. The neon accent darkens to stay AA on
+   white; the accent is still used vivid for fills (with dark ink) in markup. */
+[data-theme="light"] {
+  --bg: #f5f7fa;
+  --bg-2: #eef2f6;
+  --panel: #ffffff;
+  --panel-2: #eef2f6;
+  --ghost-dim: #e7ebef;
+  --text: #0c1218;
+  --text-2: #46535f;
+  --text-3: #5f6c78;
+  /* #00935a only clears ~3.7:1 against this bg — fails WCAG AA (4.5:1) for
+     the small .kicker/accent-text usages. #007a48 clears ~5.1:1. */
+  --accent: #007a48;
+  --accent-dim: #006238;
+  --border: rgba(12, 18, 24, 0.12);
+  --border-strong: rgba(12, 18, 24, 0.22);
+}
+
+[data-theme="light"] body {
+  background: var(--bg);
+}
+
+/* Darker name gradient so the hero headline stays readable on light. */
+[data-theme="light"] .name-energy {
+  background-image: linear-gradient(
+    100deg,
+    #00532f 0%,
+    #00935a 25%,
+    #00b368 50%,
+    #00935a 75%,
+    #00532f 100%
+  );
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  /* Lenis drives smoothing — disable native smooth scroll to avoid conflict */
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hide the native cursor only on devices that have a custom one (pointer:fine) */
+@media (pointer: fine) {
+  .has-custom-cursor,
+  .has-custom-cursor a,
+  .has-custom-cursor button {
+    cursor: none;
+  }
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ── Typography helpers ────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+.font-kinetic {
+  font-family: var(--font-kinetic);
+}
+
+.text-gradient {
+  background: linear-gradient(110deg, var(--accent) 0%, var(--accent-bright) 45%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Outlined / hollow display type — a kinetic-editorial signature */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text);
+}
+.text-outline-accent {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+}
+
+.neon-text {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(0, 255, 148, 0.55), 0 0 28px rgba(0, 255, 148, 0.25);
+}
+
+/* ── Living "energy" name effect ───────────────────────────────────── */
+/* A flowing gradient streams through the letters like current/flame,
+   while a soft glow flickers. Used on the hero name. */
+.name-energy {
+  background: linear-gradient(
+    100deg,
+    #00b368 0%,
+    #00ff94 20%,
+    #6bffc0 35%,
+    #eafff5 50%,
+    #6bffc0 65%,
+    #00ff94 80%,
+    #00b368 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: energy-flow 5s linear infinite, energy-flicker 3.5s ease-in-out infinite;
+  will-change: background-position, filter;
+}
+
+@keyframes energy-flow {
+  to {
+    background-position: -250% 0;
+  }
+}
+@keyframes energy-flicker {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 18px rgba(0, 255, 148, 0.45)) drop-shadow(0 0 40px rgba(0, 255, 148, 0.2));
+  }
+  45% {
+    filter: drop-shadow(0 0 26px rgba(0, 255, 148, 0.65)) drop-shadow(0 0 60px rgba(0, 255, 148, 0.32));
+  }
+  55% {
+    filter: drop-shadow(0 0 14px rgba(0, 255, 148, 0.4)) drop-shadow(0 0 34px rgba(0, 255, 148, 0.18));
+  }
+}
+
+/* Outlined name with an animated glowing stroke */
+.name-outline-energy {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  animation: energy-flicker 3.5s ease-in-out infinite;
+  will-change: filter;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Surfaces ──────────────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 148, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 148, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-radial-glow {
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%);
+}
+
+/* Slow-drifting accent aurora behind the hero — GPU-cheap (transform/opacity only).
+   Uses the theme's own accent tokens via color-mix so it auto-adapts (and stays
+   subtle) in light mode, rather than a hardcoded neon-on-dark rgba value. */
+.aurora {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    color-mix(in srgb, var(--accent-dim) 8%, transparent) 55%,
+    transparent 75%
+  );
+  filter: blur(40px);
+  animation: aurora-drift 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+[data-theme="light"] .aurora {
+  /* A colored blur reads as a glow on dark backgrounds but as a smudge on
+     light ones — keep it much more restrained in "Lab light". */
+  opacity: 0.35;
+  filter: blur(50px);
+}
+.aurora-layer-2 {
+  animation-duration: 17s;
+  animation-delay: -6s;
+  opacity: 0.6;
+  filter: blur(32px);
+}
+.aurora-layer-3 {
+  animation-duration: 27s;
+  animation-delay: -14s;
+  opacity: 0.45;
+  filter: blur(48px);
+}
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translate3d(8%, 6%, 0) scale(1.25);
+    opacity: 1;
+  }
+  66% {
+    transform: translate3d(-4%, 8%, 0) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Film grain overlay — sits above everything for texture */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Reveal primitives ─────────────────────────────────────────────── */
+.line-mask {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.focus-visible-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Baseline keyboard focus ring for every interactive element (only shows on
+   keyboard navigation, never on mouse). Guarantees visible focus site-wide. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ── Marquee ───────────────────────────────────────────────────────── */
+@theme {
+  --animate-marquee-x: marquee-x 28s linear infinite;
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ProfileCard sets touch-action:none for tilt; we disable mobile tilt, so
+   re-enable normal touch scrolling over the card on small screens. */
+@media (max-width: 1024px) {
+  .pc-card-wrapper {
+    touch-action: auto;
+  }
+}
+
+/* ── View Transitions (theme switch) ──────────────────────────────────
+   Give the built-in cross-fade the site's own signature easing/duration
+   instead of the browser default. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: var(--ease);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grain::after {
+    display: none;
+  }
+  /* Defense-in-depth: even if a caller ever skips the JS reduced-motion
+     check, the CSS itself keeps the cross-fade instant. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Print ─────────────────────────────────────────────────────────────
+   A recruiter printing/PDF-exporting the résumé section or a /work/:slug
+   case-study (which opens as a dialog over the SPA shell) should get plain,
+   legible black-on-white content — not the dark neon theme, the WebGL hero,
+   or any of the fixed decorative chrome. */
+@media print {
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    background-image: none !important;
+    animation: none !important;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  :root,
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --bg: #ffffff;
+    --bg-2: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #ffffff;
+    --ghost-dim: #dddddd;
+    --text: #000000;
+    --text-2: #333333;
+    --text-3: #555555;
+    --accent: #007a48;
+    --accent-dim: #006238;
+    --accent-bright: #00a862;
+    --border: #cccccc;
+    --border-strong: #999999;
+  }
+
+  /* The WebGL hero, marquee, grain texture and cursor are pure decoration —
+     and the hero alone would otherwise burn a full blank page. */
+  #home,
+  .grain::after,
+  .aurora,
+  [class*="aurora-layer"] {
+    display: none !important;
+  }
+
+  /* Every other fixed-position UI (nav, custom cursor, scroll dial, sound/
+     theme toggles, command palette, assistant, easter egg) is navigation
+     chrome, not content — hidden on paper. The two dialogs (case-study /
+     /uses) are the one exception: printed in normal flow instead. */
+  .fixed:not([class*="z-[120]"]) {
+    display: none !important;
+  }
+  [class*="z-[120]"] {
+    position: static !important;
+    inset: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  [role="dialog"] {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  [role="dialog"] button[aria-label*="Close" i] {
+    display: none !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555555;
+  }
+  a[href^="#"]::after,
+  a[href^="mailto:"]::after {
+    content: "";
+  }
+}
