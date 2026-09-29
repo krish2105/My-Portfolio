@@ -127,6 +127,13 @@ export const services: ServiceItem[] = [
 
 export const journey: JourneyItem[] = [
   {
+    id: "luc-ai-intern",
+    title: "AI Intern",
+    institution: "Learners University College (LUC), Dubai",
+    date: "2026—Present",
+    description: "Developing applied AI solutions, machine learning workflows, and generative AI features to support intelligent edtech systems and operations at Learners University College in Dubai.",
+  },
+  {
     id: "independent-ai-systems",
     title: "Independent AI Systems Engineer",
     institution: "Self-directed",
@@ -318,7 +325,11 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "FastAPI", "LangGraph", "PostgreSQL", "pgvector", "Next.js", "TypeScript", "Tailwind CSS", "Gemini", "Groq"],
     tags: ["GenAI", "AI/ML"],
-    images: ["/projects/fincopilot/01_landing.webp", "/projects/fincopilot/02_dashboard.webp"],
+    images: [
+      "/projects/fincopilot/01_landing.webp",
+      "/projects/fincopilot/02_dashboard.webp",
+      "/projects/fincopilot/03_command_center.jpg",
+    ],
     demoVideo: "/projects/fincopilot/loop.mp4",
     repositoryUrl: "https://github.com/krish2105/FinCopilot-",
     liveUrl: "https://fin-copilot-six.vercel.app",
@@ -394,7 +405,7 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "FastAPI", "LangGraph", "PostgreSQL", "Qdrant", "Next.js", "TypeScript", "Tailwind CSS", "Claude", "Gemini", "Docker"],
     tags: ["GenAI", "AI/ML", "Data"],
-    images: ["/projects/sakan/01_landing.webp"],
+    images: ["/projects/sakan/01_landing.webp", "/projects/sakan/03_underwriting.jpg"],
     demoVideo: "/projects/sakan/loop.mp4",
     repositoryUrl: "https://github.com/krish2105/SakanAgenticAi",
     liveUrl: "https://sakan-agentic-ai.vercel.app",
@@ -470,7 +481,10 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "FastAPI", "LangGraph", "NumPy", "DuckDB", "ChromaDB", "NetworkX", "React", "TypeScript", "Vite", "Tailwind CSS"],
     tags: ["GenAI", "AI/ML", "Deep Learning"],
-    images: ["/projects/complianceagent/01_case_queue.webp"],
+    images: [
+      "/projects/complianceagent/01_case_queue.webp",
+      "/projects/complianceagent/03_aml_graph.jpg",
+    ],
     demoVideo: "/projects/complianceagent/loop.mp4",
     repositoryUrl: "https://github.com/krish2105/Compilance-Agent-",
     liveUrl: "https://frontend-three-pi-15.vercel.app",
@@ -858,7 +872,7 @@ export const projects: Project[] = [
     ],
     technologies: ["Python", "NetworkX", "Dijkstra’s Algorithm", "Bellman-Ford Algorithm", "Minimum Spanning Tree", "Graph Theory", "Data Structures", "Route Visualisation"],
     tags: ["Data"],
-    images: [],
+    images: ["/projects/waselx/01_dashboard.jpg"],
     metrics: [
       { label: "Network modelled", value: "15 nodes / 24 roads" },
       { label: "Algorithms & data structures", value: "16" },
@@ -896,7 +910,7 @@ export const projects: Project[] = [
       "An LSTM demand-forecasting model for retail inventory planning, built to reduce stockouts and overstock by predicting near-term demand from historical sales data.",
     technologies: ["Python", "TensorFlow", "LSTM", "Pandas", "NumPy"],
     tags: ["Deep Learning", "AI/ML"],
-    images: [],
+    images: ["/projects/stockwise/01_dashboard.jpg"],
     note: "Independent — SP Jain coursework.",
     problem:
       "Retail inventory planning trades stockouts against overstock; static reorder rules don't adapt to changing demand patterns.",

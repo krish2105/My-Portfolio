@@ -5,6 +5,7 @@ import { compareProjects, parseComparisonQuery, findProjectByName } from "./comp
 import { bestProjectForRole } from "./bestProjectForRole";
 import { buildInterviewQuestions } from "./interviewQuestions";
 import { matchJobDescription } from "./jdMatcher";
+import type { GenerativePayload } from "../components/assistant/GenerativePayloadView";
 
 export interface Msg {
   role: "user" | "bot";
@@ -12,6 +13,8 @@ export interface Msg {
   actions?: AssistantAction[];
   /** True when this answer came from the semantic (RAG) search path, not the keyword matcher. */
   semantic?: boolean;
+  /** Optional interactive Generative UI payload (radar chart, comparison matrix, brief). */
+  payload?: GenerativePayload;
 }
 
 /** Tags that matter most to each audience — used to nudge (not override) semantic-search
@@ -44,8 +47,65 @@ export const specialCommandReply = (query: string): Msg | null => {
           { label: `Open ${a.shortTitle}`, type: "project", target: a.id },
           { label: `Open ${b.shortTitle}`, type: "project", target: b.id },
         ],
+        payload: {
+          type: "comparison",
+          projectA: a,
+          projectB: b,
+          rows: cmp.rows,
+        },
       };
     }
+  }
+
+  if (/(?:why hire|skills?|domains?|fit|radar|competenc)/i.test(q)) {
+    return {
+      role: "bot",
+      text: "Krishna's core technical competencies span 5 key AI domains: Agentic RAG, Systems & Python, MLOps, Data & SQL, and Autonomous LangGraph Pipelines.",
+      actions: [
+        { label: "View Flagship Projects", type: "scroll", target: "projects" },
+        { label: "Download Resume", type: "scroll", target: "resume" },
+      ],
+      payload: {
+        type: "radar",
+        title: "Technical Domain Competencies",
+        roleTitle: "AI & GenAI Systems Engineer",
+        domains: [
+          { label: "Agentic RAG", score: 95, max: 100 },
+          { label: "Systems & Python", score: 92, max: 100 },
+          { label: "MLOps & Docker", score: 88, max: 100 },
+          { label: "Data & SQL", score: 90, max: 100 },
+          { label: "LangGraph / Agents", score: 94, max: 100 },
+        ],
+        summary: "Specialized in turning complex, messy data and documents into cited, deterministic decision systems and production agent pipelines.",
+      },
+    };
+  }
+
+  if (/(?:brief|executive summary|quick summary|summary of krishna)/i.test(q)) {
+    return {
+      role: "bot",
+      text: "Executive brief for Krishna Mathur — AI Developer & GenAI Builder.",
+      actions: [
+        { label: "View Resume", type: "scroll", target: "resume" },
+        { label: "Contact Krishna", type: "scroll", target: "contact" },
+      ],
+      payload: {
+        type: "executive_brief",
+        title: "Krishna Mathur — Executive Overview",
+        summary: "Master of AI in Business candidate at SP Jain (Dubai) with a B.Tech in CSE (AI & ML). Designs production-grade decision tools, agentic RAG copilots, and explainable ML architectures.",
+        bullets: [
+          "Built 4 independent production flagships (FinCopilot, Sakan AI, ComplianceAgent, AutoValuate).",
+          "Engineered multi-agent LangGraph pipelines with live WebSocket reasoning traces.",
+          "Implemented from-scratch GNNs and Self-RAG faithfulness validation gates.",
+          "AI Intern at Learners University College (LUC) in Dubai & Class Representative at SP Jain.",
+        ],
+        topProjects: [
+          { id: "fincopilot", name: "FinCopilot" },
+          { id: "sakan-ai", name: "Sakan AI" },
+          { id: "compliance-agent", name: "ComplianceAgent" },
+        ],
+      },
+    };
   }
 
   const interviewMatch = q.match(/interview questions?\s*(?:for|about|on)?\s*(.+)/i);

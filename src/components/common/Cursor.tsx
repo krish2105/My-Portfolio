@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { Download, Move } from "lucide-react";
+import { soundFx } from "../../lib/soundFx";
 
 /** Cursor targets opt into a semantic variant via [data-cursor]. */
 const ICON_VARIANTS: Record<string, "download" | "drag"> = {
@@ -33,6 +34,7 @@ const Cursor = () => {
     }
     document.documentElement.classList.add("has-custom-cursor");
 
+    let lastHovered = false;
     const move = (e: PointerEvent) => {
       x.set(e.clientX);
       y.set(e.clientY);
@@ -40,22 +42,30 @@ const Cursor = () => {
         "a, button, [data-cursor], input, textarea"
       );
       if (target) {
+        if (!lastHovered) {
+          soundFx.playHover();
+          lastHovered = true;
+        }
         setHovering(true);
         setLabel(target.dataset.cursor ?? "");
       } else {
+        lastHovered = false;
         setHovering(false);
         setLabel("");
       }
     };
+    const onDown = () => soundFx.playClick();
     const leave = () => setHidden(true);
     const enter = () => setHidden(false);
 
     window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
     document.addEventListener("pointerleave", leave);
     document.addEventListener("pointerenter", enter);
     return () => {
       document.documentElement.classList.remove("has-custom-cursor");
       window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", onDown);
       document.removeEventListener("pointerleave", leave);
       document.removeEventListener("pointerenter", enter);
     };

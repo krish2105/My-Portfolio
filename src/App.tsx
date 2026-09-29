@@ -10,6 +10,8 @@ import CommandPalette from "./components/common/CommandPalette";
 import UsesModal from "./components/common/UsesModal";
 import EasterEgg from "./components/common/EasterEgg";
 import Assistant from "./components/assistant/Assistant";
+import CyberTerminal from "./components/common/CyberTerminal";
+import ScrollTelemetryRail from "./components/common/ScrollTelemetryRail";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import Preloader from "./components/common/Preloader";
 import SectionSkeleton from "./components/common/SectionSkeleton";
@@ -85,6 +87,8 @@ const App = () => {
       <SmoothScroll>
         <Cursor />
         <ScrollProgress />
+        <CyberTerminal />
+        <ScrollTelemetryRail />
         <CommandPalette
           open={palette.open}
           onClose={() => palette.setOpen(false)}

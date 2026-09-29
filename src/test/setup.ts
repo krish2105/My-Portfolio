@@ -6,6 +6,56 @@ afterEach(() => {
   cleanup();
 });
 
+// Node 26 defines globalThis.localStorage as undefined without --localstorage-file,
+// which also prevents jsdom from instantiating window.localStorage properly.
+// Provide an in-memory Storage implementation for tests.
+class MockStorage implements Storage {
+  private store: Record<string, string> = {};
+
+  get length() {
+    return Object.keys(this.store).length;
+  }
+
+  clear() {
+    this.store = {};
+  }
+
+  getItem(key: string): string | null {
+    return this.store[key] ?? null;
+  }
+
+  key(index: number): string | null {
+    return Object.keys(this.store)[index] ?? null;
+  }
+
+  removeItem(key: string) {
+    delete this.store[key];
+  }
+
+  setItem(key: string, value: string) {
+    this.store[key] = String(value);
+  }
+}
+
+const mockStorage = new MockStorage();
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "localStorage", {
+    value: mockStorage,
+    writable: true,
+    configurable: true,
+  });
+}
+try {
+  delete (globalThis as unknown as { localStorage?: unknown }).localStorage;
+} catch {
+  /* ignore */
+}
+Object.defineProperty(globalThis, "localStorage", {
+  value: mockStorage,
+  writable: true,
+  configurable: true,
+});
+
 // jsdom doesn't implement IntersectionObserver — Motion's `whileInView`
 // (used by Reveal/Rise) needs this stubbed or it throws on mount.
 if (typeof window.IntersectionObserver === "undefined") {

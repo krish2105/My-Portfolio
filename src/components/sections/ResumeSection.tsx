@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef, useState, useMemo, useEffect } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff, ClipboardList } from "lucide-react";
 import { track } from "@vercel/analytics";
@@ -54,13 +54,46 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
   </span>
 );
 
+import { type TargetRoleId, ROLE_CONFIGS, generateTailoredResumePdf } from "../../lib/pdfGenerator";
+
 /* ── Download CTA card ────────────────────────────────────────────── */
-const DownloadCard = () => {
+const DownloadCard = ({
+  targetRole,
+  onRoleChange,
+}: {
+  targetRole: TargetRoleId;
+  onRoleChange: (r: TargetRoleId) => void;
+}) => {
   const hasResume = !!socialLinks.resume;
   const [copied, setCopied] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const canPreview = hasResume;
-  const previewUrl = `${socialLinks.resume}#view=FitH`;
+  const [dynamicPdfUrl, setDynamicPdfUrl] = useState<string | null>(null);
+  const [compiledRole, setCompiledRole] = useState<TargetRoleId | null>(null);
+  const generating = compiledRole !== targetRole;
+
+  useEffect(() => {
+    let mounted = true;
+    generateTailoredResumePdf(targetRole)
+      .then((pdfBytes) => {
+        if (!mounted) return;
+        const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        setDynamicPdfUrl(url);
+        setCompiledRole(targetRole);
+      })
+      .catch((err) => {
+        console.error("Failed to synthesize dynamic PDF", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [targetRole]);
+
+  const activePdfUrl = dynamicPdfUrl || socialLinks.resume;
+  const canPreview = hasResume || !!dynamicPdfUrl;
+  const previewUrl = activePdfUrl ? `${activePdfUrl}#view=FitH` : "";
+  const roleConfig = ROLE_CONFIGS[targetRole];
 
   const copySummary = async () => {
     const summary = buildHiringSummary();
@@ -91,28 +124,66 @@ const DownloadCard = () => {
         <div className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-[#00FF94]/5 blur-2xl" />
 
         <div className="relative">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#00FF94]/20 bg-[#00FF94]/8 px-4 py-1.5">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#00FF94]" />
-            <span className="text-xs font-medium text-[var(--accent)]">
-              Open to opportunities
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#00FF94]/20 bg-[#00FF94]/8 px-4 py-1.5">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#00FF94]" />
+              <span className="text-xs font-medium text-[var(--accent)]">
+                Open to opportunities
+              </span>
+            </div>
+            <span className="rounded-full border border-white/[0.08] bg-[var(--panel-2)] px-3 py-1 font-mono text-[11px] text-[var(--text-3)]">
+              PDF Synthesizer Active
             </span>
           </div>
 
           <h3 className="font-display text-2xl font-black tracking-tight text-[var(--text)] md:text-3xl">
-            The one-page version
+            Interactive Role-Tailored Resume
           </h3>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-2)] md:text-base">
-            Education, experience, projects and technical skills — ready for
-            download, or copy a hiring summary straight to your clipboard.
-            Or grab the one-page AI Systems Sheet — a single branded page
-            summarising the 4 flagship builds, built for forwarding internally.
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-[var(--text-2)] md:text-base">
+            Select your hiring profile to dynamically recompile the 1-page PDF in real-time,
+            re-ordering project telemetry and engineering competencies for your target domain:
           </p>
 
+          {/* Role selector */}
+          <div className="mt-6 rounded-xl border border-white/[0.08] bg-[var(--panel-2)]/80 p-4">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)]">
+              Select Primary Target Role:
+            </span>
+            <div className="mt-2.5 flex flex-wrap gap-2" role="group" aria-label="Target Role">
+              {(["ai-engineer", "mlops-engineer", "data-analytics"] as const).map((rId) => {
+                const conf = ROLE_CONFIGS[rId];
+                const active = targetRole === rId;
+                return (
+                  <button
+                    key={rId}
+                    type="button"
+                    onClick={() => {
+                      onRoleChange(rId);
+                      track("resume_role_switched", { role: rId });
+                    }}
+                    aria-pressed={active}
+                    className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                      active
+                        ? "border-[#00FF94] bg-[#00FF94]/15 text-[var(--accent)] shadow-[0_0_14px_rgba(0,255,148,0.2)]"
+                        : "border-white/[0.08] text-[var(--text-3)] hover:border-white/[0.2] hover:text-[var(--text)]"
+                    }`}
+                  >
+                    {conf.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-[var(--text-2)]">
+              <span className="font-semibold text-[var(--accent)]">Tailored focus: </span>
+              {roleConfig.summary}
+            </p>
+          </div>
+
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            {hasResume ? (
+            {activePdfUrl ? (
               <a
-                href={socialLinks.resume}
-                download="Krishna-Mathur-Resume.pdf"
+                href={activePdfUrl}
+                download={`Krishna_Mathur_Resume_${targetRole}.pdf`}
                 data-cursor="Download"
                 className="group inline-flex items-center gap-3 rounded-full bg-[#00FF94] px-7 py-4 font-bold tracking-wide text-[#050505] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(0,255,148,0.5)]"
               >
@@ -120,7 +191,7 @@ const DownloadCard = () => {
                   size={18}
                   className="transition-transform group-hover:-translate-y-0.5"
                 />
-                DOWNLOAD RESUME
+                DOWNLOAD RESUME ({roleConfig.shortLabel.toUpperCase()})
                 <span className="transition-transform group-hover:translate-x-1">
                   →
                 </span>
@@ -128,7 +199,7 @@ const DownloadCard = () => {
             ) : (
               <span className="inline-flex items-center gap-3 rounded-full border border-dashed border-[#7e8c9a]/40 px-7 py-4 text-sm font-medium text-[var(--text-3)]">
                 <Download size={18} />
-                Resume link coming soon
+                Synthesizing PDF…
               </span>
             )}
             {canPreview && (
@@ -137,13 +208,13 @@ const DownloadCard = () => {
                 onClick={() => {
                   const next = !previewOpen;
                   setPreviewOpen(next);
-                  if (next) track("resume_preview_opened");
+                  if (next) track("resume_preview_opened", { role: targetRole });
                 }}
                 data-cursor={previewOpen ? "Close" : "Preview"}
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
               >
                 {previewOpen ? <EyeOff size={16} /> : <Eye size={16} />}
-                {previewOpen ? "Hide preview" : "Preview resume"}
+                {previewOpen ? "Hide preview" : "Preview tailored PDF"}
               </button>
             )}
             <a
@@ -151,7 +222,7 @@ const DownloadCard = () => {
               download="Krishna-Mathur-AI-Systems-Sheet.pdf"
               data-cursor="Download"
               onClick={() => track("ai_systems_sheet_downloaded")}
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
             >
               <Download size={16} />
               AI Systems Sheet (1-page)
@@ -162,7 +233,7 @@ const DownloadCard = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-cursor="View"
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
               >
                 <ExternalLink size={16} />
                 LinkedIn
@@ -172,7 +243,7 @@ const DownloadCard = () => {
               type="button"
               onClick={copySummary}
               data-cursor="Copy"
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[#00FF94]/40 hover:text-[var(--text)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-4 text-sm font-bold text-[var(--text-2)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--text)]"
             >
               {copied ? <Check size={16} className="text-[var(--accent)]" /> : <Copy size={16} />}
               {copied ? "Copied" : "Copy hiring summary"}
@@ -183,25 +254,32 @@ const DownloadCard = () => {
           </div>
 
           {canPreview && previewOpen && (
-            <div className="mt-6 overflow-hidden rounded-xl border border-white/[0.08] bg-black/20">
-              <iframe
-                src={previewUrl}
-                title="Résumé preview"
-                loading="lazy"
-                className="h-[70vh] w-full"
-                allow="autoplay"
-              />
-              <div className="flex items-center justify-between border-t border-white/[0.08] px-4 py-2">
+            <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--panel-2)]">
+              {generating ? (
+                <div className="flex h-48 items-center justify-center font-mono text-sm text-[var(--accent)]">
+                  Synthesizing tailored PDF in browser…
+                </div>
+              ) : (
+                <iframe
+                  key={targetRole}
+                  src={previewUrl}
+                  title={`Résumé preview (${roleConfig.label})`}
+                  loading="lazy"
+                  className="h-[75vh] w-full"
+                  allow="autoplay"
+                />
+              )}
+              <div className="flex items-center justify-between border-t border-[var(--border)] px-4 py-2">
                 <span className="text-xs text-[var(--text-3)]">
-                  Blocked by your browser?
+                  Live compiled in-browser with pdf-lib
                 </span>
                 <a
-                  href={socialLinks.resume}
+                  href={activePdfUrl || socialLinks.resume}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs font-semibold text-[var(--accent)] hover:underline"
                 >
-                  Open full PDF →
+                  Open in new tab →
                 </a>
               </div>
             </div>
@@ -301,6 +379,12 @@ const FlagshipRow = ({ project, mode }: { project: (typeof projects)[number]; mo
   );
 };
 
+/* ── Skills & Capabilities static collections ───────────────────────── */
+const ALL_SKILLS = capabilities.flatMap((g) => g.skills);
+const CORE_ALL = ALL_SKILLS.filter((s) => s.level === "Core");
+const WORKING_ALL = ALL_SKILLS.filter((s) => s.level === "Working Knowledge");
+const REST_ALL = ALL_SKILLS.filter((s) => s.level !== "Core" && s.level !== "Working Knowledge");
+
 /* ── Main section ─────────────────────────────────────────────────── */
 const ResumeSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -311,41 +395,84 @@ const ResumeSection = () => {
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const { mode, setMode } = useViewMode();
   const [expanded, setExpanded] = useState(false);
+  const [targetRole, setTargetRole] = useState<TargetRoleId>("ai-engineer");
 
-  const allSkills = capabilities.flatMap((g) => g.skills);
-  const coreAll = allSkills.filter((s) => s.level === "Core");
-  const workingAll = allSkills.filter((s) => s.level === "Working Knowledge");
-  const restAll = allSkills.filter((s) => s.level !== "Core" && s.level !== "Working Knowledge");
+  const roleConfig = ROLE_CONFIGS[targetRole];
+
+  // Prioritize core skills aligned with the active target role
+  const prioritizedCore = useMemo(() => {
+    const roleSkillSet = new Set(roleConfig.topSkills);
+    const matched = CORE_ALL.filter((s) => roleSkillSet.has(s.name));
+    const remainder = CORE_ALL.filter((s) => !roleSkillSet.has(s.name));
+    return [...matched, ...remainder];
+  }, [roleConfig]);
 
   // Pick top 12 core skills for the resume snapshot, or all of them once expanded.
-  const coreSkills = expanded ? coreAll : coreAll.slice(0, 12);
-  const workingSkills = expanded ? workingAll : workingAll.slice(0, 8);
-  const restSkills = expanded ? restAll : [];
+  const coreSkills = expanded ? prioritizedCore : prioritizedCore.slice(0, 12);
+  const workingSkills = expanded ? WORKING_ALL : WORKING_ALL.slice(0, 8);
+  const restSkills = expanded ? REST_ALL : [];
 
   const flagshipProjects = projects.filter((p) => p.flagship);
 
+  const prioritizedFlagships = useMemo(() => {
+    if (targetRole === "ai-engineer") {
+      return [...flagshipProjects].sort((a, b) => (a.id === "fincopilot" ? -1 : b.id === "fincopilot" ? 1 : 0));
+    } else if (targetRole === "mlops-engineer") {
+      return [...flagshipProjects].sort((a, b) => (a.id === "autovaluate" ? -1 : b.id === "autovaluate" ? 1 : 0));
+    } else {
+      return [...flagshipProjects].sort((a, b) => (a.id === "sakan-ai" ? -1 : b.id === "sakan-ai" ? 1 : 0));
+    }
+  }, [flagshipProjects, targetRole]);
+
   // Timeline entries — education & experience interleaved
+  const lucEntry = journey.find((j) => j.id === "luc-ai-intern");
+  const mastersEntry = journey.find((j) => j.id === "masters");
+  const mlInternEntry = journey.find((j) => j.id === "internship");
+  const btechEntry = journey.find((j) => j.id === "btech");
+
   const timelineEntries = [
+    ...(lucEntry
+      ? [
+          {
+            title: lucEntry.title,
+            subtitle: lucEntry.institution,
+            date: lucEntry.date,
+            icon: Briefcase,
+          },
+        ]
+      : []),
+    ...(mastersEntry
+      ? [
+          {
+            title: mastersEntry.title,
+            subtitle: mastersEntry.institution,
+            date: mastersEntry.date,
+            icon: GraduationCap,
+          },
+        ]
+      : []),
+    ...(mlInternEntry
+      ? [
+          {
+            title: mlInternEntry.title,
+            subtitle: mlInternEntry.institution,
+            date: mlInternEntry.date,
+            icon: Briefcase,
+          },
+        ]
+      : []),
+    ...(btechEntry
+      ? [
+          {
+            title: btechEntry.title,
+            subtitle: btechEntry.institution,
+            date: btechEntry.date,
+            icon: GraduationCap,
+          },
+        ]
+      : []),
     {
-      title: journey[1].title,           // Masters
-      subtitle: journey[1].institution,
-      date: journey[1].date,
-      icon: GraduationCap,
-    },
-    {
-      title: journey[2].title,           // ML Intern
-      subtitle: journey[2].institution,
-      date: journey[2].date,
-      icon: Briefcase,
-    },
-    {
-      title: journey[3].title,           // B.Tech
-      subtitle: journey[3].institution,
-      date: journey[3].date,
-      icon: GraduationCap,
-    },
-    {
-      title: recognition[0].title,       // Award
+      title: recognition[0].title, // Award
       subtitle: recognition[0].context.split(".")[0] + ".",
       date: recognition[0].year,
       icon: Award,
@@ -455,7 +582,7 @@ const ResumeSection = () => {
               <div className="mt-6 border-t border-white/[0.06] pt-5">
                 <p className="kicker mb-1">Flagship projects — {VIEW_MODES.find((m) => m.id === mode)?.label} snapshot</p>
                 <ul className="divide-y divide-white/[0.06]">
-                  {flagshipProjects.map((p) => (
+                  {prioritizedFlagships.map((p) => (
                     <FlagshipRow key={p.id} project={p} mode={mode} />
                   ))}
                 </ul>
@@ -467,7 +594,7 @@ const ResumeSection = () => {
           <JDMatcherCard />
 
           {/* Download CTA */}
-          <DownloadCard />
+          <DownloadCard targetRole={targetRole} onRoleChange={setTargetRole} />
         </div>
       </div>
 
