@@ -43,13 +43,14 @@ const SmoothScroll = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+    if (prefersReduced || isTouch) return;
 
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.6,
+      touchMultiplier: 1,
       wheelMultiplier: 1,
     });
     lenisRef.current = lenis;

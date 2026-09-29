@@ -46,11 +46,12 @@ const NameNeurons = () => {
     let canvasRect: DOMRect = canvas.getBoundingClientRect();
 
     const resize = () => {
-      const rect = canvas.parentElement!.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
+      const parent = canvas.parentElement;
+      const rect = parent ? parent.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
+      w = rect.width || window.innerWidth || 360;
+      h = rect.height || window.innerHeight || 640;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -96,6 +97,12 @@ const NameNeurons = () => {
     let lastFire = 0;
 
     const tick = (time: number) => {
+      // Pause drawing if page is hidden
+      if (document.hidden) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
 
       // move nodes
@@ -137,7 +144,7 @@ const NameNeurons = () => {
         }
       }
 
-      // draw nodes
+      // draw nodes using two-pass concentric circles (zero GPU offscreen buffer overhead)
       for (const n of nodes) {
         let glow = 0;
         if (pointer.active) {
@@ -145,13 +152,20 @@ const NameNeurons = () => {
           glow = d < 180 ? 1 - d / 180 : 0;
         }
         const r = 1.6 + glow * 2.5;
+
+        // Outer soft glow halo
+        if (glow > 0.05) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r * 2.6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${ACCENT},${glow * 0.25})`;
+          ctx.fill();
+        }
+
+        // Inner solid core
         ctx.beginPath();
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${ACCENT},${0.45 + glow * 0.55})`;
-        ctx.shadowBlur = 8 + glow * 14;
-        ctx.shadowColor = `rgba(${ACCENT},0.9)`;
+        ctx.fillStyle = `rgba(${ACCENT},${0.5 + glow * 0.5})`;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       // spawn a firing pulse every ~280ms along a random active link
@@ -161,7 +175,7 @@ const NameNeurons = () => {
         lastFire = time;
       }
 
-      // advance + draw pulses
+      // advance + draw pulses with clean concentric alpha (100% crash-proof in iOS Safari)
       for (let i = pulses.length - 1; i >= 0; i--) {
         const p = pulses[i];
         p.t += p.speed;
@@ -177,13 +191,19 @@ const NameNeurons = () => {
         }
         const x = a.x + (b.x - a.x) * p.t;
         const y = a.y + (b.y - a.y) * p.t;
+        const alpha = Math.max(0, 1 - p.t * 0.6);
+
+        // Soft halo
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${ACCENT},${0.25 * alpha})`;
+        ctx.fill();
+
+        // Bright core
         ctx.beginPath();
         ctx.arc(x, y, 2.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180,255,220,${1 - p.t * 0.6})`;
-        ctx.shadowBlur = 16;
-        ctx.shadowColor = `rgba(${ACCENT},1)`;
+        ctx.fillStyle = `rgba(200, 255, 230, ${alpha})`;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       raf = requestAnimationFrame(tick);

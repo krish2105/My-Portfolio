@@ -45,8 +45,10 @@ export const ScrollTelemetryRail = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Real-time FPS monitor
+  // Real-time FPS monitor (only on desktop where rail is visible)
   useEffect(() => {
+    if (typeof window === "undefined" || window.innerWidth < 1280) return;
+
     let frameCount = 0;
     let lastTime = performance.now();
     let animId: number;

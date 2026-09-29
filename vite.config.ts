@@ -91,7 +91,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       includeAssets: ["favicon.svg", "apple-touch-icon.png"],
       manifest: {
         name: "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder",
@@ -116,16 +116,14 @@ export default defineConfig({
       workbox: {
         // Don't precache the heavy lazy 3D / ML chunks or big media; runtime-cache instead.
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
-        // Matches Rollup's automatic (not manualChunks — see the removal
-        // note above) output names for the R3F hero and transformers.js:
-        // NeuralGraphR3F-*.js now carries the actual three.js/@react-three
-        // code (its only consumer), and transformers.web-*.js /
-        // transformers-*.js cover @huggingface/transformers' own auto-split
-        // chunk naming. Re-check these patterns against a real `npm run
-        // build` output if this ever silently stops excluding them (the
-        // precache entry count/size in the build log is the tell — see
-        // docs/QA_REPORT.md's Phase C entry for the real numbers).
-        globIgnores: ["**/NeuralGraphR3F*.js", "**/transformers*.js", "**/ort*.js"],
+        // Exclude heavy lazy chunks: Three.js/R3F, transformers.js, ONNX, and spatial 3D
+        globIgnores: [
+          "**/NeuralGraphR3F*.js",
+          "**/react-three-fiber*.js",
+          "**/ProjectsSpatial3D*.js",
+          "**/transformers*.js",
+          "**/ort*.js",
+        ],
         maximumFileSizeToCacheInBytes: 2_500_000,
         // Real static files (PDFs), not SPA routes — the navigateFallback
         // otherwise substitutes the cached app-shell HTML for any

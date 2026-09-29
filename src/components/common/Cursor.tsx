@@ -22,13 +22,14 @@ const Cursor = () => {
 
   const [hovering, setHovering] = useState(false);
   const [label, setLabel] = useState("");
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(pointer: coarse)").matches;
+  });
   const variant = ICON_VARIANTS[label];
 
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) {
-      // One-time capability check on mount — intentional initial setState.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHidden(true);
       return;
     }
