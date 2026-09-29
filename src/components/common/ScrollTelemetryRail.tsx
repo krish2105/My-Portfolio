@@ -29,7 +29,7 @@ export const ScrollTelemetryRail = () => {
 
       // Determine active section based on scroll offset
       for (let i = SECTIONS.length - 1; i >= 0; i--) {
-        const el = document.getElementById(SECTIONS[i].id);
+        const el = document.getElementById(SECTIONS[i].id) || (SECTIONS[i].id === "hero" ? document.getElementById("home") : null);
         if (el) {
           const rect = el.getBoundingClientRect();
           if (rect.top <= window.innerHeight * 0.45) {
@@ -66,7 +66,7 @@ export const ScrollTelemetryRail = () => {
   }, []);
 
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
+    const el = document.getElementById(id) || (id === "hero" ? document.getElementById("home") : null);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }

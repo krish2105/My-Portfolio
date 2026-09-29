@@ -333,11 +333,11 @@ const LiveDemo = () => {
           <div className="flex flex-col items-start gap-5 rounded-2xl border border-[var(--border-strong)] bg-[var(--panel)] p-7 md:flex-row md:items-center md:justify-between md:p-8">
             <div>
               <h2 className="font-display text-2xl font-black leading-[1.1] tracking-tight text-[var(--text)] md:text-3xl">
-                Four interactive in-browser labs — <span className="text-gradient">ML models, RAG sandbox, Self-RAG guardrails, and NL→SQL.</span>
+                Five interactive in-browser labs — <span className="text-gradient">ML models, RAG sandbox, Self-RAG guardrails, NL→SQL, and architecture trade-offs.</span>
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--text-2)] md:text-base">
                 Optional and self-contained — nothing here loads until you ask for it. The sentiment model is an
-                on-device ~90 MB download; the RAG sandbox, Self-RAG gate, and NL→SQL labs are lightweight and instant.
+                on-device ~90 MB download; the RAG sandbox, Self-RAG gate, NL→SQL, and trade-off labs are lightweight and instant.
               </p>
             </div>
             <button

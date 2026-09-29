@@ -127,6 +127,8 @@ const HeroSection = () => {
 
   return (
     <section ref={ref} id="home" className="relative min-h-[100svh] w-full overflow-hidden bg-[var(--bg)] bg-grid">
+      {/* Anchor alias so both #home and #hero link targets resolve */}
+      <div id="hero" className="absolute top-0 pointer-events-none" aria-hidden="true" />
       {/* Single, calm background: the firing-neuron field */}
       <motion.div style={{ scale }} className="absolute inset-0 z-0">
         <div className="absolute inset-0 opacity-75">
@@ -279,7 +281,7 @@ const HeroSection = () => {
                 track("hero_cta_contact");
                 scrollTo("#contact", lenis);
               }}
-              className="font-semibold tracking-wide text-[var(--text-2)] underline-offset-4 transition-colors hover:text-[var(--text)] hover:underline"
+              className="inline-flex items-center py-2.5 font-semibold tracking-wide text-[var(--text-2)] underline-offset-4 transition-colors hover:text-[var(--text)] hover:underline"
             >
               Start a conversation →
             </a>

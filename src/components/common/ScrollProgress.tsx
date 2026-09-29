@@ -43,7 +43,7 @@ const ScrollProgress = () => {
       // Fixed corner FAB — offset from the physical bottom/left edge by the
       // iOS home-indicator/rounded-corner safe area, not just a flat 1.25rem/
       // 1.75rem, so it's never rendered under it.
-      className="fixed bottom-[max(1.25rem,var(--sib))] left-[max(1.25rem,var(--sil))] z-[60] grid h-11 w-11 place-items-center rounded-full border border-[var(--border)] bg-[var(--panel)]/90 text-[var(--accent)] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] backdrop-blur transition-colors hover:border-[#00FF94] md:bottom-[max(1.75rem,var(--sib))] md:left-[max(1.75rem,var(--sil))]"
+      className="fixed bottom-[max(1.25rem,var(--sib))] left-[max(1.25rem,var(--sil))] z-[60] grid h-11 w-11 place-items-center rounded-full border border-[var(--border)] bg-[var(--panel)]/90 text-[var(--accent)] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] backdrop-blur transition-colors hover:border-[#00FF94] before:absolute before:-inset-1.5 before:content-[''] md:bottom-[max(1.75rem,var(--sib))] md:left-[max(1.75rem,var(--sil))]"
     >
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 -rotate-90">
         <circle
