@@ -104,7 +104,7 @@ const institutionLogos: LogoItem[] = [
     node: (
       <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--panel-2)]/90 px-4 py-2 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-[#00FF94] hover:shadow-[0_0_18px_rgba(0,255,148,0.22)]">
         <img
-          src="/logos/spjain.png"
+          src="/logos/spjain.svg"
           alt="SP Jain School of Global Management"
           className="h-6 w-auto max-w-[90px] object-contain"
         />

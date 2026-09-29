@@ -35,7 +35,13 @@
       }
 
       .cls-8 {
-        fill: currentColor;
+        fill: #EDEDED;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .cls-8 {
+          fill: #0A0A0A;
+        }
       }
     </style>
     <linearGradient id="linear-gradient" x1="106.12" y1="45.27" x2="160.82" y2="45.27" gradientUnits="userSpaceOnUse">

@@ -1,0 +1,77 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 110" xml:space="preserve">
+<defs>
+  <clipPath id="circleClip">
+    <circle cx="45" cy="40" r="34" />
+  </clipPath>
+</defs>
+<style type="text/css">
+  .spj-text { fill: #EDEDED; color: #EDEDED; }
+  .spj-line { stroke: #EDEDED; }
+  @media (prefers-color-scheme: light) {
+    .spj-text { fill: #0A0A0A; color: #0A0A0A; }
+    .spj-line { stroke: #0A0A0A; }
+  }
+  .spj-gold { fill: #925824; }
+  .spj-dark-gold { fill: #6a3e15; }
+</style>
+<g>
+  <!-- SPJ Emblem Box -->
+  <rect x="5" y="6" width="80" height="78" rx="2" fill="#5c3412" />
+  <!-- Horizontal stripes in box -->
+  <g fill="#925824">
+    <rect x="5" y="8" width="80" height="1.8" />
+    <rect x="5" y="12" width="80" height="1.8" />
+    <rect x="5" y="16" width="80" height="1.8" />
+    <rect x="5" y="20" width="80" height="1.8" />
+    <rect x="5" y="24" width="80" height="1.8" />
+    <rect x="5" y="28" width="80" height="1.8" />
+    <rect x="5" y="32" width="80" height="1.8" />
+    <rect x="5" y="36" width="80" height="1.8" />
+    <rect x="5" y="40" width="80" height="1.8" />
+    <rect x="5" y="44" width="80" height="1.8" />
+    <rect x="5" y="48" width="80" height="1.8" />
+    <rect x="5" y="52" width="80" height="1.8" />
+    <rect x="5" y="56" width="80" height="1.8" />
+    <rect x="5" y="60" width="80" height="1.8" />
+    <rect x="5" y="64" width="80" height="1.8" />
+    <rect x="5" y="68" width="80" height="1.8" />
+    <rect x="5" y="72" width="80" height="1.8" />
+    <rect x="5" y="76" width="80" height="1.8" />
+    <rect x="5" y="80" width="80" height="1.8" />
+  </g>
+  <!-- Circle overlay with lighter stripes -->
+  <circle cx="45" cy="40" r="30" fill="#7d471b" />
+  <g clip-path="url(#circleClip)" fill="#b8783e">
+    <rect x="5" y="12" width="80" height="1.8" />
+    <rect x="5" y="16" width="80" height="1.8" />
+    <rect x="5" y="20" width="80" height="1.8" />
+    <rect x="5" y="24" width="80" height="1.8" />
+    <rect x="5" y="28" width="80" height="1.8" />
+    <rect x="5" y="32" width="80" height="1.8" />
+    <rect x="5" y="36" width="80" height="1.8" />
+    <rect x="5" y="40" width="80" height="1.8" />
+    <rect x="5" y="44" width="80" height="1.8" />
+    <rect x="5" y="48" width="80" height="1.8" />
+    <rect x="5" y="52" width="80" height="1.8" />
+    <rect x="5" y="56" width="80" height="1.8" />
+    <rect x="5" y="60" width="80" height="1.8" />
+    <rect x="5" y="64" width="80" height="1.8" />
+    <rect x="5" y="68" width="80" height="1.8" />
+  </g>
+  <!-- SPJ Letters -->
+  <text x="45" y="46" font-family="Montserrat, Arial, sans-serif" font-weight="900" font-size="28" fill="#ffffff" text-anchor="middle" letter-spacing="1">SPJ</text>
+  <!-- GLOBAL -->
+  <text x="45" y="68" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="11" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">GLOBAL</text>
+
+  <!-- Right text: S P Jain School of Global Management -->
+  <g class="spj-text">
+    <text x="96" y="25" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="700" font-size="16" letter-spacing="-0.2">S P Jain</text>
+    <text x="96" y="43" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="600" font-size="14.5" letter-spacing="-0.2">School of Global</text>
+    <text x="96" y="61" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="600" font-size="14.5" letter-spacing="-0.2">Management</text>
+    <!-- Divider -->
+    <line x1="5" y1="92" x2="235" y2="92" class="spj-line" stroke-opacity="0.3" stroke-width="0.8" />
+    <!-- Campuses -->
+    <text x="5" y="103" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-weight="600" font-size="7.5" letter-spacing="1.2">DUBAI • MUMBAI • SINGAPORE • SYDNEY</text>
+  </g>
+</g>
+</svg>

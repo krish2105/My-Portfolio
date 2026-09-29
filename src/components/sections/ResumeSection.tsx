@@ -455,7 +455,7 @@ const ResumeSection = () => {
             subtitle: mastersEntry.institution,
             date: mastersEntry.date,
             icon: GraduationCap,
-            logo: "/logos/spjain.png",
+            logo: "/logos/spjain.svg",
           },
         ]
       : []),

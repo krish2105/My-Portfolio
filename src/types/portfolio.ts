@@ -74,6 +74,11 @@ export interface JourneyItem {
   description?: string;
   logo?: string;
   logoAlt?: string;
+  location?: string;
+  roleBadge?: string;
+  skills?: string[];
+  highlights?: string[];
+  url?: string;
 }
 
 export interface RecognitionItem {
