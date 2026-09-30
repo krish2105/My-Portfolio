@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Terminal as TerminalIcon, X, Maximize2, Minimize2, CornerDownLeft } from "lucide-react";
 import { projects, capabilities, socialLinks } from "../../data/portfolio";
-import { generateTailoredResumePdf, type TargetRoleId } from "../../lib/pdfGenerator";
+import type { TargetRoleId } from "../../lib/resumeRoles";
+import { buildResumePdf } from "../../lib/resumePdfClient";
 import { soundFx } from "../../lib/soundFx";
 
 interface CommandLog {
@@ -223,14 +224,15 @@ export const CyberTerminal = () => {
           </div>
         );
 
-        generateTailoredResumePdf(targetRole).then((bytes) => {
-          const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `Krishna_Mathur_Resume_${targetRole}.pdf`;
-          a.click();
-        });
+        buildResumePdf(targetRole)
+          .then((bytes) => {
+            const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Krishna_Mathur_Resume_${targetRole}.pdf`;
+            a.click();
+          });
         break;
       }
 

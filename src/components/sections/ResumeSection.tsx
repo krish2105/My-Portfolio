@@ -60,7 +60,9 @@ const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
   </span>
 );
 
-import { type TargetRoleId, ROLE_CONFIGS, generateTailoredResumePdf } from "../../lib/pdfGenerator";
+import { type TargetRoleId, ROLE_CONFIGS } from "../../lib/resumeRoles";
+import { useNearViewport } from "../../hooks/useNearViewport";
+import { buildResumePdf } from "../../lib/resumePdfClient";
 
 /* ── Download CTA card ────────────────────────────────────────────── */
 const DownloadCard = ({
@@ -76,10 +78,15 @@ const DownloadCard = ({
   const [dynamicPdfUrl, setDynamicPdfUrl] = useState<string | null>(null);
   const [compiledRole, setCompiledRole] = useState<TargetRoleId | null>(null);
   const generating = compiledRole !== targetRole;
+  // pdf-lib (~410 KiB) and the synthesis itself only matter once a visitor actually reaches this card,
+  // so both are deferred until it is near the viewport — and run in a Web Worker, off the main thread.
+  const cardRef = useRef<HTMLDivElement>(null);
+  const nearViewport = useNearViewport(cardRef);
 
   useEffect(() => {
+    if (!nearViewport) return;
     let mounted = true;
-    generateTailoredResumePdf(targetRole)
+    buildResumePdf(targetRole)
       .then((pdfBytes) => {
         if (!mounted) return;
         const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
@@ -94,7 +101,7 @@ const DownloadCard = ({
     return () => {
       mounted = false;
     };
-  }, [targetRole]);
+  }, [targetRole, nearViewport]);
 
   const activePdfUrl = dynamicPdfUrl || socialLinks.resume;
   const canPreview = hasResume || !!dynamicPdfUrl;
@@ -124,7 +131,7 @@ const DownloadCard = ({
 
   return (
     <Rise delay={0.1}>
-      <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[var(--panel)]/60 p-8 backdrop-blur-sm md:p-10">
+      <div ref={cardRef} className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[var(--panel)]/60 p-8 backdrop-blur-sm md:p-10">
         {/* Glow background */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#00FF94]/8 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-[#00FF94]/5 blur-2xl" />

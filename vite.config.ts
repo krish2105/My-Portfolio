@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
@@ -39,6 +39,21 @@ const serveOnnxAssetsInDev = (): Plugin => ({
     });
   },
 });
+
+/**
+ * Inlines the (~1 KB) self-hosted @font-face stylesheet into index.html. As a separate <link> it was a
+ * render-blocking request that also delayed discovery of the font files it references; the woff2 preloads
+ * in <head> now start in parallel with the first paint.
+ */
+function inlineFontCss(): Plugin {
+  return {
+    name: "inline-font-css",
+    transformIndexHtml(html) {
+      const css = readFileSync(join(__dirname, "public/fonts/fonts.css"), "utf8");
+      return html.replace(/<link href="\/fonts\/fonts\.css" rel="stylesheet"\s*\/?>/, `<style>${css}</style>`);
+    },
+  };
+}
 
 export default defineConfig({
   test: {
@@ -90,8 +105,11 @@ export default defineConfig({
     serveOnnxAssetsInDev(),
     react(),
     tailwindcss(),
+    inlineFontCss(),
     VitePWA({
       registerType: "prompt",
+      // Default injects a render-blocking <script src="/registerSW.js"> into <head>.
+      injectRegister: "script-defer",
       includeAssets: ["favicon.svg", "apple-touch-icon.png"],
       manifest: {
         name: "Krishna Mathur — AI Developer, Data Analyst & GenAI Builder",
@@ -123,6 +141,9 @@ export default defineConfig({
           "**/ProjectsSpatial3D*.js",
           "**/transformers*.js",
           "**/ort*.js",
+          // On-demand résumé PDF builder + its worker (~850 KB together) — not needed to render the page.
+          "**/pdfGenerator*.js",
+          "**/resumePdf.worker*.js",
         ],
         maximumFileSizeToCacheInBytes: 2_500_000,
         // Real static files (PDFs), not SPA routes — the navigateFallback
