@@ -3,6 +3,16 @@ import type { ViewMode } from "./viewMode";
 
 const STORAGE_KEY = "portfolio_gemini_api_key";
 
+/** Google shuts Gemini models down on a schedule (1.5 and 2.0 are already gone and return 404), so the
+ * model is overridable with VITE_GEMINI_MODEL without a code change. Default per Google's deprecations
+ * page (https://ai.google.dev/gemini-api/docs/deprecations) at the time of writing. */
+export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
+
+export function getGeminiModel(): string {
+  const envModel: string | undefined = import.meta.env.VITE_GEMINI_MODEL;
+  return envModel?.trim() || DEFAULT_GEMINI_MODEL;
+}
+
 export function getGeminiApiKey(): string {
   if (typeof window === "undefined") return "";
   const envKey = (import.meta as unknown as { env?: { VITE_GEMINI_API_KEY?: string } }).env?.VITE_GEMINI_API_KEY;
@@ -65,9 +75,10 @@ export async function generateGeminiResponse(
 
   try {
     const systemPrompt = buildSystemInstruction(mode);
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(
-      key
-    )}`;
+    const model = getGeminiModel();
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+      model
+    )}:generateContent?key=${encodeURIComponent(key)}`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 9000);
@@ -97,7 +108,11 @@ export async function generateGeminiResponse(
     clearTimeout(timeoutId);
 
     if (!res.ok) {
-      console.warn("[Gemini API] Request returned non-200:", res.status);
+      console.warn(
+        `[Gemini API] ${model} returned ${res.status}${
+          res.status === 404 ? " — the model may be retired; set VITE_GEMINI_MODEL to a current one" : ""
+        }`
+      );
       return null;
     }
 
