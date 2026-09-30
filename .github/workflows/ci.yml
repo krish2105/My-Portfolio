@@ -41,10 +41,14 @@ jobs:
           done
 
       - name: Accessibility scan (axe-core)
+        # @axe-core/cli bundles a ChromeDriver pinned to one Chrome major (150), but the runner image's Chrome
+        # moves on independently (154) -> "session not created". GitHub runners ship a driver that matches
+        # their own Chrome at $CHROMEWEBDRIVER, so use that instead of the bundled one.
         run: |
-          npx axe http://localhost:4173/ --load-delay 2000 --exit
-          npx axe http://localhost:4173/work/fraudshield/ --load-delay 2000 --exit
-          npx axe http://localhost:4173/uses --load-delay 2000 --exit
+          DRIVER="$CHROMEWEBDRIVER/chromedriver"
+          npx axe http://localhost:4173/ --load-delay 2000 --exit --chromedriver-path "$DRIVER"
+          npx axe http://localhost:4173/work/fraudshield/ --load-delay 2000 --exit --chromedriver-path "$DRIVER"
+          npx axe http://localhost:4173/uses --load-delay 2000 --exit --chromedriver-path "$DRIVER"
 
       - name: Lighthouse CI (desktop — enforced)
         run: npx lhci autorun --config=lighthouserc.json
