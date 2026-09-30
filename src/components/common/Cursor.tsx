@@ -29,10 +29,8 @@ const Cursor = () => {
   const variant = ICON_VARIANTS[label];
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) {
-      setHidden(true);
-      return;
-    }
+    // Coarse pointers are already hidden via the lazy `hidden` initialiser above.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     document.documentElement.classList.add("has-custom-cursor");
 
     let lastHovered = false;
