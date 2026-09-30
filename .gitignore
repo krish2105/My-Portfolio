@@ -34,3 +34,7 @@ Gemini_Generated_Image_*.png
 .lighthouseci/
 .vercel
 
+
+# Self-hosted model weights are tracked via Git LFS (see .gitattributes). Re-include them so a
+# global `*.onnx` ignore rule (easy to have in ~/.gitignore_global) can't silently drop them.
+!public/models/**/*.onnx
