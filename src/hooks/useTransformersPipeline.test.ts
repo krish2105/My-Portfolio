@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useTransformersPipeline } from "./useTransformersPipeline";
 
-const pipelineMock = vi.fn(async (..._args: unknown[]) => async () => [{ label: "POSITIVE", score: 0.99 }]);
+const pipelineMock = vi.fn<(...args: unknown[]) => Promise<() => Promise<unknown>>>(async () => async () => [
+  { label: "POSITIVE", score: 0.99 },
+]);
 
 vi.mock("../lib/transformersEnv", () => ({
   configureLocalModels: vi.fn(async () => undefined),
