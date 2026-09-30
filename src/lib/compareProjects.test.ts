@@ -27,6 +27,12 @@ describe("parseComparisonQuery", () => {
     expect(result?.[1].id).toBe("mediflow");
   });
 
+  it("parses the '/compare X vs Y' slash form", () => {
+    const result = parseComparisonQuery("/compare FraudShield vs MediFlow", projects);
+    expect(result?.[0].id).toBe("fraudshield");
+    expect(result?.[1].id).toBe("mediflow");
+  });
+
   it("returns null when either side doesn't resolve to a real project", () => {
     expect(parseComparisonQuery("FraudShield vs a made up thing", projects)).toBeNull();
   });

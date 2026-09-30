@@ -41,9 +41,26 @@ export const findProjectByName = (query: string, projects: Project[]): Project |
   );
 };
 
-/** Parses "compare X vs Y" / "X vs Y" style questions into two resolved projects, or null if either side doesn't match. */
+/** Finds the single project a free-text question names — by its distinctive first word ("Sakan", "MediFlow")
+ * or its full name with spaces dropped ("fraud shield"). Generic/short words ("AI") never match, and a
+ * question naming more than one project returns null rather than guessing. */
+export const findMentionedProject = (query: string, projects: Project[]): Project | null => {
+  const words = new Set(query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  const squeezed = query.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const hits = projects.filter((p) => {
+    const first = p.shortTitle.toLowerCase().split(/[^a-z0-9]+/)[0];
+    if (first.length >= 4 && words.has(first)) return true;
+    return [p.id, p.shortTitle].some((n) => {
+      const name = n.toLowerCase().replace(/[^a-z0-9]/g, "");
+      return name.length >= 6 && squeezed.includes(name);
+    });
+  });
+  return hits.length === 1 ? hits[0] : null;
+};
+
+/** Parses "compare X vs Y" / "/compare X vs Y" / "X vs Y" style questions into two resolved projects, or null if either side doesn't match. */
 export const parseComparisonQuery = (query: string, projects: Project[]): [Project, Project] | null => {
-  const m = query.match(/(?:compare\s+)?(.+?)\s+(?:vs\.?|versus|and|with)\s+(.+)/i);
+  const m = query.replace(/^\s*\/?compare\s+/i, "").match(/(.+?)\s+(?:vs\.?|versus|and|with)\s+(.+)/i);
   if (!m) return null;
   const a = findProjectByName(m[1], projects);
   const b = findProjectByName(m[2], projects);

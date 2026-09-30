@@ -70,7 +70,7 @@ export const ASSISTANT_INTENTS: AssistantIntent[] = [
   },
   {
     id: "genai",
-    patterns: ["genai", "generative", "llm", "gpt", "transformer", "nlp", "language model", "chatbot"],
+    patterns: ["genai", "generative", "llm", "gpt", "chatgpt", "transformer", "nlp", "language model", "chatbot"],
     answer:
       "GenAI/agentic work includes FinCopilot (agentic RAG over real SEC filings with a Self-RAG faithfulness gate that refuses to answer without evidence), Sakan AI (a 5-stage LangGraph pipeline with live agent-reasoning traces) and ComplianceAgent (agentic case investigation with mandatory human sign-off). He focuses on safe, cited, reviewable AI rather than black-box automation.",
     actions: [{ label: "See GenAI projects", type: "scroll", target: "projects" }],

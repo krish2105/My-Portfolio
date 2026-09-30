@@ -26,7 +26,11 @@ import {
 /** A match is only trusted if it clears this cosine-similarity bar; otherwise fall back to keyword matching. */
 const SEMANTIC_THRESHOLD = 0.35;
 
-const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
+const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+
+/** True when `pattern` starts a word in the normalised query. Patterns are deliberately prefix-friendly
+ * ("skill" → skills, "opportunit" → opportunities) but must not fire mid-word ("cv" in "zxcv", "work" in "network"). */
+const startsWord = (q: string, pattern: string) => ` ${q}`.includes(` ${pattern}`);
 
 /** Arabic script range — used to route a query to the small, honest Arabic
  * intent subset instead of the (English-only) keyword patterns. */
@@ -38,7 +42,7 @@ const match = (query: string) => {
   let best: { score: number; intent: (typeof ASSISTANT_INTENTS)[number] } | null = null;
   for (const intent of ASSISTANT_INTENTS) {
     let score = 0;
-    for (const p of intent.patterns) if (q.includes(p)) score += p.length;
+    for (const p of intent.patterns) if (startsWord(q, p)) score += p.length;
     if (score > 0 && (!best || score > best.score)) best = { score, intent };
   }
   return best?.intent ?? null;
@@ -268,10 +272,10 @@ const Assistant = () => {
               <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                 <button
                   onClick={() => setShowKeyPrompt((prev) => !prev)}
-                  aria-label={geminiActive ? "Gemini 1.5 Flash Connected" : "Configure Gemini API Key"}
+                  aria-label={geminiActive ? "Gemini Connected" : "Configure Gemini API Key"}
                   title={
                     geminiActive
-                      ? "Gemini 1.5 Flash Connected — click to manage key"
+                      ? "Gemini Connected — click to manage key"
                       : "Configure Gemini API Key for live generative responses"
                   }
                   className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
@@ -336,7 +340,7 @@ const Assistant = () => {
                   <div className="mb-1.5 flex items-center justify-between">
                     <span className="flex items-center gap-1.5 font-semibold text-[var(--text)]">
                       <Sparkles size={13} className="text-[var(--accent)]" />
-                      Gemini 1.5 Flash Live Integration
+                      Gemini Live Integration
                     </span>
                     <button
                       onClick={() => setShowKeyPrompt(false)}
@@ -408,7 +412,7 @@ const Assistant = () => {
                     )}
                     {m.gemini && (
                       <p className="mt-1.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent)]">
-                        <Sparkles size={10} aria-hidden /> Powered by Google Gemini 1.5 Flash
+                        <Sparkles size={10} aria-hidden /> Powered by Google Gemini
                       </p>
                     )}
                     {m.semantic && (

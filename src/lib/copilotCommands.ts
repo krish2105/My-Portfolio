@@ -1,7 +1,7 @@
 import type { AssistantAction } from "../data/assistant";
 import type { ViewMode } from "./viewMode";
 import { projects, capabilities } from "../data/portfolio";
-import { compareProjects, parseComparisonQuery, findProjectByName } from "./compareProjects";
+import { compareProjects, parseComparisonQuery, findProjectByName, findMentionedProject } from "./compareProjects";
 import { bestProjectForRole } from "./bestProjectForRole";
 import { buildInterviewQuestions } from "./interviewQuestions";
 import { matchJobDescription } from "./jdMatcher";
@@ -59,7 +59,7 @@ export const specialCommandReply = (query: string): Msg | null => {
     }
   }
 
-  if (/(?:why hire|skills?|domains?|fit|radar|competenc)/i.test(q)) {
+  if (/\b(?:why hire|skills?|domains?|fit|radar|competenc\w*)\b/i.test(q)) {
     return {
       role: "bot",
       text: "Krishna's core technical competencies span 5 key AI domains: Agentic RAG, Systems & Python, MLOps, Data & SQL, and Autonomous LangGraph Pipelines.",
@@ -150,6 +150,20 @@ export const specialCommandReply = (query: string): Msg | null => {
         result.bestProject ? `\n\nStrongest project to point to: ${result.bestProject.shortTitle} — ${result.bestProject.valueProp ?? result.bestProject.description}` : ""
       }`,
       actions: result.bestProject ? [{ label: "Open case study", type: "project", target: result.bestProject.id }] : undefined,
+    };
+  }
+
+  // A question that names exactly one project ("tell me about MediFlow") gets that project's
+  // real summary instead of falling through to the generic About answer.
+  const mentioned = findMentionedProject(q, projects);
+  if (mentioned) {
+    const metric = mentioned.metrics?.[0];
+    return {
+      role: "bot",
+      text: `${mentioned.shortTitle} — ${mentioned.valueProp ?? mentioned.description}${
+        metric ? `\n\nKey metric — ${metric.label}: ${metric.value}` : ""
+      }\n\nStack: ${mentioned.technologies.slice(0, 6).join(", ")}`,
+      actions: [{ label: "Open case study", type: "project", target: mentioned.id }],
     };
   }
 
