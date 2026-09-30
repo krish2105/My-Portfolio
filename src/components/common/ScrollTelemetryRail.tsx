@@ -1,121 +1,104 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { motion, useScroll } from "motion/react";
 import { Activity } from "lucide-react";
+import { NAV_ITEMS, SECTION_IDS } from "../../data/nav";
+import { useActiveSection } from "../../hooks/useActiveSection";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { scrollTo, useSmoothScroll } from "../../lib/SmoothScroll";
 
-const SECTIONS = [
-  { id: "hero", label: "01" },
-  { id: "about", label: "02" },
-  { id: "journey", label: "03" },
-  { id: "skills", label: "04" },
-  { id: "projects", label: "05" },
-  { id: "trust", label: "06" },
-  { id: "demo", label: "07" },
-  { id: "resume", label: "08" },
-  { id: "contact", label: "09" },
-];
-
+/**
+ * Desktop-only scroll rail: progress bar, live FPS readout, current-section index and jump dots.
+ *
+ * Kept deliberately off the React render path — the progress bar is a transform-only motion value,
+ * the FPS readout writes straight to the DOM once a second, and the active section comes from an
+ * IntersectionObserver. (The previous version ran layout reads + setState on every scroll event
+ * on every device, and animated `height`, which profiled as the single biggest JS cost in a scroll.)
+ * Section numbers follow NAV_ITEMS so they match the "(0N)" kickers on the page itself.
+ */
 export const ScrollTelemetryRail = () => {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState("01");
-  const [fps, setFps] = useState(60);
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
+  return isDesktop ? <Rail /> : null;
+};
 
-  // Monitor scroll progress and active section
+const Rail = () => {
+  const { lenis } = useSmoothScroll();
+  const { scrollYProgress } = useScroll();
+  const activeId = useActiveSection(SECTION_IDS);
+  const activeIndex = NAV_ITEMS.findIndex((n) => n.id === activeId);
+  const activeLabel = activeIndex >= 0 ? String(activeIndex + 1).padStart(2, "0") : "01";
+  const fpsRef = useRef<HTMLSpanElement>(null);
+
+  // Real-time FPS monitor — counts rAF ticks and updates the text node directly (no re-render).
   useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalScroll > 0) {
-        const p = Math.min(100, Math.max(0, (window.scrollY / totalScroll) * 100));
-        setScrollProgress(p);
-      }
-
-      // Determine active section based on scroll offset
-      for (let i = SECTIONS.length - 1; i >= 0; i--) {
-        const el = document.getElementById(SECTIONS[i].id) || (SECTIONS[i].id === "hero" ? document.getElementById("home") : null);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= window.innerHeight * 0.45) {
-            setActiveSection(SECTIONS[i].label);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Real-time FPS monitor (only on desktop where rail is visible)
-  useEffect(() => {
-    if (typeof window === "undefined" || window.innerWidth < 1280) return;
-
-    let frameCount = 0;
-    let lastTime = performance.now();
-    let animId: number;
-
+    let frames = 0;
+    let last = performance.now();
+    let raf = 0;
     const measure = (now: number) => {
-      frameCount++;
-      if (now - lastTime >= 1000) {
-        setFps(Math.min(120, Math.round((frameCount * 1000) / (now - lastTime))));
-        frameCount = 0;
-        lastTime = now;
+      frames++;
+      if (now - last >= 1000) {
+        if (fpsRef.current) fpsRef.current.textContent = String(Math.min(120, Math.round((frames * 1000) / (now - last))));
+        frames = 0;
+        last = now;
       }
-      animId = requestAnimationFrame(measure);
+      raf = requestAnimationFrame(measure);
     };
-
-    animId = requestAnimationFrame(measure);
-    return () => cancelAnimationFrame(animId);
+    raf = requestAnimationFrame(measure);
+    return () => cancelAnimationFrame(raf);
   }, []);
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id) || (id === "hero" ? document.getElementById("home") : null);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <nav
       aria-label="Scroll progress and section index"
       className="fixed right-5 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-center gap-3 select-none"
     >
-      {/* Telemetry pill */}
-      <div className="rounded-full border border-[var(--border)] bg-[var(--panel)]/80 backdrop-blur-md px-2 py-1 font-mono text-[10px] text-[var(--text-3)] flex items-center gap-1 shadow-lg">
-        <Activity size={10} className="text-[var(--accent)] animate-pulse" />
-        <span className="font-semibold text-[var(--accent)]">{fps}</span>
-        <span className="opacity-50">FPS</span>
+      {/* Telemetry pill — opaque panel instead of backdrop-blur: a blur over scrolling content re-rasterises every frame. */}
+      <div className="rounded-full border border-[var(--border)] bg-[var(--panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-3)] flex items-center gap-1 shadow-lg">
+        <Activity size={10} className="text-[var(--accent)]" />
+        <span ref={fpsRef} className="font-semibold text-[var(--accent)]">
+          60
+        </span>
+        <span>FPS</span>
       </div>
 
       {/* Progress track */}
       <div className="relative w-1.5 h-36 rounded-full bg-[var(--border)] overflow-hidden my-1">
-        <div
-          className="w-full bg-[var(--accent)] rounded-full transition-all duration-150"
-          style={{ height: `${scrollProgress}%` }}
+        <motion.div
+          className="h-full w-full origin-top rounded-full bg-[var(--accent)]"
+          style={{ scaleY: scrollYProgress }}
         />
       </div>
 
       {/* Current section index */}
       <div className="flex flex-col items-center gap-1 font-mono text-[10px]">
-        <span className="font-bold text-[var(--accent)]">({activeSection})</span>
-        <span className="text-[9px] text-[var(--text-3)] opacity-60">/ 09</span>
+        <span className="font-bold text-[var(--accent)]">({activeLabel})</span>
+        <span className="text-[9px] text-[var(--text-2)]">/ {String(NAV_ITEMS.length).padStart(2, "0")}</span>
       </div>
 
-      {/* Quick jump dots */}
-      <div className="flex flex-col gap-1.5 mt-1">
-        {SECTIONS.map((sec) => (
-          <button
-            key={sec.id}
-            type="button"
-            onClick={() => scrollTo(sec.id)}
-            title={`Jump to section ${sec.label}`}
-            aria-label={`Jump to section ${sec.label}`}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              activeSection === sec.label
-                ? "w-4 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
-                : "w-1.5 bg-[var(--border-strong)] hover:bg-[var(--text-3)]"
-            }`}
-          />
-        ))}
+      {/* Quick jump dots — each is a 24×24 hit target (WCAG 2.2 target size) drawing a small dot inside. */}
+      <div className="flex flex-col items-center mt-0.5">
+        {NAV_ITEMS.map((sec, i) => {
+          const label = String(i + 1).padStart(2, "0");
+          const active = activeLabel === label;
+          return (
+            <button
+              key={sec.id}
+              type="button"
+              onClick={() => scrollTo(`#${sec.id}`, lenis)}
+              title={`Jump to ${sec.label}`}
+              aria-label={`Jump to section ${label}: ${sec.label}`}
+              className="group grid h-6 w-6 place-items-center rounded-full focus-visible-ring"
+            >
+              <span
+                aria-hidden
+                className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ${
+                  active
+                    ? "w-4 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
+                    : "w-1.5 bg-[var(--border-strong)] group-hover:bg-[var(--text-3)]"
+                }`}
+              />
+            </button>
+          );
+        })}
       </div>
     </nav>
   );

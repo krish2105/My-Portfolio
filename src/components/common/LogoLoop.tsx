@@ -159,7 +159,16 @@ const useAnimationLoop = (
       };
     }
 
+    // The loop only needs to run while the marquee is on (or just about on) screen — it used to tick
+    // forever, including while scrolled far away from it.
+    let visible = true;
+
     const animate = (timestamp: number) => {
+      if (!visible) {
+        rafRef.current = null;
+        lastTimestampRef.current = null;
+        return;
+      }
       if (lastTimestampRef.current === null) {
         lastTimestampRef.current = timestamp;
       }
@@ -188,7 +197,20 @@ const useAnimationLoop = (
 
     rafRef.current = requestAnimationFrame(animate);
 
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && rafRef.current === null) {
+          lastTimestampRef.current = null;
+          rafRef.current = requestAnimationFrame(animate);
+        }
+      },
+      { rootMargin: '120px' }
+    );
+    io.observe(track);
+
     return () => {
+      io.disconnect();
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;

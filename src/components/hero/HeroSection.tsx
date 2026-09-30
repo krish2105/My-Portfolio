@@ -1,6 +1,7 @@
 import { memo, useEffect, useRef, useState, type RefObject } from "react";
 import {
   motion,
+  useInView,
   useScroll,
   useTransform,
   useVelocity,
@@ -18,6 +19,8 @@ import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useSound } from "../../lib/sound";
 
+// Entrance delays are kept short: the hero is the LCP content, and with the intro now brief (or skipped on
+// return visits) long stagger delays are no longer hidden behind the overlay.
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Base weight for the kinetic name (rest state), clamped between these. */
@@ -34,7 +37,10 @@ const WEIGHT_REST = 780;
 const useKineticWeight = (containerRef: RefObject<HTMLElement | null>) => {
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
   const fine = useMediaQuery("(pointer: fine)");
-  const active = !reduced && fine;
+  // Only drive the weight while the hero is actually on screen. Bound to scroll velocity, this used to
+  // restyle + re-lay-out the giant variable-font name on every frame of a scroll anywhere on the page.
+  const inView = useInView(containerRef);
+  const active = !reduced && fine && inView;
 
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
@@ -45,18 +51,18 @@ const useKineticWeight = (containerRef: RefObject<HTMLElement | null>) => {
     const el = containerRef.current;
     if (!el) return;
 
-    // Cache the rect, refreshed on resize/scroll only — avoids a forced
-    // synchronous layout read on every pointermove (2026-07-08 perf audit).
-    let rect = el.getBoundingClientRect();
-    const updateRect = () => {
-      rect = el.getBoundingClientRect();
+    // Rect cache: invalidated (not re-measured) on resize/scroll and re-read lazily on the next pointer
+    // move, so scrolling never triggers a synchronous layout read.
+    let rect: DOMRect | null = null;
+    const invalidateRect = () => {
+      rect = null;
     };
-    updateRect();
-    const ro = new ResizeObserver(updateRect);
+    const ro = new ResizeObserver(invalidateRect);
     ro.observe(el);
-    window.addEventListener("scroll", updateRect, { passive: true });
+    window.addEventListener("scroll", invalidateRect, { passive: true });
 
     const onMove = (e: PointerEvent) => {
+      rect ??= el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
@@ -66,7 +72,7 @@ const useKineticWeight = (containerRef: RefObject<HTMLElement | null>) => {
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => {
       ro.disconnect();
-      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("scroll", invalidateRect);
       window.removeEventListener("pointermove", onMove);
     };
   }, [active, containerRef, proximity]);
@@ -172,7 +178,7 @@ const HeroSection = () => {
             <motion.p
               initial={{ y: "120%" }}
               animate={{ y: 0 }}
-              transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
+              transition={{ duration: 0.7, ease: EASE, delay: 0.05 }}
               className="kicker"
             >
               Master of AI in Business · {profile.location}
@@ -182,7 +188,7 @@ const HeroSection = () => {
           <motion.h1
             ref={nameRef}
             style={{ fontWeight: nameWeight }}
-            className="font-kinetic leading-[0.85] tracking-tighter text-[clamp(3rem,9vw,8.5rem)]"
+            className="name-glow font-kinetic leading-[0.85] tracking-tighter text-[clamp(3rem,9vw,8.5rem)]"
           >
             <span className="block overflow-hidden">
               {letters.map((l, idx) => (
@@ -190,7 +196,7 @@ const HeroSection = () => {
                   key={idx}
                   initial={{ y: "110%" }}
                   animate={{ y: 0 }}
-                  transition={{ duration: 0.9, ease: EASE, delay: 0.25 + idx * 0.04 }}
+                  transition={{ duration: 0.9, ease: EASE, delay: 0.1 + idx * 0.03 }}
                   className="name-energy inline-block"
                 >
                   {l}
@@ -203,7 +209,7 @@ const HeroSection = () => {
                   key={idx}
                   initial={{ y: "110%" }}
                   animate={{ y: 0 }}
-                  transition={{ duration: 0.9, ease: EASE, delay: 0.45 + idx * 0.04 }}
+                  transition={{ duration: 0.9, ease: EASE, delay: 0.2 + idx * 0.03 }}
                   className="name-outline-energy inline-block"
                 >
                   {l}
@@ -215,7 +221,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-7 flex flex-col gap-2"
           >
             <p className="font-display text-xl font-bold tracking-tight md:text-2xl">
@@ -232,7 +238,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-8"
           >
             <HeroMetrics />
@@ -241,7 +247,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.05 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
             className="mt-9 flex flex-wrap items-center gap-5"
           >
             <MagneticButton>
@@ -289,7 +295,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
             className="mt-6"
           >
             <SocialLinks />
@@ -300,7 +306,7 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: EASE, delay: 0.5 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
           className="flex justify-center lg:justify-end"
         >
           <ProfileCard

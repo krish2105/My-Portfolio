@@ -33,24 +33,27 @@ const MagneticButton = ({ children, className = "" }: MagneticButtonProps) => {
     const el = ref.current;
     if (!el) return;
 
-    const updateRect = () => {
-      rectRef.current = el.getBoundingClientRect();
+    // Invalidate (don't re-measure) on resize/scroll — this wraps 7 CTAs, so measuring here meant 7 layout
+    // reads per scroll event. handleMouse() re-reads the rect once, lazily, on the next hover.
+    const invalidateRect = () => {
+      rectRef.current = null;
     };
-    updateRect();
-
-    const ro = new ResizeObserver(updateRect);
+    const ro = new ResizeObserver(invalidateRect);
     ro.observe(el);
-    window.addEventListener("scroll", updateRect, { passive: true });
+    window.addEventListener("scroll", invalidateRect, { passive: true });
     return () => {
       ro.disconnect();
-      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("scroll", invalidateRect);
     };
   }, [isReducedMotion]);
 
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isReducedMotion || !rectRef.current) return;
+    if (isReducedMotion) return;
+    const el = ref.current;
+    if (!el) return;
+    const rect = rectRef.current ?? (rectRef.current = el.getBoundingClientRect());
     const { clientX, clientY } = e;
-    const { height, width, left, top } = rectRef.current;
+    const { height, width, left, top } = rect;
     x.set((clientX - (left + width / 2)) * 0.2);
     y.set((clientY - (top + height / 2)) * 0.2);
   };

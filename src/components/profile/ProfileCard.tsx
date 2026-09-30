@@ -150,7 +150,11 @@ const ProfileCardComponent = ({
 
       const stillFar = Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05;
 
-      if (stillFar || document.hasFocus()) {
+      // Only keep the loop alive while the card is still easing toward its target. It used to also stay
+      // alive whenever the tab had focus, writing 9 CSS variables + reading layout on *every* frame for
+      // the whole visit — even with the card scrolled away — which invalidated styles page-wide.
+      // setTarget()/beginInitial() restart it on the next pointer or device-tilt event.
+      if (stillFar) {
         rafId = requestAnimationFrame(step);
       } else {
         running = false;
@@ -202,7 +206,8 @@ const ProfileCardComponent = ({
   }, [enableTilt]);
 
   const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
-    const rect = rectRef.current ?? el.getBoundingClientRect();
+    // Re-measured lazily after a scroll/resize invalidated it, so a scroll never triggers a layout read itself.
+    const rect = rectRef.current ?? (rectRef.current = el.getBoundingClientRect());
     return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
   };
 
@@ -287,13 +292,14 @@ const ProfileCardComponent = ({
     const pointerLeaveHandler = handlePointerLeave;
     const deviceOrientationHandler = handleDeviceOrientation;
 
-    const updateRect = () => {
-      rectRef.current = shell.getBoundingClientRect();
+    // Invalidate (don't re-measure) on scroll/resize: measuring here forced a synchronous layout on
+    // every scroll event. The next pointer event re-reads the rect once via getOffsets().
+    const invalidateRect = () => {
+      rectRef.current = null;
     };
-    updateRect();
-    const ro = new ResizeObserver(updateRect);
+    const ro = new ResizeObserver(invalidateRect);
     ro.observe(shell);
-    window.addEventListener("scroll", updateRect, { passive: true });
+    window.addEventListener("scroll", invalidateRect, { passive: true });
 
     shell.addEventListener("pointerenter", pointerEnterHandler, { passive: true });
     shell.addEventListener("pointermove", pointerMoveHandler, { passive: true });
@@ -325,7 +331,7 @@ const ProfileCardComponent = ({
 
     return () => {
       ro.disconnect();
-      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("scroll", invalidateRect);
       shell.removeEventListener("pointerenter", pointerEnterHandler);
       shell.removeEventListener("pointermove", pointerMoveHandler);
       shell.removeEventListener("pointerleave", pointerLeaveHandler);
@@ -405,7 +411,7 @@ const ProfileCardComponent = ({
                     onClick={handleContactClick}
                     style={{ pointerEvents: "auto" }}
                     type="button"
-                    aria-label={`Contact ${name || "user"}`}
+                    aria-label={`${contactText} — ${name || "user"}`}
                   >
                     {contactText}
                   </button>

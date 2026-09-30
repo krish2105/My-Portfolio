@@ -13,6 +13,7 @@ import Assistant from "./components/assistant/Assistant";
 import CyberTerminal from "./components/common/CyberTerminal";
 import ScrollTelemetryRail from "./components/common/ScrollTelemetryRail";
 import { useCommandPalette } from "./hooks/useCommandPalette";
+import { useOffscreenAnimationPause } from "./hooks/useOffscreenAnimationPause";
 import Preloader from "./components/common/Preloader";
 import SectionSkeleton from "./components/common/SectionSkeleton";
 import Navbar from "./components/layout/Navbar";
@@ -47,6 +48,7 @@ const App = () => {
   const palette = useCommandPalette();
   const [usesOpen, setUsesOpen] = useState(false);
   const [partyActive, setPartyActive] = useState(false);
+  useOffscreenAnimationPause();
 
   const triggerEasterEgg = () => {
     setPartyActive(true);

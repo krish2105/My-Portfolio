@@ -57,6 +57,14 @@
   --card-opacity: 1;
 }
 
+/* Continuous masked/blended shimmer repaints the card every frame — only run it while interacting. */
+.pc-card-wrapper:hover .pc-card,
+.pc-card-wrapper.active .pc-card,
+.pc-card-wrapper:hover .pc-shine,
+.pc-card-wrapper.active .pc-shine {
+  animation-play-state: running;
+}
+
 .pc-card {
   height: 80svh;
   max-height: 540px;
@@ -66,6 +74,7 @@
   position: relative;
   background-blend-mode: color-dodge, normal, normal, normal;
   animation: glow-bg 12s linear infinite;
+  animation-play-state: paused; /* shimmer runs only while the card is hovered/active — see below */
   box-shadow: rgba(0, 0, 0, 0.8) calc((var(--pointer-from-left) * 10px) - 3px)
     calc((var(--pointer-from-top) * 20px) - 6px) 20px -5px;
   transition: transform 1s ease;
@@ -114,7 +123,7 @@
   transition: filter 0.8s ease;
   filter: brightness(0.66) contrast(1.33) saturate(0.33) opacity(0.5);
   animation: holo-bg 18s linear infinite;
-  animation-play-state: running;
+  animation-play-state: paused;
   mix-blend-mode: color-dodge;
 }
 

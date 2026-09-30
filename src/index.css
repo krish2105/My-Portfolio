@@ -173,8 +173,16 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: energy-flow 5s linear infinite, energy-flicker 3.5s ease-in-out infinite;
-  will-change: background-position, filter;
+  /* The gradient flows per letter; the glow flicker lives on the parent (.name-glow) so it is ONE
+     filter layer instead of one per letter (20 animated blur-60px drop-shadows, each clipped by the
+     word's overflow mask into a hard-edged rectangle). */
+  animation: energy-flow 5s linear infinite;
+}
+
+/* One flickering glow for the whole name block. */
+.name-glow {
+  animation: energy-flicker 3.5s ease-in-out infinite;
+  will-change: filter;
 }
 
 @keyframes energy-flow {
@@ -199,8 +207,6 @@ body {
 .name-outline-energy {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--accent);
-  animation: energy-flicker 3.5s ease-in-out infinite;
-  will-change: filter;
 }
 
 .kicker {
@@ -223,7 +229,8 @@ body {
   background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%);
 }
 
-/* Slow-drifting accent aurora behind the hero — GPU-cheap (transform/opacity only).
+/* Slow-drifting accent aurora behind the hero — GPU-cheap (transform/opacity only; no blur filter —
+   the radial gradient is already feathered, and a filter re-blurred each full-size layer every frame).
    Uses the theme's own accent tokens via color-mix so it auto-adapts (and stays
    subtle) in light mode, rather than a hardcoded neon-on-dark rgba value. */
 .aurora {
@@ -233,7 +240,6 @@ body {
     color-mix(in srgb, var(--accent-dim) 8%, transparent) 55%,
     transparent 75%
   );
-  filter: blur(40px);
   animation: aurora-drift 22s ease-in-out infinite;
   will-change: transform, opacity;
 }
@@ -241,19 +247,16 @@ body {
   /* A colored blur reads as a glow on dark backgrounds but as a smudge on
      light ones — keep it much more restrained in "Lab light". */
   opacity: 0.35;
-  filter: blur(50px);
 }
 .aurora-layer-2 {
   animation-duration: 17s;
   animation-delay: -6s;
   opacity: 0.6;
-  filter: blur(32px);
 }
 .aurora-layer-3 {
   animation-duration: 27s;
   animation-delay: -14s;
   opacity: 0.45;
-  filter: blur(48px);
 }
 @keyframes aurora-drift {
   0%,
@@ -269,6 +272,15 @@ body {
     transform: translate3d(-4%, 8%, 0) scale(1.1);
     opacity: 0.8;
   }
+}
+
+/* Sections scrolled out of view stop ticking their CSS animations (see useOffscreenAnimationPause).
+   Off-screen animations otherwise keep restyling every frame — the hero name glow, aurora blobs,
+   profile-card shine and pulse dots alone forced ~21k element restyles during a short scroll. */
+#main-content > [data-inview="false"] *,
+#main-content > [data-inview="false"] *::before,
+#main-content > [data-inview="false"] *::after {
+  animation-play-state: paused !important;
 }
 
 /* Film grain overlay — sits above everything for texture */

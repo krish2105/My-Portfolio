@@ -41,9 +41,13 @@ const NameNeurons = () => {
     const nodes: Node[] = [];
     const pulses: Pulse[] = [];
     const pointer = { x: -9999, y: -9999, active: false };
-    // Cached canvas rect, refreshed only on resize — avoids a forced
-    // synchronous layout read on every pointermove (2026-07-08 perf audit).
+    const BUCKETS = 8;
+    const buckets: number[][] = Array.from({ length: BUCKETS }, () => []);
+    // Canvas rect is read at most once per *visible* frame (and only while the pointer is over the
+    // page) — never inside scroll/pointermove handlers, which forced a layout on every event.
     let canvasRect: DOMRect = canvas.getBoundingClientRect();
+    let visible = true;
+    let lastPointerEvent: { x: number; y: number } | null = null;
 
     const resize = () => {
       const parent = canvas.parentElement;
@@ -78,18 +82,15 @@ const NameNeurons = () => {
       seed();
     };
     const onMove = (e: PointerEvent) => {
-      pointer.x = e.clientX - canvasRect.left;
-      pointer.y = e.clientY - canvasRect.top;
+      lastPointerEvent = { x: e.clientX, y: e.clientY };
       pointer.active = true;
     };
-    const onLeave = () => (pointer.active = false);
-
-    const onScroll = () => {
-      canvasRect = canvas.getBoundingClientRect();
+    const onLeave = () => {
+      pointer.active = false;
+      lastPointerEvent = null;
     };
 
     window.addEventListener("resize", onResize, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerleave", onLeave, { passive: true });
 
@@ -97,10 +98,17 @@ const NameNeurons = () => {
     let lastFire = 0;
 
     const tick = (time: number) => {
-      // Pause drawing if page is hidden
-      if (document.hidden) {
-        raf = requestAnimationFrame(tick);
+      // Skip drawing entirely when the tab is hidden or the hero is scrolled out of view — the
+      // 120-node O(n²) field was previously simulated and painted on every frame of the whole page.
+      if (document.hidden || !visible) {
+        raf = 0;
         return;
+      }
+
+      if (lastPointerEvent) {
+        canvasRect = canvas.getBoundingClientRect();
+        pointer.x = lastPointerEvent.x - canvasRect.left;
+        pointer.y = lastPointerEvent.y - canvasRect.top;
       }
 
       ctx.clearRect(0, 0, w, h);
@@ -124,24 +132,34 @@ const NameNeurons = () => {
         }
       }
 
-      // draw connections + collect candidate links for firing
+      // draw connections + collect candidate links for firing. Links are bucketed by opacity and each
+      // bucket is stroked once (≈8 strokes/frame instead of one per link — `stroke()` dominated the profile).
       const links: [number, number][] = [];
+      const linkSq = LINK_DIST * LINK_DIST;
+      for (let b = 0; b < BUCKETS; b++) buckets[b].length = 0;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < LINK_DIST) {
-            const o = (1 - dist / LINK_DIST) * 0.35;
-            ctx.strokeStyle = `rgba(${ACCENT},${o})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.stroke();
+          const d2 = dx * dx + dy * dy;
+          if (d2 < linkSq) {
+            const closeness = 1 - Math.sqrt(d2) / LINK_DIST; // 0..1
+            buckets[Math.min(BUCKETS - 1, Math.floor(closeness * BUCKETS))].push(i, j);
             links.push([i, j]);
           }
         }
+      }
+      ctx.lineWidth = 1;
+      for (let b = 0; b < BUCKETS; b++) {
+        const pairs = buckets[b];
+        if (!pairs.length) continue;
+        ctx.strokeStyle = `rgba(${ACCENT},${(((b + 0.5) / BUCKETS) * 0.35).toFixed(3)})`;
+        ctx.beginPath();
+        for (let k = 0; k < pairs.length; k += 2) {
+          ctx.moveTo(nodes[pairs[k]].x, nodes[pairs[k]].y);
+          ctx.lineTo(nodes[pairs[k + 1]].x, nodes[pairs[k + 1]].y);
+        }
+        ctx.stroke();
       }
 
       // draw nodes using two-pass concentric circles (zero GPU offscreen buffer overhead)
@@ -208,12 +226,28 @@ const NameNeurons = () => {
 
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) start();
+      },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
+    const onVisibility = () => {
+      if (!document.hidden) start();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    start();
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
     };
