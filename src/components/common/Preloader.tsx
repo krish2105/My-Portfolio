@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { markIntroPlayed, peekShouldPlayIntro } from "../../lib/intro";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%*<>?/\\|";
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -7,7 +8,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 /**
  * Resolves once the critical hero assets are actually ready to paint: the
  * self-hosted fonts and the hero avatar image. Capped by a safety timeout so
- * a slow/broken asset never hangs the preloader indefinitely.
+ * a slow/broken asset never hangs the preloader — the whole intro is meant to stay under ~700ms.
  */
 const waitForCriticalAssets = (): Promise<void> => {
   const fontsReady = document.fonts?.ready?.catch(() => undefined) ?? Promise.resolve();
@@ -17,7 +18,7 @@ const waitForCriticalAssets = (): Promise<void> => {
     img.onerror = () => resolve();
     img.src = "/avatar.webp";
   });
-  const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2600));
+  const timeout = new Promise<void>((resolve) => setTimeout(resolve, 250));
   return Promise.race([Promise.all([fontsReady, avatarReady]).then(() => undefined), timeout]);
 };
 
@@ -75,6 +76,14 @@ const DecryptedText = ({
   return <span className={className}>{chars.join("")}</span>;
 };
 
+const getSessionStorage = (): Storage | null => {
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null; // blocked — the intro helpers cope with null
+  }
+};
+
 /**
  * Full-screen entry sequence: a counter climbs toward 100 while the name
  * decrypts, but only actually REACHES 100 once the critical hero assets
@@ -83,18 +92,24 @@ const DecryptedText = ({
  * the hero. Skipped for reduced motion.
  */
 const Preloader = ({ onDone }: { onDone: () => void }) => {
+  // Decided during the FIRST render (read-only), so a repeat visit never mounts — or flashes — the overlay.
+  const [playIntro] = useState(() =>
+    peekShouldPlayIntro({
+      reducedMotion: typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      storage: typeof window !== "undefined" ? getSessionStorage() : null,
+    })
+  );
   const [count, setCount] = useState(0);
-  const [exit, setExit] = useState(false);
+  const [exit, setExit] = useState(!playIntro);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      // No intro animation — reveal the site immediately and unmount the panel.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setExit(true);
+    if (!playIntro) {
+      // Reduced motion, or the intro already played this session: reveal the site immediately.
       onDone();
       return;
     }
+    markIntroPlayed(getSessionStorage());
 
     // Small initial pause so the decrypt animation has a frame to mount
     const initTimer = setTimeout(() => setStarted(true), 50);
@@ -102,20 +117,19 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
     let n = 0;
     let assetsReady = false;
     const id = setInterval(() => {
-      // Ramp climbs to 92% on its own (keeps the decrypt sequence feeling
-      // alive even on a fast connection), then holds there until the real
-      // asset-readiness signal arrives, at which point it's let through to 100.
+      // Ramp climbs to 92% on its own, then holds there until the real asset-readiness signal arrives
+      // (capped at 250ms by waitForCriticalAssets), at which point it's let through to 100.
       const ceiling = assetsReady ? 100 : 92;
       if (n < ceiling) {
-        n = Math.min(ceiling, n + Math.max(1, Math.round((ceiling - n) / 5)));
+        n = Math.min(ceiling, n + Math.max(1, Math.round((ceiling - n) / 3)));
         setCount(n);
       }
       if (n >= 100) {
         clearInterval(id);
-        setTimeout(() => setExit(true), 150);
-        setTimeout(onDone, 850);
+        setTimeout(() => setExit(true), 50);
+        setTimeout(onDone, 400);
       }
-    }, 26);
+    }, 16);
 
     waitForCriticalAssets().then(() => {
       assetsReady = true;
@@ -125,7 +139,7 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
       clearInterval(id);
       clearTimeout(initTimer);
     };
-  }, [onDone]);
+  }, [onDone, playIntro]);
 
   return (
     <AnimatePresence>
@@ -135,7 +149,7 @@ const Preloader = ({ onDone }: { onDone: () => void }) => {
           aria-label="Loading site"
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--bg)]"
           exit={{ clipPath: "inset(0 0 100% 0)" }}
-          transition={{ duration: 0.8, ease: EASE }}
+          transition={{ duration: 0.35, ease: EASE }}
           style={{ clipPath: "inset(0 0 0% 0)" }}
         >
           <div className="overflow-hidden">
