@@ -55,6 +55,9 @@ export const useTransformersPipeline = (task: string, model: string) => {
 
       pipeRef.current = await withRetry(() =>
         create(task, model, {
+          // Only the quantized weights (onnx/model_quantized.onnx) are self-hosted. transformers.js
+          // otherwise defaults to fp32 "model.onnx" on WebGPU, which 404s → "protobuf parsing failed".
+          dtype: "q8",
           device: chosenDevice === "webgpu" ? "webgpu" : undefined,
         })
       );
