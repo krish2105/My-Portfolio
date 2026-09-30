@@ -33,7 +33,13 @@ export function isGeminiConfigured(): boolean {
   return getGeminiApiKey().length > 0;
 }
 
-function buildSystemInstruction(mode: ViewMode): string {
+export function buildSystemInstruction(mode: ViewMode): string {
+  // Dates come from the same data the site renders (single source of truth) — a hard-coded copy here
+  // had drifted from both the site and the résumé.
+  const internship = journey.find((j) => j.id === "internship");
+  const internshipLine = internship
+    ? `${internship.title} at ${internship.institution} (${internship.date}), on a conversational NLP loan-advisory chatbot.`
+    : "";
   const verifiedProjects = projects.map(p => `- ${p.title} (${p.category}): ${p.description}`).join("\n");
   const verifiedMilestones = journey.map(j => `- ${j.title} at ${j.institution} (${j.date}, ${j.location || "Dubai"}): ${j.description || ""}`).join("\n");
 
@@ -45,7 +51,7 @@ GROUNDED VERIFIED FACTS ABOUT KRISHNA MATHUR:
 Name: ${profile.name}
 Title / Current Role: Master of AI in Business postgraduate student & Class Representative at SP Jain School of Global Management, Dubai.
 Current Industry Experience: AI Intern at Learners University College (LUC) in Dubai (2026—Present), developing applied AI solutions, machine learning workflows, and generative AI edtech automations.
-Past Industry Experience: Machine Learning Intern at Intelliza Solutions Pvt. Ltd. (Feb 2025—June 2025), building conversational NLP loan eligibility chatbots.
+Past Industry Experience: ${internshipLine}
 Undergraduate Degree: B.Tech in Computer Science Engineering (AI & ML Honors, 2021—2025) from Manipal University Jaipur.
 Location: ${profile.location} (Secondary: ${profile.secondaryLocation}).
 Availability: ${profile.availability} (Open to AI Engineer, Machine Learning Engineer, and GenAI positions).
