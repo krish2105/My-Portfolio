@@ -15,7 +15,7 @@ export const SoundToggle = () => {
       type="button"
       onClick={toggle}
       title={enabled ? "Mute interactive audio feedback" : "Enable tactile sound effects"}
-      aria-label={enabled ? "Mute interactive audio feedback" : "Enable tactile sound effects"}
+      aria-label={enabled ? "SFX ON — mute interactive audio feedback" : "SFX OFF — enable tactile sound effects"}
       aria-pressed={enabled}
       className={`group relative flex h-9 items-center justify-center gap-1.5 rounded-full border px-2.5 sm:px-3 font-mono text-[11px] font-semibold transition-all duration-300 before:absolute before:-inset-1 before:content-[''] ${
         enabled

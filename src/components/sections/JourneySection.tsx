@@ -164,7 +164,7 @@ const JourneyEntry = ({
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Visit official portal of ${item.institution}`}
+                    aria-label={`Portal — official site of ${item.institution}`}
                     className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] transition-all duration-300 hover:border-[#00FF94] hover:bg-[#00FF94]/10 hover:text-[var(--accent)]"
                   >
                     <span>Portal</span>

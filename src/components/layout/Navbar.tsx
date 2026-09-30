@@ -47,7 +47,7 @@ const Navbar = () => {
           href="#home"
           onClick={go("home")}
           className="relative inline-flex min-h-[44px] min-w-[44px] items-center font-display text-lg font-black tracking-tighter text-[var(--text)] focus-visible-ring before:absolute before:-inset-1 before:content-['']"
-          aria-label="Home"
+          aria-label="KM. — Krishna Mathur, home"
         >
           KM<span className="text-[var(--accent)]">.</span>
         </a>
