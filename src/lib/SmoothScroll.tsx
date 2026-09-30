@@ -26,12 +26,23 @@ const ScrollContext = createContext<ScrollState>({ lenis: null });
 export const useSmoothScroll = () => useContext(ScrollContext);
 
 /** Imperative scroll-to helper that respects the Lenis instance. */
-export const scrollTo = (target: string | number, lenis: Lenis | null) => {
+export const scrollTo = (target: string | number, lenis: Lenis | null, isRetry = false) => {
   // Negative offset leaves room for the fixed navbar so section headings
   // aren't tucked underneath it after a nav click.
   const NAV_OFFSET = -90;
   if (lenis) {
-    lenis.scrollTo(target, { offset: NAV_OFFSET, duration: 1.4 });
+    lenis.scrollTo(target, {
+      offset: NAV_OFFSET,
+      duration: 1.4,
+      // The destination is computed when the animation starts. If layout above the target changes during
+      // the ~1.4s glide (a lazy section mounting/hiding, an image loading) it lands off-position, so check
+      // once on arrival and re-aim. One retry only — never a correction loop.
+      onComplete: () => {
+        if (isRetry || typeof target !== "string") return;
+        const el = document.querySelector(target);
+        if (el && Math.abs(el.getBoundingClientRect().top + NAV_OFFSET) > 8) scrollTo(target, lenis, true);
+      },
+    });
   } else if (typeof target === "string") {
     document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
   }

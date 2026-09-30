@@ -30,11 +30,14 @@ const CACHE_TTL = 1000 * 60 * 60 * 6; // 6h
  * Fetches public GitHub stats (no auth). Caches in sessionStorage and degrades
  * gracefully: on rate-limit or any error it returns null so the UI can hide.
  */
-export const useGitHubStats = (username: string) => {
+export const useGitHubStats = (username: string, enabled = true) => {
   const [stats, setStats] = useState<GitHubStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Callers far down the page pass enabled=false until the section is near the viewport, so the API
+    // call (and its JSON parse) doesn't happen during page load.
+    if (!enabled) return;
     let alive = true;
 
     const cached = (() => {
@@ -115,7 +118,7 @@ export const useGitHubStats = (username: string) => {
     return () => {
       alive = false;
     };
-  }, [username]);
+  }, [username, enabled]);
 
   return { stats, loading };
 };

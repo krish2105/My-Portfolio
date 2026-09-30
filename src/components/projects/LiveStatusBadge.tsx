@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { useLiveStatus } from "../../hooks/useLiveStatus";
+import { useNearViewport } from "../../hooks/useNearViewport";
 
 const COPY: Record<string, { dot: string; label: string }> = {
   checking: { dot: "bg-[var(--text-3)]", label: "Checking…" },
@@ -13,11 +15,14 @@ const COPY: Record<string, { dot: string; label: string }> = {
  * recruiter clicks through to a free-tier backend that may be cold-started.
  */
 const LiveStatusBadge = ({ url }: { url: string }) => {
-  const status = useLiveStatus(url);
+  const ref = useRef<HTMLSpanElement>(null);
+  const near = useNearViewport(ref, "800px");
+  const status = useLiveStatus(url, near);
   const { dot, label } = COPY[status];
 
   return (
     <span
+      ref={ref}
       className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg)]/60 px-2.5 py-1 text-[10px] font-medium text-[var(--text-2)] backdrop-blur"
       role="status"
     >

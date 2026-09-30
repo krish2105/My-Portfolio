@@ -58,7 +58,7 @@ const ProjectModal = ({ project, onClose }: { project: Project | null; onClose: 
   // Only resolves for repos under the krish2105 account; a project hosted
   // elsewhere (e.g. a teammate's repo) has no data to match, so it simply
   // shows nothing rather than a guessed date.
-  const { stats: ghStats } = useGitHubStats(GH_USERNAME);
+  const { stats: ghStats } = useGitHubStats(GH_USERNAME, !!project);
   const repoName = repoNameFromKrish2105Url(project?.repositoryUrl);
   const lastUpdated = repoName ? ghStats?.repoPushDates[repoName] : undefined;
   // Technical readers want the engineering depth (problem → approach →

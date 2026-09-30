@@ -2,6 +2,7 @@ import { memo } from "react";
 import { FaGithub } from "react-icons/fa6";
 import { Star, GitFork, Users, Code2 } from "lucide-react";
 import { useGitHubStats } from "../../hooks/useGitHubStats";
+import { useIdleReady } from "../../hooks/useIdleReady";
 import { GH_USERNAME, relativeTime } from "../../lib/github";
 import { RevealText, Rise } from "../common/Reveal";
 
@@ -22,7 +23,10 @@ const Stat = ({
 );
 
 const GitHubActivity = () => {
-  const { stats, loading } = useGitHubStats(GH_USERNAME);
+  // Fetch on idle shortly after load — off the critical path, but early enough that if the section hides
+  // itself (GitHub unreachable / rate-limited) that layout change settles before anyone navigates.
+  const idle = useIdleReady();
+  const { stats, loading } = useGitHubStats(GH_USERNAME, idle);
 
   // Hide the whole section if GitHub is unreachable / rate-limited.
   if (!loading && !stats) return null;
