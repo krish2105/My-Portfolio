@@ -19,7 +19,7 @@ describe.skipIf(!hasChrome || !REAL_ASSETS)("on-device ML (needs the real LFS mo
   });
 
   it("'Smart answers' downloads the embedding model and switches on", async () => {
-    const { page, problems } = await openPage(browser);
+    const { page, problems } = await openPage(browser, { mode: "technical" });
     await gotoHome(page);
     await page.evaluate(() => (document.querySelector('button[aria-label^="Open assistant"]') as HTMLElement).click());
     await page.waitForSelector('[aria-label="Ask the assistant a question"]');
@@ -50,7 +50,7 @@ describe.skipIf(!hasChrome || !REAL_ASSETS)("on-device ML (needs the real LFS mo
   });
 
   it("the Live Demo runs the real sentiment model (not the heuristic fallback)", async () => {
-    const { page, problems } = await openPage(browser);
+    const { page, problems } = await openPage(browser, { mode: "technical" });
     await gotoHome(page);
     await walkPage(page);
     await page.evaluate(() => document.getElementById("demo")!.scrollIntoView());

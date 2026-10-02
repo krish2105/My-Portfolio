@@ -1,7 +1,6 @@
 import type { Browser } from "puppeteer-core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { NAV_ITEMS } from "../src/data/nav";
-import { gotoHome, hasChrome, launchBrowser, openPage, sectionTop, sleep, waitUntil, walkPage } from "./helpers";
+import { gotoHome, hasChrome, launchBrowser, layoutFor, openPage, sectionTop, sleep, waitUntil, walkPage } from "./helpers";
 
 describe.skipIf(!hasChrome)("navigation (desktop)", () => {
   let browser: Browser;
@@ -19,7 +18,7 @@ describe.skipIf(!hasChrome)("navigation (desktop)", () => {
   it("each navbar link scrolls its section to just under the nav", async () => {
     const { page, problems } = await openPage(browser);
     await gotoHome(page);
-    for (const id of ["about", "projects", "resume", "contact"]) {
+    for (const { id } of layoutFor("recruiter").nav) {
       await page.evaluate((i) => (document.querySelector(`nav a[href="#${i}"]`) as HTMLElement).click(), id);
       await landed(page, id);
     }
@@ -32,7 +31,7 @@ describe.skipIf(!hasChrome)("navigation (desktop)", () => {
     const { page } = await openPage(browser);
     await gotoHome(page);
     await sleep(2500); // let the lazy sections mount
-    for (const item of NAV_ITEMS.filter((n) => ["about", "projects", "recognition", "trust", "resume", "contact"].includes(n.id))) {
+    for (const item of layoutFor("recruiter").nav) {
       await page.evaluate((i) => (document.querySelector(`nav a[href="#${i}"]`) as HTMLElement).click(), item.id);
       await landed(page, item.id);
       const active = await waitUntil(
@@ -49,9 +48,9 @@ describe.skipIf(!hasChrome)("navigation (desktop)", () => {
     const { page } = await openPage(browser);
     await gotoHome(page);
     await sleep(2500);
-    await page.evaluate(() => (document.querySelector('nav a[href="#resume"]') as HTMLElement).click());
-    await landed(page, "resume");
-    const expected = String(NAV_ITEMS.findIndex((n) => n.id === "resume") + 1).padStart(2, "0");
+    await page.evaluate(() => (document.querySelector('nav a[href="#contact"]') as HTMLElement).click());
+    await landed(page, "contact");
+    const expected = String(layoutFor("recruiter").nav.findIndex((n) => n.id === "contact") + 1).padStart(2, "0");
     const shown = await waitUntil(
       () => page.evaluate(() => document.querySelector('nav[aria-label="Scroll progress and section index"]')?.textContent ?? ""),
       "side rail text",

@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
-import { NAV_ITEMS as navItems, SECTION_IDS } from "../../data/nav";
+import { usePageLayout } from "../../hooks/usePageLayout";
 import ThemeToggle from "../common/ThemeToggle";
 import SoundToggle from "../common/SoundToggle";
 import ViewModeToggle from "../common/ViewModeToggle";
@@ -10,7 +10,8 @@ import MobileMenu from "./MobileMenu";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const activeId = useActiveSection(SECTION_IDS);
+  const { nav: navItems, sectionIds } = usePageLayout();
+  const activeId = useActiveSection(sectionIds);
   const { lenis } = useSmoothScroll();
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const Navbar = () => {
               href={`#${item.id}`}
               onClick={go(item.id)}
               aria-current={activeId === item.id ? "location" : undefined}
-              className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`relative whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                 activeId === item.id ? "text-[#050505]" : "text-[var(--text-2)] hover:text-[var(--text)]"
               }`}
             >

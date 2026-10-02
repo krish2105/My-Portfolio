@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import puppeteer, { type Browser, type HTTPRequest, type Page } from "puppeteer-core";
+import { hasCredentials } from "../src/lib/credentials";
+import { navFor, sectionsFor, type SectionKey } from "../src/lib/pageLayout";
+import type { ViewMode } from "../src/lib/viewModeTypes";
 
 /* ── Browser discovery ──────────────────────────────────────────────────────────── */
 const CHROME_CANDIDATES = [
@@ -70,8 +73,19 @@ function vercelHeadersFor(pathname: string): Record<string, string> {
   return out;
 }
 
+/** What the page should render for an audience mode — straight from the same table the app uses. */
+export const layoutFor = (mode: ViewMode) => {
+  const o = { hasCredentials: hasCredentials() };
+  const sections = sectionsFor(mode, o);
+  // snapshot and marquee are sections without DOM ids; every other key is also the element id.
+  const ids = sections.filter((k: SectionKey) => k !== "snapshot" && k !== "marquee");
+  return { sections, ids, nav: navFor(mode, o) };
+};
+
 export interface OpenOptions {
   profile?: Profile;
+  /** Audience mode to open in (default: recruiter, the site default). */
+  mode?: ViewMode;
   /** Let the first-visit intro play (default: skipped, so tests don't wait on it). */
   intro?: boolean;
   /** Serve the document with the production CSP/headers from vercel.json. */
@@ -88,16 +102,17 @@ export interface Opened {
 }
 
 export async function openPage(browser: Browser, opts: OpenOptions = {}): Promise<Opened> {
-  const { profile = "desktop", intro = false, csp = false, contact = "ok" } = opts;
+  const { profile = "desktop", mode = "recruiter", intro = false, csp = false, contact = "ok" } = opts;
   const page = await browser.newPage();
   await page.setViewport(VIEWPORTS[profile]);
   const problems: string[] = [];
   const contactCalls: Record<string, unknown>[] = [];
   const origin = new URL(baseUrl()).origin;
 
-  await page.evaluateOnNewDocument((playIntro: boolean) => {
+  await page.evaluateOnNewDocument((playIntro: boolean, viewMode: string) => {
     try {
       localStorage.setItem("theme", "dark");
+      localStorage.setItem("view-mode", viewMode);
       if (!playIntro) sessionStorage.setItem("intro-seen", "1");
     } catch {
       /* storage blocked */
@@ -113,7 +128,7 @@ export async function openPage(browser: Browser, opts: OpenOptions = {}): Promis
         w.__workers.push(String(url));
       }
     };
-  }, intro);
+  }, intro, mode);
 
   await page.setRequestInterception(true);
   page.on("request", async (req: HTTPRequest) => {

@@ -61,7 +61,7 @@ describe.skipIf(!hasChrome)("contact form", () => {
   });
 });
 
-describe.skipIf(!hasChrome)("résumé section", () => {
+describe.skipIf(!hasChrome)("résumé tools (Technical view)", () => {
   let browser: Browser;
   beforeAll(async () => {
     browser = await launchBrowser();
@@ -79,21 +79,13 @@ describe.skipIf(!hasChrome)("résumé section", () => {
     expect(String.fromCharCode(...bytes.slice(0, 5))).toBe("%PDF-");
   });
 
-  it("audience tabs, the job-description matcher and the hiring-summary copy all work", async () => {
-    const { page, problems } = await openPage(browser);
+  it("the job-description matcher and the hiring-summary copy work", async () => {
+    const { page, problems } = await openPage(browser, { mode: "technical" });
     await gotoHome(page);
     await walkPage(page);
     await page.evaluate(() => document.getElementById("resume")!.scrollIntoView());
     await sleep(500);
 
-    for (const tab of ["TECHNICAL", "BUSINESS", "RECRUITER"]) {
-      const clicked = await page.evaluate((t) => {
-        const b = ([...document.querySelectorAll("#resume button")] as HTMLElement[]).find((x) => x.innerText.trim() === t);
-        b?.click();
-        return !!b;
-      }, tab);
-      expect(clicked, `tab ${tab}`).toBe(true);
-    }
     await page.type("#resume textarea", "We need an AI engineer with Python, RAG, LangGraph, FastAPI and SQL experience for a Dubai fintech.");
     await page.evaluate(() => ([...document.querySelectorAll("#resume button")] as HTMLElement[]).find((b) => /check match/i.test(b.innerText))!.click());
     await waitUntil(async () => /match|%|score/i.test(await page.$eval("#resume", (s) => (s as HTMLElement).innerText)), "JD match output", 4000);
@@ -102,7 +94,7 @@ describe.skipIf(!hasChrome)("résumé section", () => {
   });
 
   it("builds the role-tailored PDF in a Web Worker once the card nears the viewport, and swaps the download to it", async () => {
-    const { page, problems } = await openPage(browser);
+    const { page, problems } = await openPage(browser, { mode: "technical" });
     await gotoHome(page);
     expect(await workersCreated(page), "no PDF worker before the card is near").toEqual([]);
 

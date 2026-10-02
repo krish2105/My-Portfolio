@@ -14,7 +14,8 @@ import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useKnowledgeSearch } from "../../hooks/useKnowledgeSearch";
 import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
-import { projects } from "../../data/portfolio";
+import { projects, socialLinks } from "../../data/portfolio";
+import { resolveAction } from "../../lib/assistantActions";
 import { specialCommandReply, MODE_TAG_BIAS, type Msg } from "../../lib/copilotCommands";
 import { GenerativePayloadView } from "./GenerativePayloadView";
 import {
@@ -205,7 +206,9 @@ const Assistant = () => {
     }, delay);
   };
 
-  const runAction = (a: AssistantAction) => {
+  const runAction = (raw: AssistantAction) => {
+    // The target section may not exist on this audience's page (About / Résumé on the recruiter view).
+    const a = resolveAction(raw, (id) => !!document.getElementById(id), socialLinks.resume);
     if (a.type === "scroll") {
       setOpen(false);
       setTimeout(() => scrollTo(`#${a.target}`, lenis), 80);

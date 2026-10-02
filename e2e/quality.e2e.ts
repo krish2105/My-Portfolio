@@ -22,11 +22,13 @@ describe.skipIf(!hasChrome)("quality gates", () => {
   };
 
   it.each([
-    ["desktop", "/"],
-    ["desktop", "/work/fraudshield/"],
-    ["mobile", "/"],
-  ] as const)("axe finds no accessibility violations (%s %s)", async (profile, path) => {
-    const { page } = await openPage(browser, { profile });
+    ["desktop", "/", "recruiter"],
+    ["desktop", "/", "technical"],
+    ["desktop", "/work/fraudshield/", "recruiter"],
+    ["mobile", "/", "recruiter"],
+    ["mobile", "/", "technical"],
+  ] as const)("axe finds no accessibility violations (%s %s, %s view)", async (profile, path, mode) => {
+    const { page } = await openPage(browser, { profile, mode });
     await gotoHome(page, path);
     await walkPage(page);
     expect(await violations(page)).toEqual([]);
@@ -34,7 +36,7 @@ describe.skipIf(!hasChrome)("quality gates", () => {
   });
 
   it("the production CSP blocks nothing the app needs (full tour: every section, project modals, résumé PDF worker + preview, live demo, assistant)", async () => {
-    const { page, problems } = await openPage(browser, { csp: true });
+    const { page, problems } = await openPage(browser, { csp: true, mode: "technical" });
     await gotoHome(page);
     await walkPage(page);
 

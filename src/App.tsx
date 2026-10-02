@@ -9,34 +9,16 @@ import ScrollProgress from "./components/common/ScrollProgress";
 import CommandPalette from "./components/common/CommandPalette";
 import UsesModal from "./components/common/UsesModal";
 import EasterEgg from "./components/common/EasterEgg";
-import Assistant from "./components/assistant/Assistant";
 import CyberTerminal from "./components/common/CyberTerminal";
 import ScrollTelemetryRail from "./components/common/ScrollTelemetryRail";
 import { SITE_TITLE } from "./data/site";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import { useOffscreenAnimationPause } from "./hooks/useOffscreenAnimationPause";
 import Preloader from "./components/common/Preloader";
-import SectionSkeleton from "./components/common/SectionSkeleton";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import HeroSection from "./components/hero/HeroSection";
-import TechnologyMarquee from "./components/sections/TechnologyMarquee";
-import AboutSection from "./components/sections/AboutSection";
-import BentoSection from "./components/sections/BentoSection";
-import JourneySection from "./components/sections/JourneySection";
-import CapabilitiesSection from "./components/sections/CapabilitiesSection";
-import ProjectsSection from "./components/sections/ProjectsSection";
-import ContactSection from "./components/sections/ContactSection";
+import PageSections from "./components/layout/PageSections";
 
-// Below-the-fold sections: not needed for first paint, so split into their
-// own chunks to shrink the main bundle and cut initial parse/hydrate work
-// (2026-07-08 perf audit — App.tsx previously imported all 18 sections
-// eagerly with no code-splitting beyond the R3F hero).
-const GitHubActivity = lazy(() => import("./components/sections/GitHubActivity"));
-const LiveDemo = lazy(() => import("./components/sections/LiveDemo"));
-const RecognitionSection = lazy(() => import("./components/sections/RecognitionSection"));
-const TrustAndThinkingSection = lazy(() => import("./components/sections/trust/TrustAndThinkingSection"));
-const ResumeSection = lazy(() => import("./components/sections/ResumeSection"));
 // Unlisted personal-use view (?mode=interview) — never needed by a real
 // visitor, so it must never cost anything in the main bundle.
 const InterviewPrepView = lazy(() => import("./components/InterviewPrepView"));
@@ -103,33 +85,7 @@ const App = () => {
           <SkipLink />
           <Navbar />
 
-          <main id="main-content">
-            <HeroSection />
-            <BentoSection />
-            <TechnologyMarquee />
-            <AboutSection />
-            <JourneySection />
-            <CapabilitiesSection />
-            <ProjectsSection />
-            <Suspense fallback={<SectionSkeleton variant="compact" />}>
-              <GitHubActivity />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton variant="tall" />}>
-              <LiveDemo />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton variant="compact" />}>
-              <RecognitionSection />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton variant="tall" />}>
-              <TrustAndThinkingSection />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton variant="tall" />}>
-              <ResumeSection />
-            </Suspense>
-            <ContactSection />
-            {/* Fixed-position; lives in <main> only so it's reachable via landmark navigation. */}
-            <Assistant />
-          </main>
+          <PageSections />
 
           <Footer />
         </div>

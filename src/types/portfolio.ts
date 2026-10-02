@@ -179,13 +179,3 @@ export interface WritingItem {
   url: string;
   status: ContentStatus;
 }
-
-/** Describes an empty "slot" honestly — no fake content, just what's pending and how to request it. */
-export interface TrustPlaceholder {
-  id: string;
-  category: TestimonialType | "writing";
-  label: string;
-  emptyStateCopy: string;
-  ctaLabel: string;
-  ctaHref: string;
-}

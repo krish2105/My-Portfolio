@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import type { ComponentType } from "react";
-import { NAV_ITEMS } from "../../data/nav";
+import { usePageLayout } from "../../hooks/usePageLayout";
 import { socialLinks, projects } from "../../data/portfolio";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useTheme } from "../../lib/theme";
@@ -59,6 +59,7 @@ const CommandPalette = ({
   const { lenis } = useSmoothScroll();
   const { theme, toggle } = useTheme();
   const { mode, setMode } = useViewMode();
+  const { nav: navItems } = usePageLayout();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +70,7 @@ const CommandPalette = ({
       onClose();
       setTimeout(() => scrollTo(id === "home" ? 0 : `#${id}`, lenis), 60);
     };
-    const nav: Command[] = NAV_ITEMS.map((n) => ({
+    const nav: Command[] = navItems.map((n) => ({
       id: `go-${n.id}`,
       label: `Go to ${n.label}`,
       hint: "Section",
@@ -204,7 +205,7 @@ const CommandPalette = ({
     }));
 
     return [...nav, ...actions, ...viewModes, ...projectJumps];
-  }, [lenis, onClose, onOpenUses, onEasterEgg, theme, toggle, mode, setMode]);
+  }, [lenis, onClose, onOpenUses, onEasterEgg, theme, toggle, mode, setMode, navItems]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

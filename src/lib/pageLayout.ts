@@ -1,4 +1,4 @@
-import type { ViewMode } from "./viewMode";
+import type { ViewMode } from "./viewModeTypes";
 
 /**
  * The single table that decides what the page renders. App.tsx renders from it, and the navbar, mobile menu,

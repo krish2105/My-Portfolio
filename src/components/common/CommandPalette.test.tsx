@@ -50,4 +50,11 @@ describe("CommandPalette", () => {
     expect(onOpenUses).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("lists navigation commands from the current layout (Work/Experience…) — not the sections that were cut", () => {
+    render(<CommandPalette open onClose={vi.fn()} onOpenUses={vi.fn()} onEasterEgg={vi.fn()} />);
+    expect(screen.getByText("Go to Work")).toBeInTheDocument();
+    expect(screen.getByText("Go to Experience")).toBeInTheDocument();
+    for (const gone of ["Go to What I Do", "Go to Awards", "Go to Trust & Thinking"]) expect(screen.queryByText(gone)).not.toBeInTheDocument();
+  });
 });

@@ -17,5 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true
   },
-  "include": ["./**/*.ts", "../src/data/portfolio.ts", "../src/data/nav.ts", "../src/types/portfolio.ts"]
+  "include": ["./**/*.ts", "../src/data/portfolio.ts", "../src/types/portfolio.ts", "../src/lib/pageLayout.ts", "../src/lib/viewModeTypes.ts", "../src/lib/credentials.ts"]
 }
