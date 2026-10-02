@@ -1,11 +1,15 @@
-import type { ReactNode } from "react";
-import { motion } from "motion/react";
+import { useRef, type ReactNode } from "react";
+import { motion, useInView } from "motion/react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const VIEWPORT = { once: true, margin: "-10%" } as const;
 
 /**
  * Masked line reveal — the child slides up from behind a clipped edge.
  * The kinetic-editorial signature used for headings and copy across the site.
+ *
+ * The in-view trigger watches the mask, never the translated child: IntersectionObserver clips its target by ancestor
+ * overflow, so a child pushed fully behind the mask has no visible area and would never be reported as intersecting.
  */
 export const RevealText = ({
   children,
@@ -19,12 +23,13 @@ export const RevealText = ({
   as?: "div" | "h2" | "h3" | "p" | "span";
 }) => {
   const Tag = motion[as] as typeof motion.div;
+  const ref = useRef<HTMLSpanElement>(null);
+  const shown = useInView(ref, VIEWPORT);
   return (
-    <span className="line-mask">
+    <span ref={ref} className="line-mask">
       <Tag
         initial={{ y: "120%" }}
-        whileInView={{ y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
+        animate={{ y: shown ? 0 : "120%" }}
         transition={{ duration: 0.9, ease: EASE, delay }}
         className={className}
       >
@@ -50,18 +55,25 @@ export const RevealWords = ({
   return (
     <span className={className}>
       {words.map((word, i) => (
-        <span key={i} className="line-mask inline-flex">
-          <motion.span
-            initial={{ y: "110%" }}
-            whileInView={{ y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: EASE, delay: delay + i * stagger }}
-            className="inline-block"
-          >
-            {word}&nbsp;
-          </motion.span>
-        </span>
+        <RevealWord key={i} word={word} delay={delay + i * stagger} />
       ))}
+    </span>
+  );
+};
+
+const RevealWord = ({ word, delay }: { word: string; delay: number }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const shown = useInView(ref, VIEWPORT);
+  return (
+    <span ref={ref} className="line-mask inline-flex">
+      <motion.span
+        initial={{ y: "110%" }}
+        animate={{ y: shown ? 0 : "110%" }}
+        transition={{ duration: 0.7, ease: EASE, delay }}
+        className="inline-block"
+      >
+        {word}&nbsp;
+      </motion.span>
     </span>
   );
 };
