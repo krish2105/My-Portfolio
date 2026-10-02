@@ -78,11 +78,11 @@ Krishna_Portfolio/
 │   │   ├── layout/         # Navbar, Footer, MobileMenu
 │   │   ├── profile/        # ProfileCard
 │   │   ├── projects/       # ProjectCard, ProjectCover, ProjectModal (case study)
-│   │   └── sections/       # Hero, About, Stats, WhatIDo, Journey, Now, Capabilities, Projects, Recognition, Resume, Contact
+│   │   └── sections/       # Hero, Projects (+ recruiter FlagshipStrip), About, Journey ("Experience"), Capabilities, Credentials, Resume tools, Contact
 │   ├── data/
 │   │   └── portfolio.ts    # ← All editable content lives here
 │   ├── hooks/              # useMediaQuery, useActiveSection, useWebGLSupport
-│   ├── lib/                # SmoothScroll (Lenis wrapper)
+│   ├── lib/                # SmoothScroll (Lenis wrapper), pageLayout (which sections render per audience view)
 │   ├── types/
 │   │   └── portfolio.ts    # Project, Capability, Journey, Recognition, SocialLinks, Now types
 │   ├── App.tsx · main.tsx · index.css
@@ -182,7 +182,8 @@ Almost everything is editable from **`src/data/portfolio.ts`**:
 
 - `profile` — name, titles, location, about statements.
 - `socialLinks` — GitHub, LinkedIn, email, etc. Set a value to `""` to hide that link.
-- `services`, `journey`, `capabilities`, `projects`, `recognition` — section content.
+- `journey`, `capabilities`, `projects`, `recognition`, `testimonials`, `certifications`, `writing` — section content. The Credentials section renders only the real, permissioned items among the last four and disappears if there are none.
+- **Which sections show, and in what order** is decided in one place — `src/lib/pageLayout.ts` — per audience view: **Recruiter** (the default) is the short page (Hero → Work → Experience → Skills → Credentials → Contact); **Technical** and **Business** show the full page. The navbar, "(0N)" section numbers, side rail and command palette all derive from that table.
 - **Résumé** — self-hosted at `public/resume/Krishna_Mathur_Resume.pdf`, generated from `scripts/resume-content.ts` + this file's `projects`/`profile`/`recognition`. Edit that content file (or the project data) and run `npm run resume:build` to regenerate — never hand-edit the PDF.
 
 Other touch points:
@@ -194,7 +195,7 @@ Other touch points:
 - [ ] Add real Instagram/Twitter/website links in `src/data/portfolio.ts` (currently hidden — `""` — since the old placeholders 404'd).
 - [ ] **WaselX has no screenshot** (private team repo, `images: []`) — the only project still missing one; it has an honest "source available on request" note in place of a dead link.
 - [ ] **ClaimGuard AI** — a real, separate project confirmed by Krishna — needs its live URL/repo/metrics added to `portfolio.ts` as a 9th case study; it'll flow into the résumé automatically on the next `npm run resume:build`.
-- [ ] Real testimonials, LinkedIn recommendations, mentor/faculty feedback and writing/articles — see `docs/CONTENT_TODO.md` for ready-to-send request templates. The single biggest remaining trust gap.
+- [ ] Real LinkedIn recommendation / mentor quote, certifications, writing, and an availability date (`profile.availableFrom`) — see `docs/CONTENT_TODO.md`. They render only when real, so the page stays honest until then.
 
 ## 13. Performance & Accessibility Notes
 

@@ -1,9 +1,10 @@
 # Content TODO — real assets Krishna needs to supply
 
 Nothing on the live site is fabricated. Every item below is either shown
-honestly as "not yet supplied" (screenshots → generated covers, testimonials
-→ labelled placeholders, writing → a "planned" slot) or omitted entirely
-(e.g. missing live links). This file is the checklist for replacing those
+honestly as "not yet supplied" (screenshots → generated covers) or omitted
+entirely (missing live links; and, since 2026-10-02, **recommendations,
+certifications and writing — they render only when real**, with no "coming
+soon" cards). This file is the checklist for replacing those
 honest placeholders with the real thing — and the ready-to-send request
 templates for the human-sourced ones.
 
@@ -93,8 +94,9 @@ Real, permissioned quotes only — add to `testimonials` in
 }
 ```
 
-The matching placeholder in `TrustAndThinkingSection` disappears
-automatically once an entry of that `type` has `status: "verified"`.
+The **Credentials** section shows a quote only when it has
+`status: "verified"` **and** `permission: true`. Until then it is invisible —
+there is no placeholder card. (`src/lib/credentials.ts` is the single filter.)
 
 ### Request template — LinkedIn recommendation
 
@@ -128,13 +130,28 @@ automatically once an entry of that `type` has `status: "verified"`.
 
 ## 7. Blog / article content
 
-The "Writing & Insights" slot on the Trust & Thinking section shows a single
-honest "planned" placeholder until `writing` in `src/data/portfolio.ts` has
-a real, published entry:
+Writing appears in the Credentials section only when `writing` in
+`src/data/portfolio.ts` has an entry with `status: "published"`:
 
 ```ts
 { id: "w-01", title: "...", blurb: "...", date: "2026-01", url: "https://...", status: "published" }
 ```
+
+## 7a. Certifications
+
+Add only certifications actually held to `certifications` in
+`src/data/portfolio.ts` (empty today, so none are shown):
+
+```ts
+{ id: "c-01", name: "...", issuer: "...", year: "2026", credentialUrl: "https://..." } // credentialUrl optional
+```
+
+## 7b. Availability date
+
+`profile.availableFrom` (ISO `"2026-11"` or `"2026-11-15"`) is **unset on
+purpose** — the hero facts line says "Open to roles" until a real start date
+is supplied. Work authorisation text ("UAE student visa (transferable)") is
+taken from the résumé; change `profile.workAuthorization` if it changes.
 
 ## 8. OG images
 
@@ -159,7 +176,7 @@ domain (e.g. `krishnamathur.dev`) is purchased later — see
 1. Add the real fields (screenshot path, quote object, writing object, link)
    to the relevant array/object in `src/data/portfolio.ts`.
 2. Nothing else needs to change — `ProjectCard`, `ProjectModal`,
-   `TrustAndThinkingSection`, the sitemap/OG generator, and the Copilot's
+   `CredentialsSection`, the sitemap/OG generator, and the Copilot's
    knowledge base all read from this single file.
 3. Run `npm run lint && npm run test && npm run build` and spot-check the
    affected section in the browser before shipping.
