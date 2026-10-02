@@ -10,6 +10,7 @@ import type {
   Testimonial,
   WritingItem,
   TrustPlaceholder,
+  Certification,
 } from "../types/portfolio";
 
 export const profile: Profile = {
@@ -1030,6 +1031,13 @@ export const recognition: RecognitionItem[] = [
  *     sourceUrl: "https://...", type: "linkedin", status: "verified", permission: true }
  */
 export const testimonials: Testimonial[] = [];
+
+/**
+ * Certifications — real ones only (name, issuer, year, and a verification link when public). Empty on purpose: the
+ * Credentials section shows a group only when it has real items and hides entirely when nothing is real. Add objects like:
+ *   { id: "cert-01", name: "…", issuer: "…", year: "2026", credentialUrl: "https://…" }
+ */
+export const certifications: Certification[] = [];
 
 /**
  * Writing / insights — real published posts only (Medium, LinkedIn, Dev.to,

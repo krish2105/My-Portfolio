@@ -158,6 +158,17 @@ export interface Testimonial {
   permission?: boolean;
 }
 
+/** A certification the owner actually holds — shown on the Credentials section only when this list is non-empty. */
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  /** Year issued, e.g. "2026". */
+  year: string;
+  /** Link to the credential / verification page, if public. */
+  credentialUrl?: string;
+}
+
 export interface WritingItem {
   id: string;
   title: string;
