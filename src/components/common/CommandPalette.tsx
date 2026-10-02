@@ -267,6 +267,9 @@ const CommandPalette = ({
               <Search size={18} className="text-[var(--text-3)]" aria-hidden />
               <input
                 ref={inputRef}
+                // Focused at mount, not from a timer: with only the 40ms setTimeout below, keystrokes typed right
+                // after Ctrl+K were lost, the list stayed unfiltered and Enter ran the first item ("Go to About").
+                autoFocus
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);

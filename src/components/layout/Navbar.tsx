@@ -58,6 +58,7 @@ const Navbar = () => {
               key={item.id}
               href={`#${item.id}`}
               onClick={go(item.id)}
+              aria-current={activeId === item.id ? "location" : undefined}
               className={`relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                 activeId === item.id ? "text-[#050505]" : "text-[var(--text-2)] hover:text-[var(--text)]"
               }`}
