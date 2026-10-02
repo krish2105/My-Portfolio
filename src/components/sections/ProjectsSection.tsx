@@ -10,23 +10,33 @@ import ProjectCard from "../projects/ProjectCard";
 import ProjectModal from "../projects/ProjectModal";
 import ProjectSystemMap from "../projects/ProjectSystemMap";
 import { RevealText } from "../common/Reveal";
+import FullPortfolioCue from "../common/FullPortfolioCue";
+import FlagshipStrip from "./FlagshipStrip";
+import { useSectionNumber } from "../../hooks/usePageLayout";
 
 const ProjectsSpatial3D = lazy(() => import("../projects/ProjectsSpatial3D"));
 
 const FILTERS = ["All", "AI/ML", "Deep Learning", "GenAI", "Data"] as const;
 type Filter = (typeof FILTERS)[number];
 
-const Header = () => (
-  <div className="px-6 md:px-[8vw]">
-    <div className="mb-6 flex items-center gap-4">
-      <span className="kicker">(05)</span>
-      <RevealText className="kicker">Selected Work</RevealText>
+const Header = ({ title = "PROJECTS", compact = false }: { title?: string; compact?: boolean }) => {
+  const number = useSectionNumber("projects");
+  return (
+    <div className="px-6 md:px-[8vw]">
+      <div className="mb-6 flex items-center gap-4">
+        <span className="kicker">{number}</span>
+        <RevealText className="kicker">Selected Work</RevealText>
+      </div>
+      <h2
+        className={`max-w-4xl font-display font-black text-[var(--text)] ${
+          compact ? "text-3xl leading-[1.1] tracking-tight md:text-5xl" : "text-4xl leading-[0.95] tracking-tighter md:text-7xl"
+        }`}
+      >
+        <RevealText as="span">{title}</RevealText>
+      </h2>
     </div>
-    <h2 className="max-w-4xl font-display text-4xl font-black leading-[0.95] tracking-tighter text-[var(--text)] md:text-7xl">
-      <RevealText as="span">PROJECTS</RevealText>
-    </h2>
-  </div>
-);
+  );
+};
 
 const ViewToggle = ({
   mode,
@@ -264,7 +274,8 @@ const SwipeGallery = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project
 
 const DEFAULT_TITLE = SITE_TITLE;
 
-const ProjectsSection = () => {
+/** `strip` = the recruiter's short proof strip; `gallery` = the full pinned gallery with filters (Technical/Business). */
+const ProjectsSection = ({ variant = "gallery" }: { variant?: "gallery" | "strip" }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const webglSupported = useWebGLSupport();
   const [selected, setSelected] = useState<Project | null>(null);
@@ -301,6 +312,19 @@ const ProjectsSection = () => {
     window.addEventListener("popstate", sync);
     return () => window.removeEventListener("popstate", sync);
   }, []);
+
+  if (variant === "strip") {
+    return (
+      <section id="projects" className="relative border-t border-[var(--border)] py-20 md:py-28">
+        <Header title="Independent systems, shipped live" compact />
+        <div className="mt-10 md:mt-14">
+          <FlagshipStrip projects={projects} onOpen={openProject} />
+        </div>
+        <FullPortfolioCue />
+        <ProjectModal project={selected} onClose={closeProject} />
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="relative border-t border-[var(--border)] py-20">
