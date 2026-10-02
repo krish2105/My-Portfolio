@@ -5,6 +5,7 @@ import SafeExternalLink from "../common/SafeExternalLink";
 import SocialLinks from "../common/SocialLinks";
 import ResumeButton from "../common/ResumeButton";
 import { RevealText, RevealWords, Rise } from "../common/Reveal";
+import SectionHeader from "../common/SectionHeader";
 
 const EMAIL = "krishnamathur008@gmail.com";
 
@@ -243,10 +244,7 @@ const ContactSection = () => {
     <section id="contact" className="relative overflow-hidden border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
       <div className="absolute -top-1/3 left-1/2 -z-10 h-[60vh] w-[60vh] -translate-x-1/2 bg-radial-glow opacity-60" />
 
-      <div className="mb-10 flex items-center gap-4">
-        <span className="kicker">(09)</span>
-        <RevealText className="kicker">Contact</RevealText>
-      </div>
+      <SectionHeader id="contact" label="Contact" className="mb-10" />
 
       <h2 className="font-display text-[clamp(2.5rem,9vw,9rem)] font-black leading-[0.9] tracking-tighter text-[var(--text)]">
         <RevealText as="span">LET'S BUILD</RevealText>

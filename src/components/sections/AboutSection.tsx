@@ -2,7 +2,8 @@ import { memo, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { profile } from "../../data/portfolio";
 import { useTheme } from "../../lib/theme";
-import { RevealText, Rise } from "../common/Reveal";
+import { Rise } from "../common/Reveal";
+import SectionHeader from "../common/SectionHeader";
 
 // Word-reveal dim/bright color pairs, tuned per theme so the dim state is
 // unambiguously legible (not just past the AA minimum) against that theme's
@@ -132,10 +133,7 @@ const AboutSection = () => {
       />
 
       {/* ── Section kicker ── */}
-      <div className="mb-14 flex items-center gap-4 md:pl-8">
-        <span className="kicker">(01)</span>
-        <RevealText className="kicker">About</RevealText>
-      </div>
+      <SectionHeader id="about" label="About" className="mb-14 md:pl-8" />
 
       {/* ── Headline ── */}
       <div className="max-w-5xl md:pl-8">

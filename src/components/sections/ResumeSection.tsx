@@ -1,64 +1,12 @@
-import { memo, useRef, useState, useMemo, useEffect } from "react";
+import { memo, useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { Download, ExternalLink, GraduationCap, Briefcase, Award, Code2, Copy, Check, Eye, EyeOff, ClipboardList } from "lucide-react";
+import { Download, ExternalLink, Copy, Check, Eye, EyeOff, ClipboardList } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { journey, capabilities, recognition, socialLinks, projects } from "../../data/portfolio";
+import { capabilities, projects, socialLinks } from "../../data/portfolio";
 import { buildHiringSummary } from "../../lib/hiringSummary";
 import { matchJobDescription, type JDMatchResult } from "../../lib/jdMatcher";
-import { RevealText, Rise } from "../common/Reveal";
-import { useViewMode, VIEW_MODES } from "../../lib/viewMode";
-
-/* ── Compact timeline card ────────────────────────────────────────── */
-const TimelineCard = ({
-  title,
-  subtitle,
-  date,
-  icon: Icon,
-  logo,
-  index,
-}: {
-  title: string;
-  subtitle: string;
-  date: string;
-  icon: typeof Briefcase;
-  logo?: string;
-  index: number;
-}) => (
-  <Rise delay={index * 0.06}>
-    <div className="group relative flex gap-5 rounded-xl border border-[var(--border)] bg-[var(--panel)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:border-[#00FF94]/30 hover:bg-[var(--panel)] md:p-6">
-      {/* Icon or Logo */}
-      <div className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-[var(--border)] bg-[var(--panel-2)] p-1.5 text-[var(--accent)] transition-all duration-300 group-hover:border-[#00FF94]/40 group-hover:shadow-[0_0_16px_rgba(0,255,148,0.2)]">
-        {logo ? (
-          <img src={logo} alt={subtitle} className="h-full w-full object-contain" />
-        ) : (
-          <Icon size={18} />
-        )}
-      </div>
-      <div className="min-w-0">
-        <span className="mb-1 block font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--accent)]/70">
-          {date}
-        </span>
-        <h4 className="font-display text-base font-bold leading-tight tracking-tight text-[var(--text)] md:text-lg">
-          {title}
-        </h4>
-        <p className="mt-1 text-sm leading-relaxed text-[var(--text-3)]">{subtitle}</p>
-      </div>
-    </div>
-  </Rise>
-);
-
-/* ── Skill chip ───────────────────────────────────────────────────── */
-const SkillChip = ({ name, isCore }: { name: string; isCore: boolean }) => (
-  <span
-    className={`rounded-full border px-3 py-1 text-xs transition-colors ${
-      isCore
-        ? "border-[#00FF94]/30 bg-[#00FF94]/8 text-[var(--accent)]"
-        : "border-white/[0.06] text-[var(--text-3)] hover:border-white/[0.12]"
-    }`}
-  >
-    {name}
-  </span>
-);
+import { Rise } from "../common/Reveal";
+import SectionHeader from "../common/SectionHeader";
 
 import { type TargetRoleId, ROLE_CONFIGS } from "../../lib/resumeRoles";
 import { useNearViewport } from "../../hooks/useNearViewport";
@@ -375,30 +323,12 @@ const JDMatcherCard = () => {
   );
 };
 
-/** One flagship project, summarised differently per audience — same underlying
- * real data (`valueProp`/`technologies`/`impact`), just a different lens. */
-const FlagshipRow = ({ project, mode }: { project: (typeof projects)[number]; mode: "recruiter" | "technical" | "business" }) => {
-  const detail =
-    mode === "technical"
-      ? project.technologies.slice(0, 5).join(" · ")
-      : mode === "business"
-        ? project.impact?.[0] ?? project.description
-        : project.valueProp ?? project.description;
-  return (
-    <li className="flex flex-col gap-0.5 py-2.5">
-      <span className="text-sm font-semibold text-[var(--text)]">{project.shortTitle}</span>
-      <span className="text-xs leading-relaxed text-[var(--text-3)]">{detail}</span>
-    </li>
-  );
-};
-
-/* ── Skills & Capabilities static collections ───────────────────────── */
-const ALL_SKILLS = capabilities.flatMap((g) => g.skills);
-const CORE_ALL = ALL_SKILLS.filter((s) => s.level === "Core");
-const WORKING_ALL = ALL_SKILLS.filter((s) => s.level === "Working Knowledge");
-const REST_ALL = ALL_SKILLS.filter((s) => s.level !== "Core" && s.level !== "Working Knowledge");
-
 /* ── Main section ─────────────────────────────────────────────────── */
+/**
+ * Résumé tools — the things only this site can do: a PDF tailored to the role being hired for (with preview), a
+ * paste-a-job-description matcher, and a one-click hiring summary. The experience timeline and skills snapshot that used
+ * to sit here now live once, in their own sections.
+ */
 const ResumeSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -406,95 +336,7 @@ const ResumeSection = () => {
     offset: ["start end", "end start"],
   });
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const { mode, setMode } = useViewMode();
-  const [expanded, setExpanded] = useState(false);
   const [targetRole, setTargetRole] = useState<TargetRoleId>("ai-engineer");
-
-  const roleConfig = ROLE_CONFIGS[targetRole];
-
-  // Prioritize core skills aligned with the active target role
-  const prioritizedCore = useMemo(() => {
-    const roleSkillSet = new Set(roleConfig.topSkills);
-    const matched = CORE_ALL.filter((s) => roleSkillSet.has(s.name));
-    const remainder = CORE_ALL.filter((s) => !roleSkillSet.has(s.name));
-    return [...matched, ...remainder];
-  }, [roleConfig]);
-
-  // Pick top 12 core skills for the resume snapshot, or all of them once expanded.
-  const coreSkills = expanded ? prioritizedCore : prioritizedCore.slice(0, 12);
-  const workingSkills = expanded ? WORKING_ALL : WORKING_ALL.slice(0, 8);
-  const restSkills = expanded ? REST_ALL : [];
-
-  const flagshipProjects = projects.filter((p) => p.flagship);
-
-  const prioritizedFlagships = useMemo(() => {
-    if (targetRole === "ai-engineer") {
-      return [...flagshipProjects].sort((a, b) => (a.id === "fincopilot" ? -1 : b.id === "fincopilot" ? 1 : 0));
-    } else if (targetRole === "mlops-engineer") {
-      return [...flagshipProjects].sort((a, b) => (a.id === "autovaluate" ? -1 : b.id === "autovaluate" ? 1 : 0));
-    } else {
-      return [...flagshipProjects].sort((a, b) => (a.id === "sakan-ai" ? -1 : b.id === "sakan-ai" ? 1 : 0));
-    }
-  }, [flagshipProjects, targetRole]);
-
-  // Timeline entries — education & experience interleaved
-  const lucEntry = journey.find((j) => j.id === "luc-ai-intern");
-  const mastersEntry = journey.find((j) => j.id === "masters");
-  const mlInternEntry = journey.find((j) => j.id === "internship");
-  const btechEntry = journey.find((j) => j.id === "btech");
-
-  const timelineEntries = [
-    ...(lucEntry
-      ? [
-          {
-            title: lucEntry.title,
-            subtitle: lucEntry.institution,
-            date: lucEntry.date,
-            icon: Briefcase,
-            logo: "/logos/luc-mark.svg",
-          },
-        ]
-      : []),
-    ...(mastersEntry
-      ? [
-          {
-            title: mastersEntry.title,
-            subtitle: mastersEntry.institution,
-            date: mastersEntry.date,
-            icon: GraduationCap,
-            logo: "/logos/spjain.svg",
-          },
-        ]
-      : []),
-    ...(mlInternEntry
-      ? [
-          {
-            title: mlInternEntry.title,
-            subtitle: mlInternEntry.institution,
-            date: mlInternEntry.date,
-            icon: Briefcase,
-            logo: "/logos/intelliza.svg",
-          },
-        ]
-      : []),
-    ...(btechEntry
-      ? [
-          {
-            title: btechEntry.title,
-            subtitle: btechEntry.institution,
-            date: btechEntry.date,
-            icon: GraduationCap,
-            logo: "/logos/manipal.svg",
-          },
-        ]
-      : []),
-    {
-      title: recognition[0].title, // Award
-      subtitle: recognition[0].context.split(".")[0] + ".",
-      date: recognition[0].year,
-      icon: Award,
-    },
-  ];
 
   return (
     <section
@@ -511,108 +353,20 @@ const ResumeSection = () => {
       </motion.div>
 
       {/* ── Header ── */}
-      <div className="mb-16 flex items-center gap-4">
-        <span className="kicker">(08)</span>
-        <RevealText className="kicker">Resume</RevealText>
-      </div>
+      <SectionHeader id="resume" label="Résumé tools" className="mb-16" />
 
       <Rise>
         <h2 className="max-w-4xl font-display text-4xl font-black leading-[0.95] tracking-tighter text-[var(--text)] md:text-7xl">
-          <span>RESUME</span>{" "}
-          <span className="text-outline-accent">&</span>{" "}
-          <span className="text-gradient">EXPERIENCE</span>
+          <span>RÉSUMÉ</span> <span className="text-gradient">TOOLS</span>
         </h2>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-2)] md:text-lg">
-          A snapshot of my academic background, professional experience, and the
-          technical skills I bring to every project.
+          Download the PDF tailored to the role you are hiring for, or paste a job description to see how the skills line up.
         </p>
       </Rise>
 
-      {/* ── Two-column layout ── */}
-      <div className="mt-16 grid gap-12 md:mt-20 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
-        {/* Left: Timeline */}
-        <div>
-          <Rise>
-            <h3 className="kicker mb-6">Education & Experience</h3>
-          </Rise>
-          <div className="space-y-4">
-            {timelineEntries.map((entry, i) => (
-              <TimelineCard key={entry.title} {...entry} index={i} />
-            ))}
-          </div>
-        </div>
-
-        {/* Right: Skills snapshot + Download CTA */}
-        <div className="flex flex-col gap-10">
-          {/* Core skills */}
-          <Rise delay={0.05}>
-            <div className="rounded-xl border border-white/[0.06] bg-[var(--panel)]/60 p-6 backdrop-blur-sm md:p-7">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <Code2 size={18} className="text-[var(--accent)]" />
-                  <h3 className="kicker">Core competencies</h3>
-                </div>
-                <div className="flex gap-1.5" role="group" aria-label="Snapshot audience">
-                  {VIEW_MODES.map((m) => (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setMode(m.id)}
-                      aria-pressed={mode === m.id}
-                      className={`rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors ${
-                        mode === m.id
-                          ? "border-[#00FF94] bg-[#00FF94]/10 text-[var(--accent)]"
-                          : "border-[var(--border)] text-[var(--text-3)] hover:text-[var(--text)]"
-                      }`}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {coreSkills.map((s) => (
-                  <SkillChip key={s.name} name={s.name} isCore />
-                ))}
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {workingSkills.map((s) => (
-                  <SkillChip key={s.name} name={s.name} isCore={false} />
-                ))}
-              </div>
-              {expanded && restSkills.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {restSkills.map((s) => (
-                    <SkillChip key={s.name} name={s.name} isCore={false} />
-                  ))}
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => setExpanded((v) => !v)}
-                aria-expanded={expanded}
-                className="mt-4 text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
-              >
-                {expanded ? "Show fewer skills" : "Show all skills"}
-              </button>
-
-              <div className="mt-6 border-t border-white/[0.06] pt-5">
-                <p className="kicker mb-1">Flagship projects — {VIEW_MODES.find((m) => m.id === mode)?.label} snapshot</p>
-                <ul className="divide-y divide-white/[0.06]">
-                  {prioritizedFlagships.map((p) => (
-                    <FlagshipRow key={p.id} project={p} mode={mode} />
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Rise>
-
-          {/* Paste-a-job-description matcher */}
-          <JDMatcherCard />
-
-          {/* Download CTA */}
-          <DownloadCard targetRole={targetRole} onRoleChange={setTargetRole} />
-        </div>
+      <div className="mt-16 grid gap-10 md:mt-20 lg:grid-cols-2 lg:gap-12">
+        <DownloadCard targetRole={targetRole} onRoleChange={setTargetRole} />
+        <JDMatcherCard />
       </div>
 
       {/* ── Bottom accent ── */}

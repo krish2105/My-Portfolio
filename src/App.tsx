@@ -23,7 +23,6 @@ import HeroSection from "./components/hero/HeroSection";
 import TechnologyMarquee from "./components/sections/TechnologyMarquee";
 import AboutSection from "./components/sections/AboutSection";
 import BentoSection from "./components/sections/BentoSection";
-import WhatIDoSection from "./components/sections/WhatIDoSection";
 import JourneySection from "./components/sections/JourneySection";
 import CapabilitiesSection from "./components/sections/CapabilitiesSection";
 import ProjectsSection from "./components/sections/ProjectsSection";
@@ -109,7 +108,6 @@ const App = () => {
             <BentoSection />
             <TechnologyMarquee />
             <AboutSection />
-            <WhatIDoSection />
             <JourneySection />
             <CapabilitiesSection />
             <ProjectsSection />

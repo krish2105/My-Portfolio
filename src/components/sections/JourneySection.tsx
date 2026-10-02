@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { ExternalLink, MapPin, Building2, ShieldCheck, Globe } from "lucide-react";
 import { journey } from "../../data/portfolio";
 import type { JourneyItem } from "../../types/portfolio";
-import { RevealText } from "../common/Reveal";
+import SectionHeader from "../common/SectionHeader";
 
 /**
  * One timeline entry with responsive two-column layout on desktop/tablet:
@@ -217,10 +217,7 @@ const JourneySection = () => {
 
   return (
     <section id="journey" className="relative border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
-      <div className="mb-14 flex items-center gap-4">
-        <span className="kicker">(03)</span>
-        <RevealText className="kicker">Journey</RevealText>
-      </div>
+      <SectionHeader id="journey" label="Experience" />
 
       <div ref={ref} className="relative pl-8 md:pl-16">
         {/* track + animated fill */}
