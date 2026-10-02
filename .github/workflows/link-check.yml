@@ -1,0 +1,29 @@
+name: Link check
+
+# Project links rot silently: a demo gets redeployed under another URL, a repo goes private or is renamed.
+# This runs weekly (and on demand) and fails — which emails the repo owner — if any liveUrl stops answering,
+# serves a page whose title no longer matches the project, or any repositoryUrl stops being public.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  links:
+    name: Project links are live and correct
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check project links
+        run: npm run check:links

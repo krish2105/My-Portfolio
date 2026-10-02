@@ -403,7 +403,7 @@ export const projects: Project[] = [
       "/projects/fincopilot/03_command_center.jpg",
     ],
     demoVideo: "/projects/fincopilot/loop.mp4",
-    repositoryUrl: "https://github.com/krish2105/FinCopilot-",
+    repositoryUrl: "https://github.com/krish2105/FinCopilot",
     liveUrl: "https://fin-copilot-six.vercel.app",
     note: "Independent build, hosted entirely on free tiers (Vercel, Render, Supabase) — 205 backend tests and CI-gated evaluation metrics guard every deploy.",
     problem:
@@ -558,8 +558,8 @@ export const projects: Project[] = [
       "/projects/complianceagent/03_aml_graph.jpg",
     ],
     demoVideo: "/projects/complianceagent/loop.mp4",
-    repositoryUrl: "https://github.com/krish2105/Compilance-Agent-",
-    liveUrl: "https://frontend-three-pi-15.vercel.app",
+    repositoryUrl: "https://github.com/krish2105/ComplianceAgent",
+    liveUrl: "https://complianceagent-drab.vercel.app",
     note: "Independent build — 80 unit tests (76% coverage), a red-team jailbreak suite (6/6 blocked), and a documented model card and data sheet.",
     problem:
       "AML/KYC teams drown in flagged transactions that need consistent triage, evidence-backed documentation and a defensible audit trail — but automating that risks either missing real risk or over-trusting an opaque model.",
@@ -870,8 +870,7 @@ export const projects: Project[] = [
     technologies: ["Next.js", "TypeScript", "FastAPI", "PostgreSQL", "Redis", "Docker", "Python"],
     tags: ["Data"],
     images: ["/projects/lulu/dashboard.webp"],
-    repositoryUrl: "https://github.com/mercydeez/lulu-sales-intelligence-dashboard",
-    note: "Team project — enterprise retail analytics platform.",
+    note: "Team project — enterprise retail analytics platform. Team code repository is private; source available on request.",
     problem:
       "Large retailers generate millions of transactions daily across stores. Leadership lacks real-time visibility, and sensitive financial data needs strict role-based governance.",
     approach: [
@@ -919,6 +918,7 @@ export const projects: Project[] = [
     limitations: [
       "Team project — Krishna's specific contribution was the analytics dashboard and backend services, not the full platform.",
       "No public live deployment; the architecture was verified in a Dockerised dev/staging environment.",
+      "Team repository is private — source available on request.",
     ],
     nextSteps: [
       "Publish a live demo deployment.",
