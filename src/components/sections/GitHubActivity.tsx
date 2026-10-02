@@ -34,7 +34,7 @@ const GitHubActivity = () => {
   return (
     <section
       id="github"
-      className="relative border-t border-[var(--border)] px-6 py-24 md:px-[8vw] md:py-32"
+      className="relative border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28"
     >
       <div className="mb-12 flex items-center gap-4">
         <span className="kicker">/ Live</span>

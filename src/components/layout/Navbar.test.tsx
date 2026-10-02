@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import Navbar from "./Navbar";
 import { ViewModeProvider } from "../../lib/viewMode";
 
-const desktopNav = () => within(screen.getAllByRole("navigation")[0]);
+const desktopNav = () => within(screen.getByRole("navigation", { name: "Primary" }));
 
 describe("Navbar follows the layout for the current audience", () => {
   afterEach(() => localStorage.clear());

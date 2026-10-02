@@ -91,18 +91,18 @@ const JourneyEntry = ({
 
         {/* Right Column: Prominent Luxury Institution Showcase Card */}
         <div className="lg:col-span-5">
-          <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--panel)]/90 p-5 sm:p-6 backdrop-blur-md shadow-md transition-all duration-300 hover:border-[#00FF94]/50 hover:shadow-[0_0_35px_rgba(0,255,148,0.16)] hover:-translate-y-0.5">
+          <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--panel)]/90 p-4 sm:p-5 lg:p-6 backdrop-blur-md shadow-md transition-all duration-300 hover:border-[#00FF94]/50 hover:shadow-[0_0_35px_rgba(0,255,148,0.16)] hover:-translate-y-0.5">
             {/* Ambient background glow */}
             <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-[#00FF94]/6 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
 
             {/* Watermark index number */}
-            <span className="pointer-events-none absolute right-4 top-2 font-display text-5xl sm:text-6xl font-black text-[var(--ghost-dim)] opacity-40 select-none transition-opacity duration-300 group-hover:opacity-80">
+            <span className="pointer-events-none absolute right-4 top-2 hidden font-display text-5xl lg:block lg:text-6xl font-black text-[var(--ghost-dim)] opacity-40 select-none transition-opacity duration-300 group-hover:opacity-80">
               0{index + 1}
             </span>
 
             <div>
               {/* Institutional Tier / Accreditation Header */}
-              <div className="mb-3.5 flex items-center justify-between">
+              <div className="mb-3.5 hidden items-center justify-between lg:flex">
                 <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-3)]">
                   <Building2 size={12} className="text-[var(--accent)]" />
                   Affiliated Institution
@@ -116,11 +116,11 @@ const JourneyEntry = ({
 
               {/* Large, Beautiful Logo Showcase Stage */}
               {item.logo && (
-                <div className="relative flex h-32 sm:h-36 w-full items-center justify-center rounded-xl border border-black/10 bg-[#090d12] px-6 py-5 shadow-inner transition-transform duration-300 group-hover:scale-[1.01] group-hover:border-[#00FF94]/40 dark:border-white/10">
+                <div className="relative flex h-20 w-full items-center justify-center rounded-xl border border-black/10 bg-[#090d12] px-6 py-3 lg:h-36 lg:py-5 shadow-inner transition-transform duration-300 group-hover:scale-[1.01] group-hover:border-[#00FF94]/40 dark:border-white/10">
                   <img
                     src={item.logo}
                     alt={item.logoAlt || item.institution}
-                    className="max-h-20 sm:max-h-24 w-auto max-w-[240px] object-contain drop-shadow-sm filter transition-all duration-300"
+                    className="max-h-12 w-auto max-w-[240px] lg:max-h-24 object-contain drop-shadow-sm filter transition-all duration-300"
                     loading="lazy"
                   />
                 </div>
@@ -128,7 +128,7 @@ const JourneyEntry = ({
 
               {/* Key Competencies & Focus tags */}
               {item.skills && item.skills.length > 0 && (
-                <div className="mt-4">
+                <div className="mt-4 hidden lg:block">
                   <span className="block font-mono text-[10px] uppercase tracking-wider text-[var(--text-3)]">
                     Key Competencies & Focus
                   </span>
@@ -148,7 +148,7 @@ const JourneyEntry = ({
 
             {/* Official Portal Link with Interactive Live Hover Preview */}
             {item.url && (
-              <div className="relative mt-5 border-t border-[var(--border)]/70 pt-3.5 flex items-center justify-between gap-2">
+              <div className="relative mt-4 flex items-center justify-between gap-2 border-t border-[var(--border)]/70 pt-3.5 lg:mt-5">
                 <span className="truncate font-mono text-[11px] text-[var(--text-3)] max-w-[190px]">
                   {item.verifiedDomain || item.url.replace(/^https?:\/\/(www\.)?/, "")}
                 </span>
@@ -216,7 +216,7 @@ const JourneySection = () => {
   const lineProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section id="journey" className="relative border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
+    <section id="journey" className="relative border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28">
       <SectionHeader id="journey" label="Experience" />
 
       <div ref={ref} className="relative pl-8 md:pl-16">
@@ -228,7 +228,7 @@ const JourneySection = () => {
           />
         </div>
 
-        <div className="space-y-16 md:space-y-24">
+        <div className="space-y-12 md:space-y-20">
           {journey.map((item, i) => (
             <JourneyEntry key={item.id} item={item} index={i} />
           ))}

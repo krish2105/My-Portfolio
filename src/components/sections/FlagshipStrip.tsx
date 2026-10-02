@@ -11,6 +11,12 @@ interface FlagshipStripProps {
 
 const isFlagship = (p: Project) => p.status === "Independent Project";
 
+/** "80 (76% coverage)" → ["80", "(76% coverage)"]: the qualifier is set small so a long metric can't wrap and unbalance the cards. */
+const splitQualifier = (value: string): [string, string | null] => {
+  const m = value.match(/^(.+?)\s+(\(.*\))$/);
+  return m ? [m[1], m[2]] : [value, null];
+};
+
 /**
  * The recruiter's proof strip: the independent, live systems — each leading with ONE real outcome number from its own
  * `metrics`, a live-demo link (with a reachability badge), a case-study button, and a code link only where the repo is
@@ -26,6 +32,7 @@ const FlagshipStrip = ({ projects, onOpen }: FlagshipStripProps) => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4">
         {flagships.map((p, i) => {
           const metric = p.metrics?.[0];
+          const [headline, qualifier] = metric ? splitQualifier(metric.value) : ["", null];
           return (
             <Rise key={p.id} delay={i * 0.07}>
               <article className="group flex h-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-6 transition-colors duration-300 hover:border-[#00FF94]/30 md:p-7">
@@ -35,7 +42,15 @@ const FlagshipStrip = ({ projects, onOpen }: FlagshipStripProps) => {
 
                 {metric && (
                   <div data-testid="proof-metric" className="mt-5 border-t border-[var(--border)] pt-4">
-                    <p className="font-display text-3xl font-black leading-none tracking-tight text-[var(--accent)]">{metric.value}</p>
+                    <p className="font-display text-3xl font-black leading-none tracking-tight text-[var(--accent)]">
+                      {headline}
+                      {qualifier && (
+                        <>
+                          {" "}
+                          <span className="font-sans text-sm font-semibold tracking-normal text-[var(--text-2)]">{qualifier}</span>
+                        </>
+                      )}
+                    </p>
                     <p className="mt-2 text-xs uppercase tracking-wide text-[var(--text-3)]">{metric.label}</p>
                   </div>
                 )}

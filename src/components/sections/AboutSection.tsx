@@ -113,7 +113,7 @@ const AboutSection = () => {
     <section
       ref={sectionRef}
       id="about"
-      className="relative overflow-hidden border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40"
+      className="relative overflow-hidden border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28"
     >
       {/* ── Animated background elements ── */}
       <motion.div

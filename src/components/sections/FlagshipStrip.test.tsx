@@ -20,9 +20,18 @@ describe("FlagshipStrip", () => {
     render(<FlagshipStrip projects={projects} onOpen={() => {}} />);
     for (const p of independent) {
       const card = within(screen.getByRole("heading", { level: 3, name: p.shortTitle }).closest("article") as HTMLElement);
-      expect(card.getByText(p.metrics![0].value)).toBeInTheDocument();
+      expect(card.getByTestId("proof-metric").textContent).toContain(p.metrics![0].value);
       expect(card.getByText(p.metrics![0].label)).toBeInTheDocument();
     }
+  });
+
+  it("sets a parenthetical qualifier small beside the headline number, so long metrics don't break the card rhythm", () => {
+    const withNote: Project = { ...independent[0], metrics: [{ value: "80 (76% coverage)", label: "Tests" }] };
+    render(<FlagshipStrip projects={[withNote]} onOpen={() => {}} />);
+    const metric = screen.getByTestId("proof-metric");
+    expect(metric.textContent).toContain("80 (76% coverage)");
+    expect(within(metric).getByText("(76% coverage)").tagName).toBe("SPAN");
+    expect(within(metric).queryByText("80 (76% coverage)")).toBeNull();
   });
 
   it("links to the live demo, opens the case study, and links code only where the repo is public", () => {

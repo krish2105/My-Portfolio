@@ -36,7 +36,7 @@ const CapabilityCard = ({ group, index }: { group: CapabilityGroup; index: numbe
  * repeating the same tags — and the Résumé section listed them a third time.)
  */
 const CapabilitiesSection = () => (
-  <section id="skills" className="relative border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
+  <section id="skills" className="relative border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28">
     <SectionHeader id="skills" label="Skills" />
 
     <h2 className="mb-16 max-w-4xl font-display text-3xl font-bold leading-[1.15] tracking-tight text-[var(--text)] md:text-5xl">

@@ -216,6 +216,12 @@ body {
   text-transform: uppercase;
   color: var(--accent);
 }
+/* On a phone the wide tracking pushes the hero eyebrow onto a second line with one orphaned word. */
+@media (max-width: 640px) {
+  .kicker {
+    letter-spacing: 0.18em;
+  }
+}
 
 /* ── Surfaces ──────────────────────────────────────────────────────── */
 .bg-grid {
@@ -321,6 +327,10 @@ select:focus-visible,
 /* ── Marquee ───────────────────────────────────────────────────────── */
 @theme {
   --animate-marquee-x: marquee-x 28s linear infinite;
+  /* The heavy display faces (Kanit 900 / Archivo) have tight sidebearings: Tailwind's default -0.05em made glyphs collide
+     (E/T, N/T in the big headings); even natural spacing still touches at 130px, so "tighter" is a hair positive. */
+  --tracking-tighter: 0.012em;
+  --tracking-tight: -0.01em;
 }
 @keyframes marquee-x {
   from {

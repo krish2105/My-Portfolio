@@ -256,7 +256,7 @@ const LiveDemo = () => {
   const positive = result?.label?.toUpperCase() === "POSITIVE";
 
   return (
-    <section id="demo" className="relative border-t border-[var(--border)] px-6 py-24 md:px-[8vw] md:py-32">
+    <section id="demo" className="relative border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <span className="kicker">/ Live</span>

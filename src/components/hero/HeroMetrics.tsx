@@ -18,13 +18,13 @@ const HeroMetrics = () => {
   if (!Number.isNaN(testCount)) stats.push({ value: String(testCount), label: "backend tests (FinCopilot)" });
 
   return (
-    <dl className="flex flex-wrap gap-x-8 gap-y-3">
+    <dl className="grid grid-cols-3 gap-x-3 sm:gap-x-4">
       {stats.map((s) => (
         <div key={s.label} className="flex flex-col">
           <dt className="sr-only">{s.label}</dt>
           <dd className="flex flex-col">
             <span className="font-display text-2xl font-bold tracking-tight text-[var(--text)] md:text-3xl">{s.value}</span>
-            <span aria-hidden="true" className="text-xs uppercase tracking-wide text-[var(--text-2)]">
+            <span aria-hidden="true" className="text-[11px] uppercase leading-snug tracking-wide text-[var(--text-2)] sm:text-xs">
               {s.label}
             </span>
           </dd>

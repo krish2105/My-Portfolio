@@ -27,6 +27,7 @@ const Navbar = () => {
 
   return (
     <motion.nav
+      aria-label="Primary"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
@@ -53,7 +54,7 @@ const Navbar = () => {
           KM<span className="text-[var(--accent)]">.</span>
         </a>
 
-        <div className="hidden items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--panel)]/60 px-2 py-1 backdrop-blur md:flex">
+        <div data-testid="primary-links" className="hidden items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--panel)]/60 px-2 py-1 backdrop-blur md:flex">
           {navItems.map((item) => (
             <a
               key={item.id}

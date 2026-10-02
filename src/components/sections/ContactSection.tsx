@@ -241,7 +241,7 @@ const Field = ({
 
 const ContactSection = () => {
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-[var(--border)] px-6 py-28 md:px-[8vw] md:py-40">
+    <section id="contact" className="relative overflow-hidden border-t border-[var(--border)] px-6 py-20 md:px-[8vw] md:py-28">
       <div className="absolute -top-1/3 left-1/2 -z-10 h-[60vh] w-[60vh] -translate-x-1/2 bg-radial-glow opacity-60" />
 
       <SectionHeader id="contact" label="Contact" className="mb-10" />

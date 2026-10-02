@@ -149,11 +149,11 @@ const HeroSection = () => {
       {/* Foreground: text (left) + photo card (right) */}
       <motion.div
         style={{ y, opacity }}
-        className="relative z-10 mx-auto grid min-h-[100svh] max-w-[1500px] grid-cols-1 items-center gap-10 px-6 pt-28 pb-16 md:px-[8vw] lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-0"
+        className="relative z-10 mx-auto grid min-h-[100svh] max-w-[1500px] grid-cols-1 items-center gap-10 px-6 pt-28 pb-16 md:px-[8vw] lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:pt-28 lg:pb-12"
       >
         {/* Left column */}
         <div className="flex flex-col">
-          <div className="overflow-hidden mb-5">
+          <div className="overflow-hidden mb-4">
             <motion.p
               initial={{ y: "120%" }}
               animate={{ y: 0 }}
@@ -167,7 +167,7 @@ const HeroSection = () => {
           <motion.h1
             ref={nameRef}
             style={{ fontWeight: nameWeight }}
-            className="name-glow font-kinetic leading-[0.85] tracking-tighter text-[clamp(3rem,9vw,8.5rem)]"
+            className="name-glow font-kinetic leading-[0.85] tracking-tighter text-[clamp(3rem,8vw,7.5rem)]"
           >
             <span className="block overflow-hidden">
               {letters.map((l, idx) => (
@@ -201,13 +201,13 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-7 flex flex-col gap-2"
+            className="mt-5 flex flex-col gap-2"
           >
             <p className="font-display text-xl font-bold tracking-tight text-[var(--accent)] md:text-2xl">
               {profile.headline}
             </p>
             <HeroFacts />
-            <p className="max-w-lg text-base text-[var(--text-2)] leading-relaxed">
+            <p className="max-w-xl text-base text-[var(--text-2)] leading-relaxed">
               {profile.tagline} From{" "}
               <span className="text-[var(--text)]">cited, agentic RAG copilots</span> to
               multi-agent deal intelligence, regulated-domain AI and explainable
@@ -219,7 +219,7 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-8"
+            className="mt-6"
           >
             <HeroMetrics />
           </motion.div>
@@ -228,7 +228,7 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-9 flex flex-wrap items-center gap-5"
+            className="mt-6 flex flex-wrap items-center gap-5"
           >
             <MagneticButton>
               <a
@@ -276,7 +276,7 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="mt-6"
+            className="mt-5"
           >
             <SocialLinks />
           </motion.div>
