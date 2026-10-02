@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "resume:build": "tsx scripts/generate-resume.ts"
+    "resume:build": "tsx scripts/generate-resume.ts",
+    "check:links": "tsx scripts/check-live-links.ts",
+    "e2e": "vitest run --config vitest.e2e.config.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
@@ -40,12 +42,14 @@
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "axe-core": "^4.12.1",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
     "pdf-lib": "^1.17.1",
+    "puppeteer-core": "^24.43.1",
     "tsx": "^4.22.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",

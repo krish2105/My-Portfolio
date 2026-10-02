@@ -59,3 +59,29 @@ jobs:
         run: npx lhci autorun --config=lighthouserc.mobile.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  e2e:
+    # Real-Chrome end-to-end suite (e2e/*.e2e.ts) against the production build. A separate job so a timing flake
+    # on a slower runner shows up as its own check rather than failing the lint/test/build/Lighthouse gate; once
+    # it has proven stable it can be made a required check. The on-device ML tests skip themselves here (the
+    # checkout has no Git LFS, so the model files are pointers) and run locally with `npm run e2e`.
+    name: End-to-end (Chrome)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: End-to-end tests
+        run: npm run e2e

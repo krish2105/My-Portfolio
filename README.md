@@ -117,6 +117,8 @@ The dev server starts at **http://localhost:5173**.
 | `npm run lint` | Run ESLint |
 | `npm run test` | Run the Vitest/RTL suite |
 | `npm run resume:build` | Regenerate `public/resume/Krishna_Mathur_Resume.pdf` from `scripts/resume-content.ts` + `src/data/portfolio.ts` |
+| `npm run e2e` | Real-Chrome end-to-end suite (`e2e/*.e2e.ts`) against the production build — run `npm run build` first. Hermetic: third-party requests are stubbed. |
+| `npm run check:links` | Fetch every project `liveUrl` (and check its page title matches the project) and `repositoryUrl` (must be public). Also runs weekly in CI. |
 
 ## 9. Build for Production
 
