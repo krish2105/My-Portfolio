@@ -1,6 +1,6 @@
 # Krishna Mathur — Portfolio
 
-A modern, Awwwards-style personal portfolio for **Krishna Mathur** — AI Developer, Data Analyst & GenAI Builder. Built with React 19, TypeScript and Vite, featuring smooth scrolling, a WebGL/Three.js hero, motion-driven reveals, and a fully responsive, accessible layout.
+A modern, Awwwards-style personal portfolio for **Krishna Mathur** — AI Engineer (GenAI, RAG & agents). Built with React 19, TypeScript and Vite, featuring smooth scrolling, a WebGL/Three.js hero, motion-driven reveals, and a fully responsive, accessible layout.
 
 ---
 

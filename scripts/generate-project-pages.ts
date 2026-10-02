@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { projects } from "../src/data/portfolio";
+import { SITE_DESCRIPTION, SITE_SOCIAL_DESCRIPTION, SITE_TITLE } from "../src/data/site";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -71,14 +72,14 @@ for (const project of projects) {
 
   html = replaceOnce(
     html,
-    "<title>Krishna Mathur — AI Developer building decision tools from data, language & workflows</title>",
+    `<title>${SITE_TITLE}</title>`,
     `<title>${escapeHtml(pageTitle)}</title>`,
     "title"
   );
 
   html = replaceOnce(
     html,
-    'content="Krishna Mathur builds practical AI, ML and GenAI systems — fraud detection, resource optimisation, NL-to-SQL and analytics dashboards — that turn messy data into decisions. Master of AI in Business, Dubai."',
+    `content="${SITE_DESCRIPTION}"`,
     `content="${escapeHtml(description)}"`,
     "meta description"
   );
@@ -94,7 +95,7 @@ for (const project of projects) {
   // this must replace BOTH occurrences (see replaceAll's doc comment).
   html = replaceAll(
     html,
-    'content="Krishna Mathur — AI Developer building decision tools from data, language & workflows"',
+    `content="${SITE_TITLE}"`,
     `content="${escapeHtml(pageTitle)}"`,
     "og:title / twitter:title"
   );
@@ -102,7 +103,7 @@ for (const project of projects) {
   // Likewise og:description and twitter:description share the same string.
   html = replaceAll(
     html,
-    'content="AI developer building decision tools from messy data, language and business workflows. Master of AI in Business, Dubai."',
+    `content="${SITE_SOCIAL_DESCRIPTION}"`,
     `content="${escapeHtml(description)}"`,
     "og:description / twitter:description"
   );

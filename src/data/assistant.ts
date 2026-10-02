@@ -32,12 +32,12 @@ export const ASSISTANT_INTENTS: AssistantIntent[] = [
     id: "who",
     patterns: ["who", "about", "yourself", "krishna", "bio", "tell me"],
     answer:
-      "Krishna Mathur is an AI Developer, Data Analyst and GenAI Builder pursuing a Master of AI in Business at SP Jain (Dubai), after a B.Tech in CSE (AI & ML). He builds and ships production-grade agentic AI systems — RAG copilots, multi-agent pipelines and explainable ML — not just prototypes.",
+      "Krishna Mathur is an AI Engineer building agentic RAG, GenAI and explainable-ML systems, pursuing a Master of AI in Business at SP Jain (Dubai), after a B.Tech in CSE (AI & ML). He builds and ships production-grade agentic AI systems — RAG copilots, multi-agent pipelines and explainable ML — not just prototypes.",
     actions: [{ label: "Read the full About", type: "scroll", target: "about" }],
     ar: {
       patterns: ["من", "من هو", "كريشنا", "عن نفسه", "من انت"],
       answer:
-        "كريشنا ماثور مطوّر ذكاء اصطناعي ومحلل بيانات وباني حلول GenAI، يدرس ماجستير في الذكاء الاصطناعي للأعمال في SP Jain بدبي. يبني أنظمة ذكاء اصطناعي حقيقية وقيد الإنتاج، وليست مجرد نماذج أولية.",
+        "كريشنا ماثور مهندس ذكاء اصطناعي يبني أنظمة RAG وGenAI والوكلاء الأذكياء، يدرس ماجستير في الذكاء الاصطناعي للأعمال في SP Jain بدبي. يبني أنظمة ذكاء اصطناعي حقيقية وقيد الإنتاج، وليست مجرد نماذج أولية.",
       actions: [{ label: "قسم النبذة الكاملة", type: "scroll", target: "about" }],
     },
   },

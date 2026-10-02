@@ -18,7 +18,7 @@ export const buildHiringSummary = (): string => {
   const flagships = projects.filter((p) => p.flagship);
 
   const lines = [
-    `${profile.name} — ${profile.titles[0]}`,
+    `${profile.name} — ${profile.headline}`,
     profile.tagline,
     `Core skills: ${coreSkills.join(", ")}.`,
     `Flagship projects: ${flagships.map((p) => p.shortTitle).join(", ")}.`,

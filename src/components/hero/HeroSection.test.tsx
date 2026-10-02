@@ -6,7 +6,7 @@ import { profile } from "../../data/portfolio";
 vi.mock("@vercel/analytics", () => ({ track: vi.fn() }));
 
 describe("HeroSection", () => {
-  it("renders the real profile name and the first rotating title — nothing fabricated", () => {
+  it("renders the real profile name and the single role headline — nothing fabricated", () => {
     const { container } = render(<HeroSection />);
     // The kinetic hero name is split into one <span> per letter, so assert
     // against the concatenated text content rather than a single text node.
@@ -15,8 +15,9 @@ describe("HeroSection", () => {
     expect(container.textContent).toContain("KRISHNA");
     expect(container.textContent).toContain("MATHUR");
     expect(profile.name).toBe("Krishna Mathur");
-    // RoleRotator starts on profile.titles[0].
-    expect(screen.getByText(profile.titles[0])).toBeInTheDocument();
+    // One role, not a rotating carousel of titles.
+    expect(screen.getByText(profile.headline)).toBeInTheDocument();
+    expect(profile.headline).toBe("AI Engineer — GenAI, RAG & agents");
   });
 
   it("subhead references the current flagship work, not the retired project names", () => {

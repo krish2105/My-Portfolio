@@ -12,6 +12,7 @@ import EasterEgg from "./components/common/EasterEgg";
 import Assistant from "./components/assistant/Assistant";
 import CyberTerminal from "./components/common/CyberTerminal";
 import ScrollTelemetryRail from "./components/common/ScrollTelemetryRail";
+import { SITE_TITLE } from "./data/site";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import { useOffscreenAnimationPause } from "./hooks/useOffscreenAnimationPause";
 import Preloader from "./components/common/Preloader";
@@ -41,7 +42,7 @@ const ResumeSection = lazy(() => import("./components/sections/ResumeSection"));
 // visitor, so it must never cost anything in the main bundle.
 const InterviewPrepView = lazy(() => import("./components/InterviewPrepView"));
 
-const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
+const DEFAULT_TITLE = SITE_TITLE;
 
 const App = () => {
   const [ready, setReady] = useState(false);

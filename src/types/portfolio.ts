@@ -92,7 +92,14 @@ export interface RecognitionItem {
 
 export interface Profile {
   name: string;
-  titles: string[];
+  /** The single role the whole site (hero, <title>, JSON-LD, résumé) presents. */
+  headline: string;
+  /** Short role label, e.g. "AI Engineer" — used by SEO/JSON-LD and the résumé header. */
+  targetRole: string;
+  /** Work-authorisation wording, verbatim from the résumé. */
+  workAuthorization: string;
+  /** Optional ISO date ("2026-11" or "2026-11-15") when he can start. Left unset until supplied — never guessed. */
+  availableFrom?: string;
   location: string;
   secondaryLocation: string;
   availability: string;

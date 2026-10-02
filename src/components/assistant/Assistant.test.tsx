@@ -16,7 +16,7 @@ describe("Assistant — Arabic query routing", () => {
     await user.type(input, "من هو كريشنا");
     await user.click(screen.getByLabelText("Send"));
 
-    expect(await screen.findByText(/مطوّر ذكاء اصطناعي/, {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByText(/مهندس ذكاء اصطناعي/, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it("falls back to the honest Arabic limitation message for an uncovered Arabic question", async () => {

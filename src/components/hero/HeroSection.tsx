@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, type RefObject } from "react";
+import { memo, useEffect, useRef, type RefObject } from "react";
 import {
   motion,
   useInView,
@@ -88,28 +88,6 @@ const useKineticWeight = (containerRef: RefObject<HTMLElement | null>) => {
     }
   );
   return useSpring(weight, { stiffness: 120, damping: 20, mass: 0.5 });
-};
-
-/** Cycles through the profile titles with a masked swap. */
-const RoleRotator = () => {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setI((p) => (p + 1) % profile.titles.length), 2600);
-    return () => clearInterval(id);
-  }, []);
-  return (
-    <span className="line-mask inline-flex h-[1.4em] overflow-hidden align-bottom">
-      <motion.span
-        key={i}
-        initial={{ y: "110%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: EASE }}
-        className="text-[var(--accent)]"
-      >
-        {profile.titles[i]}
-      </motion.span>
-    </span>
-  );
 };
 
 const HeroSection = () => {
@@ -224,8 +202,8 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-7 flex flex-col gap-2"
           >
-            <p className="font-display text-xl font-bold tracking-tight md:text-2xl">
-              <RoleRotator />
+            <p className="font-display text-xl font-bold tracking-tight text-[var(--accent)] md:text-2xl">
+              {profile.headline}
             </p>
             <p className="max-w-lg text-base text-[var(--text-2)] leading-relaxed">
               {profile.tagline} From{" "}

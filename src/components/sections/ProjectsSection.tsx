@@ -2,6 +2,7 @@ import { memo, useEffect, useMemo, useRef, useState, lazy, Suspense } from "reac
 import { motion, useScroll, useTransform } from "motion/react";
 import { Network, LayoutGrid, Compass } from "lucide-react";
 import { projects } from "../../data/portfolio";
+import { SITE_TITLE } from "../../data/site";
 import type { Project } from "../../types/portfolio";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useWebGLSupport } from "../../hooks/useWebGLSupport";
@@ -261,7 +262,7 @@ const SwipeGallery = ({ items, onOpen }: { items: Project[]; onOpen: (p: Project
   );
 };
 
-const DEFAULT_TITLE = "Krishna Mathur — AI Developer building decision tools from data, language & workflows";
+const DEFAULT_TITLE = SITE_TITLE;
 
 const ProjectsSection = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");

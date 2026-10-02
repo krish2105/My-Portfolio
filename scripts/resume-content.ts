@@ -10,7 +10,9 @@
  * framing here; if it's a project claim, it belongs in portfolio.ts.
  */
 
-export const resumeTargetRole = "AI/ML Analyst";
+import { profile } from "../src/data/portfolio";
+
+export const resumeTargetRole = profile.targetRole;
 
 export const resumeLocationLine =
   "Dubai, UAE · Indian National · UAE Student Visa (Transferable)";

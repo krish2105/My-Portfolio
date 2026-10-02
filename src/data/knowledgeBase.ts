@@ -18,7 +18,7 @@ export const buildKnowledgeBase = (): KBChunk[] => {
 
   chunks.push({
     id: "about",
-    text: `${profile.name} ${profile.titles.join(" ")} ${profile.aboutStatements.join(" ")}`,
+    text: `${profile.name} ${profile.headline} ${profile.aboutStatements.join(" ")}`,
     answer: profile.aboutStatements[0],
     action: { label: "Read the full About", type: "scroll", target: "about" },
   });

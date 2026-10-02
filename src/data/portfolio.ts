@@ -14,14 +14,9 @@ import type {
 
 export const profile: Profile = {
   name: "Krishna Mathur",
-  titles: [
-    "Agentic AI Engineer",
-    "Machine Learning Developer",
-    "AI Product Builder",
-    "GenAI & RAG Systems Builder",
-    "Deep Learning Practitioner",
-    "Creative Technologist",
-  ],
+  headline: "AI Engineer — GenAI, RAG & agents",
+  targetRole: "AI Engineer",
+  workAuthorization: "UAE student visa (transferable)",
   location: "Dubai, UAE",
   secondaryLocation: "Jaipur, India",
   availability: "Open to opportunities and collaborations in AI, data, GenAI and intelligent software.",
@@ -29,7 +24,7 @@ export const profile: Profile = {
   responseTime: "Usually replies within 24–48h.",
   tagline: "I build AI that turns messy data, language and business workflows into decisions.",
   aboutStatements: [
-    "I am Krishna Mathur, an AI developer, data analyst and GenAI builder currently pursuing a Master of AI in Business at SP Jain School of Global Management in Dubai. I completed my B.Tech in Computer Science and Engineering with a specialisation in Artificial Intelligence and Machine Learning from Manipal University Jaipur.",
+    "I am Krishna Mathur, an AI engineer building agentic RAG, GenAI and explainable-ML systems, currently pursuing a Master of AI in Business at SP Jain School of Global Management in Dubai. I completed my B.Tech in Computer Science and Engineering with a specialisation in Artificial Intelligence and Machine Learning from Manipal University Jaipur.",
     "My work focuses on shipping real, live AI systems — agentic RAG pipelines, multi-agent orchestration, explainable ML and computer vision — not just prototypes. Recent independent builds run in production with real test suites, CI-gated evaluations and public live demos, spanning fintech, real estate, compliance and automotive valuation.",
     "I enjoy developing end-to-end systems that combine rigorous engineering — grounded retrieval, human-approval gates, honest evaluation metrics — with a clear understanding of users, decisions and business requirements.",
   ],

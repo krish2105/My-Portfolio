@@ -1,6 +1,6 @@
 import type { AssistantAction } from "../data/assistant";
 import type { ViewMode } from "./viewMode";
-import { projects, capabilities } from "../data/portfolio";
+import { profile, projects, capabilities } from "../data/portfolio";
 import { compareProjects, parseComparisonQuery, findProjectByName, findMentionedProject } from "./compareProjects";
 import { bestProjectForRole } from "./bestProjectForRole";
 import { buildInterviewQuestions } from "./interviewQuestions";
@@ -86,7 +86,7 @@ export const specialCommandReply = (query: string): Msg | null => {
   if (/(?:brief|executive summary|quick summary|summary of krishna)/i.test(q)) {
     return {
       role: "bot",
-      text: "Executive brief for Krishna Mathur — AI Developer & GenAI Builder.",
+      text: `Executive brief for ${profile.name} — ${profile.headline}.`,
       actions: [
         { label: "View Resume", type: "scroll", target: "resume" },
         { label: "Contact Krishna", type: "scroll", target: "contact" },
