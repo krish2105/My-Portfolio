@@ -51,6 +51,10 @@ export interface ProfileCardProps {
   miniAvatarUrl?: string;
   name?: string;
   title?: string;
+  /** Overrides the large heading above the photo (defaults to `name`) — the hero shows the role there instead. */
+  heading?: string;
+  /** Overrides the line under the heading (defaults to `title`). */
+  subheading?: string;
   handle?: string;
   status?: string;
   contactText?: string;
@@ -73,6 +77,8 @@ const ProfileCardComponent = ({
   miniAvatarUrl,
   name = "Javi A. Torres",
   title = "Software Engineer",
+  heading,
+  subheading,
   handle = "javicodes",
   status = "Online",
   contactText = "Contact",
@@ -420,8 +426,8 @@ const ProfileCardComponent = ({
             </div>
             <div className="pc-content">
               <div className="pc-details">
-                <h2>{name}</h2>
-                <p>{title}</p>
+                <h2>{heading ?? name}</h2>
+                <p>{subheading ?? title}</p>
               </div>
             </div>
           </div>

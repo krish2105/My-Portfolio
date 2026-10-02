@@ -15,6 +15,7 @@ import MagneticButton from "../common/MagneticButton";
 import SocialLinks from "../common/SocialLinks";
 import ProfileCard from "../profile/ProfileCard";
 import HeroMetrics from "./HeroMetrics";
+import HeroFacts from "./HeroFacts";
 import { useSmoothScroll, scrollTo } from "../../lib/SmoothScroll";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useSound } from "../../lib/sound";
@@ -205,6 +206,7 @@ const HeroSection = () => {
             <p className="font-display text-xl font-bold tracking-tight text-[var(--accent)] md:text-2xl">
               {profile.headline}
             </p>
+            <HeroFacts />
             <p className="max-w-lg text-base text-[var(--text-2)] leading-relaxed">
               {profile.tagline} From{" "}
               <span className="text-[var(--text)]">cited, agentic RAG copilots</span> to
@@ -289,7 +291,9 @@ const HeroSection = () => {
         >
           <ProfileCard
             name="Krishna Mathur"
-            title="AI / ML Developer · GenAI Builder"
+            heading={profile.targetRole}
+            subheading={profile.focus}
+            title={profile.headline}
             handle="krishnamathur"
             status={profile.availabilityShort}
             contactText="Contact Me"

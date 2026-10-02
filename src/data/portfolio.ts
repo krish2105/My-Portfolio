@@ -17,6 +17,7 @@ export const profile: Profile = {
   name: "Krishna Mathur",
   headline: "AI Engineer — GenAI, RAG & agents",
   targetRole: "AI Engineer",
+  focus: "GenAI, RAG & agents",
   workAuthorization: "UAE student visa (transferable)",
   location: "Dubai, UAE",
   secondaryLocation: "Jaipur, India",

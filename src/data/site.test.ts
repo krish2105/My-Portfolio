@@ -24,6 +24,10 @@ describe("single positioning", () => {
     expect(attr(/<meta name="twitter:description" content="([^"]*)"/)).toBe(SITE_SOCIAL_DESCRIPTION);
   });
 
+  it("the headline is exactly role — focus, so the two can't disagree", () => {
+    expect(profile.headline).toBe(`${profile.targetRole} — ${profile.focus}`);
+  });
+
   it("the title leads with the one role", () => {
     expect(SITE_TITLE).toContain(profile.targetRole);
   });

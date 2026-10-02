@@ -96,6 +96,8 @@ export interface Profile {
   headline: string;
   /** Short role label, e.g. "AI Engineer" — used by SEO/JSON-LD and the résumé header. */
   targetRole: string;
+  /** What he does within that role, e.g. "GenAI, RAG & agents". `headline` is exactly `${targetRole} — ${focus}`. */
+  focus: string;
   /** Work-authorisation wording, verbatim from the résumé. */
   workAuthorization: string;
   /** Optional ISO date ("2026-11" or "2026-11-15") when he can start. Left unset until supplied — never guessed. */
